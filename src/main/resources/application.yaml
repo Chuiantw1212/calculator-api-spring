@@ -4,3 +4,14 @@ server:
 spring:
   application:
     name: calculator-api-spring
+	datasource:
+	    # 這裡填 Neon 給你的完整連線字串
+	    # 注意：Neon 強制要求 SSL，所以後面通常會有 ?sslmode=require
+	    url: ${DB_URL}
+		username: ${DB_USERNAME}
+	    password: ${DB_PASSWORD}
+	    driver-class-name: org.postgresql.Driver
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.en_chu.calculator_api_spring.model

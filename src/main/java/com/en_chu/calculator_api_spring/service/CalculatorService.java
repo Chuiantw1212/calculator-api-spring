@@ -1,24 +1,37 @@
 package com.en_chu.calculator_api_spring.service;
 
-import com.en_chu.calculator_api_spring.model.CompoundInterestRequest;
-import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.en_chu.calculator_api_spring.mapper.CalculationMapper; // 引入 MyBatis Mapper
+import com.en_chu.calculator_api_spring.model.CompoundInterestRequest;
 
 @Service
 public class CalculatorService {
 
-	public BigDecimal calculateCompoundInterest(CompoundInterestRequest request) {
-		// 公式：本金 * (1 + 利率)^年數
-		// 在 Java 裡，BigDecimal 的運算不能用 +, -, *, /，要用方法呼叫
+    @Autowired
+    private CalculationMapper calculationMapper; // 注入 MyBatis 介面
 
-		BigDecimal one = BigDecimal.ONE;
-		BigDecimal ratePlusOne = request.getRate().add(one); // 1 + rate
+    public BigDecimal calculateCompoundInterest(CompoundInterestRequest request) {
+        // 1. 原本的商業邏輯 (計算複利)
+        // 這裡為了簡單，我們假設你之前的邏輯是這樣 (或是保留你原本寫好的算式)
+        BigDecimal principal = request.getPrincipal();
+        BigDecimal rate = request.getRate();
+        int years = request.getYears();
+        
+        // 複利公式: 本金 * (1 + 利率)^年分
+        BigDecimal onePlusRate = BigDecimal.ONE.add(rate);
+        BigDecimal result = principal.multiply(onePlusRate.pow(years));
+        
+        // 2. [新增] 將結果存回 request 物件，準備存檔
+        request.setResult(result);
 
-		// pow 是次方
-		BigDecimal finalAmount = request.getPrincipal().multiply(ratePlusOne.pow(request.getYears()));
+        // 3. [新增] 呼叫 MyBatis 存入資料庫
+        // 這行程式碼執行下去，資料就會飛到 Neon 雲端了！
+        calculationMapper.insertRecord(request);
 
-		// 金融業鐵律：最後一定要設小數點位數與捨入模式 (這裡設 2 位，四捨五入)
-		return finalAmount.setScale(2, RoundingMode.HALF_UP);
-	}
+        return result;
+    }
 }

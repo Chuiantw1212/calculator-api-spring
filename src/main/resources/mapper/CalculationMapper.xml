@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.en_chu.calculator_api_spring.mapper.CalculationMapper">
+
+    <insert id="insertRecord" parameterType="com.en_chu.calculator_api_spring.model.CompoundInterestRequest">
+        INSERT INTO calculation_records (principal, rate, years, result)
+        VALUES (#{principal}, #{rate}, #{years}, #{result})
+    </insert>
+    
+    <select id="findAllRecords" resultType="com.en_chu.calculator_api_spring.model.CompoundInterestRequest">
+        SELECT * FROM calculation_records
+    </select>
+
+</mapper>

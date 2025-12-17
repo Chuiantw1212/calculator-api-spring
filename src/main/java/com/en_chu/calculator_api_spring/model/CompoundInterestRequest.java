@@ -1,11 +1,15 @@
 package com.en_chu.calculator_api_spring.model;
 
 import lombok.Data;
-import java.math.BigDecimal; // 金融業的神，請背下來
+import java.math.BigDecimal;
 
-@Data
+@Data // 👈 這個註解會自動幫你產生 setResult() 方法
 public class CompoundInterestRequest {
-	private BigDecimal principal; // 本金 (千萬別用 double)
-	private BigDecimal rate; // 年利率 (例如 0.05 代表 5%)
-	private int years; // 年數
+
+	private BigDecimal principal; // 本金
+	private BigDecimal rate; // 利率
+	private int years; // 年分
+
+	// 👇 請補上這一行！沒有它，你就不能存結果
+	private BigDecimal result;
 }
