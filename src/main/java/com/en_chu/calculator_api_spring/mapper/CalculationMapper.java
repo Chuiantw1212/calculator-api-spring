@@ -1,14 +1,12 @@
-package com.en_chu.calculator_api_spring.mapper; // 👈 這行是關鍵
+package com.en_chu.calculator_api_spring.mapper; // 再次確認路徑
 
+import org.apache.ibatis.annotations.Mapper; // 👈 這裡要對
 import com.en_chu.calculator_api_spring.model.CompoundInterestRequest;
-import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
-@Mapper
+@Mapper // 👈 這個絕對不能少
 public interface CalculationMapper {
-	// 定義方法：新增紀錄
 	void insertRecord(CompoundInterestRequest record);
 
-	// 定義方法：查詢紀錄
 	List<CompoundInterestRequest> findAllRecords();
 }
