@@ -6,9 +6,9 @@ import java.util.List;
 
 @Mapper
 public interface CalculationMapper {
-    // 定義方法：新增紀錄
-    void insertRecord(CompoundInterestRequest record);
-    
-    // 定義方法：查詢紀錄
-    List<CompoundInterestRequest> findAllRecords();
+	// 定義方法：新增紀錄
+	void insertRecord(CompoundInterestRequest record);
+
+	// 定義方法：查詢紀錄
+	List<CompoundInterestRequest> findAllRecords();
 }
