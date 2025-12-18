@@ -1,21 +1,25 @@
 # Calculator API Spring
 
 這是一個基於 Spring Boot 的財務計算機 API，主要功能為複利計算 (Compound Interest)。
-專案採用 **MyBatis** 作為 ORM 框架，並連接至 **Neon (PostgreSQL)** 雲端資料庫進行數據存取。
+專案採用 **MyBatis** 作為 ORM 框架，連接至 **Neon (PostgreSQL)** 雲端資料庫，並整合 **Firebase Admin SDK** 進行後端擴充服務。
 
 ## 🛠️ 技術棧 (Tech Stack)
 
 * **Java**: 17
-* **Framework**: Spring Boot 3.3.0 (降版以確保 MyBatis 相容性)
+* **Framework**: Spring Boot 3.3.0
 * **ORM**: MyBatis Spring Boot Starter 3.0.3
 * **Database**: PostgreSQL (Neon Serverless)
+* **Cloud Service**: Firebase Admin SDK (Java)
 * **Documentation**: SpringDoc OpenAPI (Swagger UI)
 * **Tooling**: Maven, Lombok
 
+---
+
 ## 🚀 快速開始 (Getting Started)
 
-### 1. 資料庫設定 (Database Setup)
-請在 PostgreSQL 資料庫中執行以下 SQL 以建立資料表：
+### 1. 資料庫初始化 (Database Setup)
+
+請在你的 PostgreSQL 資料庫中執行以下 SQL 以建立紀錄表：
 
 ```sql
 CREATE TABLE IF NOT EXISTS calculation_records (
@@ -29,22 +33,33 @@ CREATE TABLE IF NOT EXISTS calculation_records (
 
 ```
 
-### 2. 環境變數設定 (Configuration)
+### 2. 環境變數與外部金鑰設定 (Configuration & Secrets)
 
-為了資安考量，本專案 **不將密碼明文寫入** `application.yaml`。
-啟動專案前，請在 IDE (如 Eclipse) 的 `Run Configurations` -> `Environment` 中設定以下變數：
+為了確保資安，本專案 **不將敏感資訊明文寫入** 程式碼或設定檔。請務必完成以下兩項設定：
+
+#### **A. 設定環境變數 (Database)**
+
+請在 IDE (如 Eclipse/IntelliJ) 的 `Run Configurations` -> `Environment` 中設定以下變數：
 
 | 變數名稱 (Variable) | 說明 (Description) | 範例值 (Example) |
 | --- | --- | --- |
 | **DB_URL** | JDBC 連線字串 | `jdbc:postgresql://<HOST>/neondb?sslmode=require` |
 | **DB_USERNAME** | 資料庫帳號 | `neondb_owner` |
-| **DB_PASSWORD** | 資料庫密碼 | `********` (請勿外流) |
+| **DB_PASSWORD** | 資料庫密碼 | `********` |
 
-**注意：** `DB_URL` 必須以 `jdbc:postgresql://` 開頭。
+#### **B. Firebase 金鑰準備 (Firebase Admin SDK)**
+
+本專案需手動配置 Firebase 憑證，請依序執行：
+
+1. 前往 [Firebase Console](https://console.firebase.google.com/)。
+2. 進入 **專案設定 > 服務帳戶 (Service Accounts)**。
+3. 點擊 **「產生新的私密金鑰」** 並下載 JSON 檔案。
+4. 將該檔案重新命名為 **`serviceAccountKey.json`**。
+5. 將檔案放入專案路徑：`src/main/resources/serviceAccountKey.json`。
+
+> ⚠️ **資安警示**：`serviceAccountKey.json` 包含專案最高權限，本專案已將其加入 `.gitignore`。請勿將此金鑰上傳至 GitHub 等公共儲存庫。
 
 ### 3. 設定檔結構 (application.yaml)
-
-專案使用 YAML 格式，請務必使用 **空白鍵 (Space)** 縮排，嚴禁使用 Tab 鍵。
 
 ```yaml
 spring:
@@ -60,38 +75,32 @@ mybatis:
 
 ```
 
+---
+
 ## 📖 API 文件 (Swagger)
 
-專案啟動後，可透過以下網址測試 API：
+專案啟動後，可透過 Swagger UI 進行視覺化測試：
 
-* **Swagger UI**: `http://localhost:8888/swagger-ui/index.html`
+* **URL**: `http://localhost:8888/swagger-ui/index.html`
 
-## 🔧 常見問題與指令 (Troubleshooting & CLI)
+---
+
+## 🔧 常見問題與指令 (Troubleshooting)
 
 ### 1. 連接埠被佔用 (Port 8888 already in use)
 
-如果重新啟動時發現 Port 被佔用，請使用以下指令強制關閉舊進程 (Windows)：
-
-**查詢佔用 Port 的 PID:**
+若重新啟動時發現 Port 8888 被佔用，請在 Windows 指令行執行：
 
 ```cmd
 netstat -ano | findstr :8888
+taskkill /F /PID <查詢到的PID>
 
 ```
 
-**強制終止進程 (將 12345 替換為查詢到的 PID):**
+### 2. Firebase 初始化失敗
 
-```cmd
-taskkill /F /PID 12345
+若啟動時噴出 `FileNotFoundException`，請確認 `serviceAccountKey.json` 是否已正確放置於 `src/main/resources/` 目錄下。
 
-```
+### 3. Spring Boot 版本相容性
 
-### 2. Spring Boot 版本相容性
-
-* **問題**: 若使用 Spring Boot 4.0.0+，MyBatis 可能會出現 `Property 'sqlSessionFactory' are required` 錯誤。
-* **解法**: 請在 `pom.xml` 將 `<parent>` 版本降至 `3.3.0`，並執行 Maven Force Update。
-
-### 3. Mapper 掃描錯誤
-
-* **問題**: `Field required a bean of type '...Mapper' that could not be found`.
-* **解法**: 確保主程式有加入 `@MapperScan("com.en_chu....mapper")` 或者確認 Package 結構符合父子層級關係。
+本專案鎖定 Spring Boot **3.3.0**，以確保與 MyBatis 3.0.3 的穩定相容性。若升級至更高版本，請注意相關依賴是否支援。
