@@ -4,8 +4,10 @@ server:
 spring:
   application:
     name: calculator-api-spring
+  profiles:
+    active: dev
   datasource:
-    url: ${DB_URL}
+    url: jdbc:postgresql://${DB_HOST:ep-holy-mud-a1v9v56m-pooler.ap-southeast-1.aws.neon.tech}:${DB_PORT:5432}/${DB_NAME:neondb}?sslmode=require
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
