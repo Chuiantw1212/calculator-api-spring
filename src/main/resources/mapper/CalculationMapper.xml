@@ -4,14 +4,37 @@
 <mapper namespace="com.en_chu.calculator_api_spring.mapper.CalculationMapper">
 
 	<insert id="insertRecord"
-		parameterType="com.en_chu.calculator_api_spring.model.CompoundInterestRequest">
-		INSERT INTO calculation_records (principal, rate, years, result)
-		VALUES (#{principal}, #{rate}, #{years}, #{result})
-	</insert>
+		parameterType="com.en_chu.calculator_api_spring.model.CompoundInterestReq">
+        <![CDATA[
+            INSERT INTO calculation_records (
+                principal, 
+                rate, 
+                years, 
+                result, 
+                created_at
+            ) VALUES (
+                #{principal}, 
+                #{rate}, 
+                #{years}, 
+                #{result}, 
+                CURRENT_TIMESTAMP
+            )
+        ]]>
+    </insert>
 
 	<select id="findAllRecords"
-		resultType="com.en_chu.calculator_api_spring.model.CompoundInterestRequest">
-		SELECT * FROM calculation_records
-	</select>
+		resultType="com.en_chu.calculator_api_spring.model.CompoundInterestReq">
+        <![CDATA[
+            SELECT 
+                id,
+                principal, 
+                rate, 
+                years, 
+                result,
+                created_at
+            FROM calculation_records
+            ORDER BY created_at DESC
+        ]]>
+    </select>
 
 </mapper>
