@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.en_chu.calculator_api_spring.mapper.UserProfileMapper">
+
+	<insert id="upsertProfile">
+		INSERT INTO usr_profiles (
+		user_id, birth_year, birth_date, gender,
+		current_age, life_expectancy, marriage_year,
+		career_insurance_type, biography
+		) VALUES (
+		#{id}, #{birthYear}, #{birthDate}, #{gender},
+		#{currentAge}, #{lifeExpectancy}, #{marriageYear},
+		#{careerInsuranceType}, #{biography}
+		)
+		ON CONFLICT (user_id)
+		DO UPDATE SET
+		birth_year = EXCLUDED.birth_year,
+		birth_date = EXCLUDED.birth_date,
+		gender = EXCLUDED.gender,
+		current_age = EXCLUDED.current_age,
+		life_expectancy = EXCLUDED.life_expectancy,
+		marriage_year = EXCLUDED.marriage_year,
+		career_insurance_type = EXCLUDED.career_insurance_type,
+		biography = EXCLUDED.biography,
+		updated_at = CURRENT_TIMESTAMP
+	</insert>
+
+</mapper>

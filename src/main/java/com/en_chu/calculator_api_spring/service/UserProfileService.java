@@ -24,7 +24,7 @@ public class UserProfileService {
 
 		// 2. 手動搬運資料 (Mapping)
 		// 這裡可以做資料清洗，例如把 marriageYear 的字串轉數字
-		entity.setId(req.getId());
+		entity.setUid(req.getUid());
 		entity.setBirthYear(req.getBirthYear());
 		entity.setBirthDate(req.getBirthDate());
 		entity.setGender(req.getGender());
