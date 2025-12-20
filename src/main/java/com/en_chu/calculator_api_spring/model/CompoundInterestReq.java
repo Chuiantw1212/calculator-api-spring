@@ -4,7 +4,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data // 👈 這個註解會自動幫你產生 setResult() 方法
-public class CompoundInterestRequest {
+public class CompoundInterestReq {
 
 	private BigDecimal principal; // 本金
 	private BigDecimal rate; // 利率

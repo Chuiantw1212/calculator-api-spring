@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.en_chu.calculator_api_spring.mapper.CalculationMapper; // 引入 MyBatis Mapper
-import com.en_chu.calculator_api_spring.model.CompoundInterestRequest;
+import com.en_chu.calculator_api_spring.model.CompoundInterestReq;
 
 @Service
 public class CalculatorService {
@@ -14,7 +14,7 @@ public class CalculatorService {
 	@Autowired
 	private CalculationMapper calculationMapper; // 注入 MyBatis 介面
 
-	public BigDecimal calculateCompoundInterest(CompoundInterestRequest request) {
+	public BigDecimal calculateCompoundInterest(CompoundInterestReq request) {
 		// 1. 原本的商業邏輯 (計算複利)
 		// 這裡為了簡單，我們假設你之前的邏輯是這樣 (或是保留你原本寫好的算式)
 		BigDecimal principal = request.getPrincipal();

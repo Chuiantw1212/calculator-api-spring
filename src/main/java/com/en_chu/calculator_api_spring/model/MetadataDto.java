@@ -1,4 +1,4 @@
-package com.en_chu.calculator_api_spring.dto;
+package com.en_chu.calculator_api_spring.model;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -11,7 +11,7 @@ import java.util.Map;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true) // 忽略不認識的欄位
-public class MetadataDTO {
+public class MetadataDto {
 	// 每個設定檔都有的共用欄位
 	private String id;
 	private String name;

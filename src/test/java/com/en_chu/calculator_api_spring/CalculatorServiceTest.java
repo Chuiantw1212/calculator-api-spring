@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.en_chu.calculator_api_spring.model.CompoundInterestRequest;
+import com.en_chu.calculator_api_spring.model.CompoundInterestReq;
 import com.en_chu.calculator_api_spring.service.CalculatorService;
 
 @SpringBootTest // 1. 告訴 Spring 這是一個測試，請幫我準備環境
@@ -19,7 +19,7 @@ public class CalculatorServiceTest {
     @Test // 3. 這是一個測試案例
     public void testCalculateCompoundInterest() {
         // --- 準備資料 (Arrange) ---
-        CompoundInterestRequest request = new CompoundInterestRequest();
+        CompoundInterestReq request = new CompoundInterestReq();
         request.setPrincipal(new BigDecimal("100000")); // 本金
         request.setRate(new BigDecimal("0.05"));        // 利率 5%
         request.setYears(10);                           // 10年
@@ -41,7 +41,7 @@ public class CalculatorServiceTest {
     @Test
     public void testNegativePrincipal() {
         // 測試例外狀況：本金為負數
-        CompoundInterestRequest request = new CompoundInterestRequest();
+        CompoundInterestReq request = new CompoundInterestReq();
         request.setPrincipal(new BigDecimal("-100")); 
         request.setRate(new BigDecimal("0.05"));
         request.setYears(1);

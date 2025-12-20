@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.en_chu.calculator_api_spring.model.CompoundInterestRequest;
+import com.en_chu.calculator_api_spring.model.CompoundInterestReq;
 import com.en_chu.calculator_api_spring.service.CalculatorService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,7 +30,7 @@ public class CalculatorApi {
 	@PostMapping("/compound")
 	// 5. Swagger 操作說明 (顯示在 API 文件上)
 	@Operation(summary = "複利計算功能", description = "輸入本金、利率、年分，回傳複利計算後的總金額")
-	public ResponseEntity<BigDecimal> calculateCompoundInterest(@RequestBody CompoundInterestRequest request) { // @RequestBody
+	public ResponseEntity<BigDecimal> calculateCompoundInterest(@RequestBody CompoundInterestReq request) { // @RequestBody
 																												// 負責把
 																												// JSON
 																												// 轉成

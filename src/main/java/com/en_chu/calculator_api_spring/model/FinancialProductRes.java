@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class FinancialProductModel {
+public class FinancialProductRes {
 	@JsonProperty("@context")
 	private String context = "https://schema.org";
 
