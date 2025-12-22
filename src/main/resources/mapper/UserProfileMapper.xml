@@ -3,7 +3,31 @@
 
 <mapper namespace="com.en_chu.calculator_api_spring.mapper.UserProfileMapper">
 
-	<update id="updateProfile">
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+            INSERT INTO usr_profiles (
+                firebase_uid, 
+                birth_date, 
+                gender,
+                current_age, 
+                life_expectancy, 
+                marriage_year,
+                career_insurance_type, 
+                biography
+            ) VALUES (
+                #{firebaseUid}, 
+                #{birthDate}, 
+                #{gender},
+                #{currentAge}, 
+                #{lifeExpectancy}, 
+                #{marriageYear},
+                #{careerInsuranceType}, 
+                #{biography}
+            )
+        ]]>
+    </insert>
+
+	<update id="update">
         <![CDATA[
             UPDATE usr_profiles 
             SET 
@@ -15,8 +39,8 @@
                 career_insurance_type = #{careerInsuranceType},
                 biography = #{biography},
                 updated_at = CURRENT_TIMESTAMP
-            WHERE id = #{id}                -- 📍 條件1: 前端傳來的 ID
-              AND firebase_uid = #{firebaseUid} -- 🔒 條件2: Token 解析出的 UID
+            WHERE id = #{id}
+              AND firebase_uid = #{firebaseUid}
         ]]>
     </update>
 

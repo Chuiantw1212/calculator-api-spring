@@ -3,6 +3,7 @@ package com.en_chu.calculator_api_spring.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.en_chu.calculator_api_spring.model.UserProfileReq;
 import com.en_chu.calculator_api_spring.model.UserProfileRes;
 import com.en_chu.calculator_api_spring.service.UserProfileService;
-import com.en_chu.calculator_api_spring.util.SecurityUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,22 +30,35 @@ public class UserProfileController {
 	private UserProfileService userProfileService;
 
 	/**
-	 * 新增或更新個人資料 (Upsert) * @param req 前端傳來的個人資料 DTO
-	 * 
-	 * @param authentication 從 Spring Security Context 拿到的登入憑證 (Firebase Token)
+	 * 新增個人資料 (Create) HTTP Method: POST
 	 */
-	@Operation(summary = "更新個人資料", description = "如果資料不存在則新增，存在則更新 (Upsert)。必須攜帶 Firebase Token。")
+	@Operation(summary = "新增個人資料", description = "第一次建立個人資料時使用。如果不慎重複呼叫，後端會攔截並報錯 (或是你可以改用 Upsert 邏輯，但在這裡我們嚴格分開)。")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "建立成功"),
+			@ApiResponse(responseCode = "400", description = "資料驗證失敗"),
+			@ApiResponse(responseCode = "409", description = "資料已存在 (請改用更新)") })
+	@PostMapping("/profile")
+	public ResponseEntity<String> createProfile(@RequestBody @Valid UserProfileReq req) {
+		// 呼叫 Service 的新增方法
+		userProfileService.createProfile(req);
+		return ResponseEntity.ok("建立成功");
+	}
+
+	/**
+	 * 更新個人資料 (Update) HTTP Method: PUT
+	 */
+	@Operation(summary = "更新個人資料", description = "更新既有的資料。必須攜帶 id (PK) 與 Firebase Token。")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "更新成功"),
-			@ApiResponse(responseCode = "400", description = "資料格式驗證失敗 (如年份錯誤、必填欄位為空)"),
-			@ApiResponse(responseCode = "403", description = "權限不足 (試圖修改他人資料)") })
+			@ApiResponse(responseCode = "400", description = "ID 為空或資料格式錯誤"),
+			@ApiResponse(responseCode = "404", description = "找不到該 ID 的資料 (或權限不足)") })
 	@PutMapping("/profile")
-	public ResponseEntity<String> upsertProfile(@RequestBody @Valid UserProfileReq req) {
-		// 1. 直接從 Token 拿 UID (不用前端傳，資安滿分)
-		SecurityUtils.getCurrentUserUid();
+	public ResponseEntity<String> updateProfile(@RequestBody @Valid UserProfileReq req) {
+		// 嚴格檢查：更新一定要帶 ID
+		if (req.getId() == null) {
+			return ResponseEntity.badRequest().body("更新失敗：必須提供 ID");
+		}
 
-		// 業務邏輯
-		userProfileService.saveProfile(req);
-
+		// 呼叫 Service 的更新方法
+		userProfileService.updateProfile(req);
 		return ResponseEntity.ok("更新成功");
 	}
 
