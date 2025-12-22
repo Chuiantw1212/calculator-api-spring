@@ -38,7 +38,7 @@ public class UserProfileController {
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "更新成功"),
 			@ApiResponse(responseCode = "400", description = "資料格式驗證失敗 (如年份錯誤、必填欄位為空)"),
 			@ApiResponse(responseCode = "403", description = "權限不足 (試圖修改他人資料)") })
-	@PutMapping("/profile")
+	@PutMapping
 	public ResponseEntity<String> upsertProfile(@RequestBody @Valid UserProfileReq req) {
 		// 1. 直接從 Token 拿 UID (不用前端傳，資安滿分)
 		SecurityUtils.getCurrentUserUid();
