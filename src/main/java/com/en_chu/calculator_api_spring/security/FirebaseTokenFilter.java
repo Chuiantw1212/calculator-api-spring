@@ -3,7 +3,6 @@ package com.en_chu.calculator_api_spring.security;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 /**
@@ -21,52 +20,49 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- * 加上 @Component 之後，Spring 才會把它掃描進容器變成 Bean
- */
-@Component // 2. 👈 關鍵就是少了這個！
+@Component
 public class FirebaseTokenFilter extends OncePerRequestFilter {
 
 	@Override
-	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
-			@NonNull FilterChain filterChain) throws ServletException, IOException {
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
 
-		// 1. 取得 Header (對應你的 !idToken 檢查)
+		String path = request.getRequestURI();
+		System.out.println("🔍 [Filter] 請求進入: " + path);
+
+		// 1. 檢查 Header
 		String header = request.getHeader("Authorization");
+		System.out.println("🔍 [Filter] Authorization Header: " + header);
 
-		// 2. 檢查是否為 Bearer Token
 		if (header == null || !header.startsWith("Bearer ")) {
-			// 如果沒帶 Token，就直接放行 (讓後面的 SecurityConfig 決定要不要擋 403)
-			// 或是你也可以在這裡直接 throw Exception
+			System.out.println("❌ [Filter] 沒帶 Token 或格式錯誤 (沒有 Bearer )，放行給 Security 處理 (預期會 401)");
 			filterChain.doFilter(request, response);
 			return;
 		}
 
-		// 3. 去掉 'Bearer ' (對應你的 replace)
+		// 2. 解析 Token
 		String token = header.substring(7);
-
 		try {
-			// 4. 呼叫 Firebase 驗證 (對應 this.auth.verifyIdToken)
+			System.out.println("🔍 [Filter] 開始驗證 Firebase Token...");
 			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
 
-			// 5. 驗證成功，建立 "Authentication" 物件 (這就是 Java 裡的身分證)
-			// decodedToken.getUid() 就是使用者的 ID
-			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-					decodedToken.getUid(), // Principal (主角 ID)
-					decodedToken, // Credentials (詳細憑證資料)
-					new ArrayList<>() // Authorities (權限角色，目前先留空)
-			);
+			String uid = decodedToken.getUid();
+			System.out.println("✅ [Filter] 驗證成功! UID: " + uid);
 
-			// 6. 把身分證存入 SecurityContext (全域變數，Controller 隨時可取用)
+			// 3. 設定身分
+			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(uid,
+					decodedToken, new ArrayList<>());
 			SecurityContextHolder.getContext().setAuthentication(authentication);
+			System.out.println("✅ [Filter] SecurityContext 已設定完成");
 
 		} catch (FirebaseAuthException e) {
-			// 對應你的 "向開發人員抱怨Q_Q"
-			// 這裡會導致 401 Unauthorized
-			System.err.println("Firebase Token 驗證失敗: " + e.getMessage());
+			System.err.println("💥 [Filter] Firebase 驗證失敗: " + e.getMessage());
+			// 這裡不需要 throw，因為 SecurityContext 沒設定，後面自然會 401
+		} catch (Exception e) {
+			System.err.println("💥 [Filter] 未知錯誤: " + e.getMessage());
+			e.printStackTrace();
 		}
 
-		// 7. 繼續往下走 (進入 Controller)
 		filterChain.doFilter(request, response);
 	}
 }

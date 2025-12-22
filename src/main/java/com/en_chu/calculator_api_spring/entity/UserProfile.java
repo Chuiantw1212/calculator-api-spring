@@ -13,8 +13,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserProfile {
-	private Long id;
-	private String uid;
+	private Long id; // 內部的 PK
+
+	// 🔴 原本: private String uid;
+	// 🟢 改為:
+	private String firebaseUid; // 外部的 Auth ID
 	private LocalDate birthDate;
 	private String gender;
 	private Integer currentAge;

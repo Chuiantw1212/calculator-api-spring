@@ -28,8 +28,8 @@ public class UserProfileService {
 		// 3. 複製前端傳來的屬性 (Req -> Entity)
 		BeanUtils.copyProperties(req, entity);
 
-		// 4. 設定 UID (作為更新條件)
-		entity.setUid(uid);
+		// 4. 設定 FIREBASE UID (作為更新條件)
+		entity.setFirebaseUid(uid);
 
 		// 5. 呼叫 Mapper 更新，並檢查回傳的「影響筆數」
 		// updateProfile 回傳 int，代表資料庫改了幾筆
