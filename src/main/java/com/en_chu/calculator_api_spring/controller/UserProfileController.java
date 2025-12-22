@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/user")
-@Tag(name = "User Profile", description = "使用者個人理財檔案管理")
+@Tag(name = "User", description = "使用者個人理財檔案管理")
 @SecurityRequirement(name = "bearer-key") // 告訴 Swagger 這支 API 需要 Token
 public class UserProfileController {
 
@@ -38,7 +38,7 @@ public class UserProfileController {
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "更新成功"),
 			@ApiResponse(responseCode = "400", description = "資料格式驗證失敗 (如年份錯誤、必填欄位為空)"),
 			@ApiResponse(responseCode = "403", description = "權限不足 (試圖修改他人資料)") })
-	@PutMapping
+	@PutMapping("/profile")
 	public ResponseEntity<String> upsertProfile(@RequestBody @Valid UserProfileReq req) {
 		// 1. 直接從 Token 拿 UID (不用前端傳，資安滿分)
 		SecurityUtils.getCurrentUserUid();
@@ -53,7 +53,7 @@ public class UserProfileController {
 	 * 取得當前登入使用者的個人資料 HTTP Method: GET URL: /api/user/profile
 	 */
 	@Operation(summary = "取得個人資料", description = "回傳null或是個人資料")
-	@GetMapping
+	@GetMapping("/profile")
 	public ResponseEntity<UserProfileRes> getMyProfile() {
 		// 1. 呼叫 Service
 		// Service 內部會自己去 SecurityUtils 拿 UID，並透過 MyBatis 直接回傳 DTO

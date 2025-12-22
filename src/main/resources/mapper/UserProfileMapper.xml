@@ -15,8 +15,8 @@
                 career_insurance_type = #{careerInsuranceType},
                 biography = #{biography},
                 updated_at = CURRENT_TIMESTAMP
-            WHERE id = #{id}                -- 🚀 主要定位條件 (前端傳來的 PK)
-              AND firebase_uid = #{firebaseUid} -- 🔒 安全檢核 (Token 解析出的 UID)
+            WHERE id = #{id}                -- 📍 條件1: 前端傳來的 ID
+              AND firebase_uid = #{firebaseUid} -- 🔒 條件2: Token 解析出的 UID
         ]]>
     </update>
 
