@@ -3,46 +3,29 @@
 
 <mapper namespace="com.en_chu.calculator_api_spring.mapper.UserProfileMapper">
 
-	<insert id="upsertProfile" useGeneratedKeys="true" keyProperty="id">
+	<update id="updateProfile">
         <![CDATA[
-            INSERT INTO usr_profiles (
-                user_id, 
-                birth_date, 
-                gender,
-                current_age, 
-                life_expectancy, 
-                marriage_year,
-                career_insurance_type, 
-                biography
-            ) VALUES (
-                #{uid},  -- 這裡是 Auth UID 字串
-                #{birthDate}, 
-                #{gender},
-                #{currentAge}, 
-                #{lifeExpectancy}, 
-                #{marriageYear},
-                #{careerInsuranceType}, 
-                #{biography}
-            )
-            ON CONFLICT (user_id) -- 假設 user_id 欄位有設 Unique Constraint
-            DO UPDATE SET
-                birth_date = EXCLUDED.birth_date,
-                gender = EXCLUDED.gender,
-                current_age = EXCLUDED.current_age,
-                life_expectancy = EXCLUDED.life_expectancy,
-                marriage_year = EXCLUDED.marriage_year,
-                career_insurance_type = EXCLUDED.career_insurance_type,
-                biography = EXCLUDED.biography,
+            UPDATE usr_profiles 
+            SET 
+                birth_date = #{birthDate},
+                gender = #{gender},
+                current_age = #{currentAge},
+                life_expectancy = #{lifeExpectancy},
+                marriage_year = #{marriageYear},
+                career_insurance_type = #{careerInsuranceType},
+                biography = #{biography},
                 updated_at = CURRENT_TIMESTAMP
+            WHERE id = #{id}                -- 🚀 主要定位條件 (前端傳來的 PK)
+              AND firebase_uid = #{firebaseUid} -- 🔒 安全檢核 (Token 解析出的 UID)
         ]]>
-    </insert>
+    </update>
 
 	<select id="selectByUid"
 		resultType="com.en_chu.calculator_api_spring.entity.UserProfile">
         <![CDATA[
             SELECT 
-                id,            -- DB 的 Primary Key
-                user_id AS uid, -- DB 的 Auth ID 對應 Java 的 uid
+                id,
+                firebase_uid AS firebaseUid,
                 birth_date AS birthDate,
                 gender,
                 current_age AS currentAge,
@@ -53,7 +36,7 @@
                 created_at AS createdAt,
                 updated_at AS updatedAt
             FROM usr_profiles
-            WHERE user_id = #{uid}
+            WHERE firebase_uid = #{firebaseUid}
         ]]>
     </select>
 
@@ -62,8 +45,7 @@
         <![CDATA[
             SELECT 
                 id,
-                user_id AS uid,
-                birth_year AS birthYear,
+                firebase_uid AS firebaseUid,
                 birth_date AS birthDate,
                 gender,
                 current_age AS currentAge,

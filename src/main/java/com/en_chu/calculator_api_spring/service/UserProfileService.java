@@ -19,29 +19,28 @@ public class UserProfileService {
 
 	@Transactional
 	public void saveProfile(UserProfileReq req) {
-		// 1. 取得 UID
+		// 1. 取得當前登入者的 UID (權限鑰匙)
 		String uid = SecurityUtils.getCurrentUserUid();
 
-		// 2. 準備要更新的資料物件
+		// 2. 準備更新資料
 		UserProfile entity = new UserProfile();
-
-		// 3. 複製前端傳來的屬性 (Req -> Entity)
 		BeanUtils.copyProperties(req, entity);
 
-		// 4. 設定 FIREBASE UID (作為更新條件)
+		// 3. 設定雙重鎖條件
+		// 前端必須傳來 id，後端補上 firebaseUid
+		entity.setId(req.getId());
 		entity.setFirebaseUid(uid);
 
-		// 5. 呼叫 Mapper 更新，並檢查回傳的「影響筆數」
-		// updateProfile 回傳 int，代表資料庫改了幾筆
+		// 4. 執行更新
+		// 如果 id 是 null，或者 id 與資料庫不符，或者 uid 是別人的
+		// 這裡的 rowsAffected 就會是 0
 		int rowsAffected = userProfileMapper.update(entity);
 
-		// 6. 判斷結果
+		// 5. 失敗處理
+		// 只要沒更新到任何一筆資料，就視為失敗 (前端傳錯 ID，或有人想攻擊)
 		if (rowsAffected == 0) {
-			// 回傳 0 代表資料庫裡找不到這個 user_id
-			throw new RuntimeException("更新失敗：找不到使用者資料 (UID: " + uid + ")");
+			throw new RuntimeException("更新失敗：找不到資料，或您無權修改此 ID。");
 		}
-
-		// 如果是 1，代表成功，甚麼都不用做
 	}
 
 	public UserProfileRes getProfile() {

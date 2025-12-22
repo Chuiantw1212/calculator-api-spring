@@ -17,7 +17,7 @@ import lombok.Data;
 public class UserProfileReq {
 	// 這是對應資料庫 user_id 的欄位
 	// 為了配合 Mapper XML 的 #{id}，這裡變數名稱建議取名為 id
-	private String id;
+	private Long id;
 
 	@Schema(description = "出生年份", example = "1990")
 	@NotNull(message = "出生年份不能為空")
