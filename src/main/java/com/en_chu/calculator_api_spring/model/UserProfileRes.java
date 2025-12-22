@@ -9,10 +9,18 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor // ❗重要：BeanUtils 需要這個才能 new 空物件
-@AllArgsConstructor // 配合 Builder 使用
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserProfileRes {
-	private Integer birthYear;
+
+	// ✅ 新增：資料庫的 Primary Key (Long 對應 BigInt)
+	// 前端拿到這個 id 後，下次要更新 (PUT) 時必須帶上它
+	private Long id;
+
+	// ❌ 移除：birthYear
+	// 因為資料庫欄位已經 Drop 掉了，Entity 也移除了，這裡留著只會永遠是 null
+	// private Integer birthYear;
+
 	private LocalDate birthDate;
 	private String gender;
 	private Integer currentAge;
