@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+/**
+ * 這就是你的 verifyIdToken 函數的 Spring Boot 版本 (Middleware) 每個 Request 進來都會先經過這裡
+ */
+import org.springframework.stereotype.Component; // 1. 記得 import
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,8 +22,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * 這就是你的 verifyIdToken 函數的 Spring Boot 版本 (Middleware) 每個 Request 進來都會先經過這裡
+ * 加上 @Component 之後，Spring 才會把它掃描進容器變成 Bean
  */
+@Component // 2. 👈 關鍵就是少了這個！
 public class FirebaseTokenFilter extends OncePerRequestFilter {
 
 	@Override
