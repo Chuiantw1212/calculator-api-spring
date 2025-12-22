@@ -17,5 +17,5 @@ public interface UserProfileMapper {
 	void insert(UserProfile userProfile);
 
 	// 更新資料
-	void update(UserProfile userProfile);
+	int update(UserProfile userProfile);
 }

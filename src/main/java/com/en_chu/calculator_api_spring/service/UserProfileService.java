@@ -17,40 +17,31 @@ public class UserProfileService {
 	@Autowired
 	private UserProfileMapper userProfileMapper;
 
-	/**
-	 * 新增或更新個人資料 (Upsert)
-	 */
 	@Transactional
-	public void saveProfile(UserProfileReq req) { // ✅ 參數型別已更新
-		// 1. 從 Token 取得絕對可信的 UID (防篡改核心)
+	public void saveProfile(UserProfileReq req) {
+		// 1. 取得 UID
 		String uid = SecurityUtils.getCurrentUserUid();
 
-		// 2. 查詢 DB 是否已有資料
-		UserProfile entity = userProfileMapper.selectByUid(uid);
+		// 2. 準備要更新的資料物件
+		UserProfile entity = new UserProfile();
 
-		// 如果是新使用者，建立新的 Entity 並注入 UID
-		if (entity == null) {
-			entity = new UserProfile();
-			entity.setUid(uid); // 🔑 只有新增時寫入 UID
+		// 3. 複製前端傳來的屬性 (Req -> Entity)
+		BeanUtils.copyProperties(req, entity);
+
+		// 4. 設定 UID (作為更新條件)
+		entity.setUid(uid);
+
+		// 5. 呼叫 Mapper 更新，並檢查回傳的「影響筆數」
+		// updateProfile 回傳 int，代表資料庫改了幾筆
+		int rowsAffected = userProfileMapper.update(entity);
+
+		// 6. 判斷結果
+		if (rowsAffected == 0) {
+			// 回傳 0 代表資料庫裡找不到這個 user_id
+			throw new RuntimeException("更新失敗：找不到使用者資料 (UID: " + uid + ")");
 		}
 
-		// 3. 🏗️ 【組裝階段】 DTO (UserProfileReq) -> Entity (UserProfile)
-		// 將前端傳來的資料更新到 Entity 中
-		entity.setBirthDate(req.getBirthDate());
-		entity.setGender(req.getGender());
-		entity.setCurrentAge(req.getCurrentAge());
-		entity.setLifeExpectancy(req.getLifeExpectancy());
-		entity.setMarriageYear(req.getMarriageYear());
-		entity.setCareerInsuranceType(req.getCareerInsuranceType());
-		entity.setBiography(req.getBiography());
-
-		// 4. 呼叫 Mapper 存檔
-		// 假設 Mapper 有 insert 和 update 方法，或是一個 upsert 方法
-		if (entity.getId() == null) {
-			userProfileMapper.insert(entity);
-		} else {
-			userProfileMapper.update(entity);
-		}
+		// 如果是 1，代表成功，甚麼都不用做
 	}
 
 	public UserProfileRes getProfile() {

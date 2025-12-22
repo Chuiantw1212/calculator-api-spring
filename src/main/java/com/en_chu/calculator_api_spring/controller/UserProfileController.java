@@ -2,12 +2,14 @@ package com.en_chu.calculator_api_spring.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.en_chu.calculator_api_spring.model.UserProfileReq;
+import com.en_chu.calculator_api_spring.model.UserProfileRes;
 import com.en_chu.calculator_api_spring.service.UserProfileService;
 import com.en_chu.calculator_api_spring.util.SecurityUtils;
 
@@ -45,5 +47,29 @@ public class UserProfileController {
 		userProfileService.saveProfile(req);
 
 		return ResponseEntity.ok("更新成功");
+	}
+
+	/**
+	 * 取得當前登入使用者的個人資料 HTTP Method: GET URL: /api/user/profile
+	 */
+	@Operation(summary = "取得個人資料", description = "回傳null或是個人資料")
+	@GetMapping
+	public ResponseEntity<UserProfileRes> getMyProfile() {
+		// 1. 呼叫 Service
+		// Service 內部會自己去 SecurityUtils 拿 UID，並透過 MyBatis 直接回傳 DTO
+		UserProfileRes response = userProfileService.getProfile();
+
+		// 2. 處理資料不存在的情況 (看你的業務邏輯)
+		// 如果使用者剛註冊還沒填資料，response 可能是 null
+		if (response == null) {
+			// 選擇 A: 回傳 204 No Content (代表請求成功但沒資料)
+			return ResponseEntity.noContent().build();
+
+			// 選擇 B: 回傳 200 OK 帶空物件 (如果前端不喜歡處理 204)
+			// return ResponseEntity.ok(new UserProfileRes());
+		}
+
+		// 3. 回傳 200 OK 與資料
+		return ResponseEntity.ok(response);
 	}
 }
