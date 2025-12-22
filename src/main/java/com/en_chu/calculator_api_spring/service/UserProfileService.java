@@ -1,5 +1,6 @@
 package com.en_chu.calculator_api_spring.service;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,9 +53,6 @@ public class UserProfileService {
 		}
 	}
 
-	/**
-	 * 取得個人資料 (回傳 Response DTO)
-	 */
 	public UserProfileRes getProfile() {
 		String uid = SecurityUtils.getCurrentUserUid();
 		UserProfile entity = userProfileMapper.selectByUid(uid);
@@ -63,10 +61,14 @@ public class UserProfileService {
 			return null;
 		}
 
-		// Entity -> Response DTO (過濾 UID)
-		return UserProfileRes.builder().birthDate(entity.getBirthDate())
-				.gender(entity.getGender()).currentAge(entity.getCurrentAge())
-				.lifeExpectancy(entity.getLifeExpectancy()).marriageYear(entity.getMarriageYear())
-				.careerInsuranceType(entity.getCareerInsuranceType()).biography(entity.getBiography()).build();
+		// 1. 先 new 一個空的 DTO (就像 JS 的 const res = {})
+		UserProfileRes res = new UserProfileRes();
+
+		// 2. ✨ 魔法時刻：類似 Object.assign(res, entity)
+		// entity 是來源 (Source)，res 是目標 (Target)
+		BeanUtils.copyProperties(entity, res);
+
+		// 3. 搞定回傳
+		return res;
 	}
 }

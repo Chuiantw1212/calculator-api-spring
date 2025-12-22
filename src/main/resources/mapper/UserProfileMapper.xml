@@ -7,7 +7,6 @@
         <![CDATA[
             INSERT INTO usr_profiles (
                 user_id, 
-                birth_year, 
                 birth_date, 
                 gender,
                 current_age, 
@@ -17,7 +16,6 @@
                 biography
             ) VALUES (
                 #{uid},  -- 這裡是 Auth UID 字串
-                #{birthYear}, 
                 #{birthDate}, 
                 #{gender},
                 #{currentAge}, 
@@ -28,7 +26,6 @@
             )
             ON CONFLICT (user_id) -- 假設 user_id 欄位有設 Unique Constraint
             DO UPDATE SET
-                birth_year = EXCLUDED.birth_year,
                 birth_date = EXCLUDED.birth_date,
                 gender = EXCLUDED.gender,
                 current_age = EXCLUDED.current_age,
@@ -46,7 +43,6 @@
             SELECT 
                 id,            -- DB 的 Primary Key
                 user_id AS uid, -- DB 的 Auth ID 對應 Java 的 uid
-                birth_year AS birthYear,
                 birth_date AS birthDate,
                 gender,
                 current_age AS currentAge,

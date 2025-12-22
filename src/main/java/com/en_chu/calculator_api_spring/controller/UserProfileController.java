@@ -39,7 +39,7 @@ public class UserProfileController {
 	@PutMapping("/profile")
 	public ResponseEntity<String> upsertProfile(@RequestBody @Valid UserProfileReq req) {
 		// 1. 直接從 Token 拿 UID (不用前端傳，資安滿分)
-		String uid = SecurityUtils.getCurrentUserUid();
+		SecurityUtils.getCurrentUserUid();
 
 		// 業務邏輯
 		userProfileService.saveProfile(req);
