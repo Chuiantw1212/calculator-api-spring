@@ -1,20 +1,14 @@
-package com.en_chu.calculator_api_spring.entity;
+package com.en_chu.calculator_api_spring.model;
 
 import java.time.LocalDate;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-// ❌ 移除 @Entity, @Table
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserProfile {
-	private Long id;
-	private String uid;
+public class UserProfileRes {
+	private Integer birthYear;
 	private LocalDate birthDate;
 	private String gender;
 	private Integer currentAge;

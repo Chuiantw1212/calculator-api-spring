@@ -14,13 +14,10 @@ import lombok.Data;
 
 @Data
 @Schema(description = "個人基本資料更新請求 (Request DTO)")
-public class PersonalProfileReq {
-
-	// ✅ 改名為 uid，直球對決！
-	// 這樣一看就知道這是來自 Firebase 的 User ID
-	@Schema(description = "Firebase UID", example = "550e8400-e29b-41d4-a716-446655440000")
-	@NotBlank(message = "UID 不能為空")
-	private String uid;
+public class UserProfileReq {
+	// 這是對應資料庫 user_id 的欄位
+	// 為了配合 Mapper XML 的 #{id}，這裡變數名稱建議取名為 id
+	private String id;
 
 	@Schema(description = "出生年份", example = "1990")
 	@NotNull(message = "出生年份不能為空")
@@ -50,7 +47,7 @@ public class PersonalProfileReq {
 
 	@Schema(description = "結婚年份", example = "2020")
 	@Pattern(regexp = "^$|^\\d{4}$", message = "結婚年份格式錯誤 (YYYY)")
-	private String marriageYear;
+	private Integer marriageYear;
 
 	@Schema(description = "職業保險類別代碼", example = "LABOR")
 	@NotBlank(message = "職業保險類別不能為空")
