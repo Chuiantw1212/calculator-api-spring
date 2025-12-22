@@ -11,6 +11,6 @@ public interface UserProfileMapper {
 	// MyBatis 會拿這個名字去 XML 找對應的 SQL
 	int upsertProfile(UserProfile profile);
 
-	// 如果未來要查詢，可以再加：
-	// UserProfile findById(String uid);
+	// ✨ 新增這個
+    UserProfile selectByUid(String uid);
 }

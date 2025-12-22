@@ -47,4 +47,14 @@ public class UserProfileService {
 		// 3. 呼叫 MyBatis 儲存
 		userProfileMapper.upsertProfile(entity);
 	}
+
+	/**
+	 * 取得個人資料
+	 * 
+	 * @param uid Firebase UID
+	 * @return UserProfile or null
+	 */
+	public UserProfile getProfile(String uid) {
+		return userProfileMapper.selectByUid(uid);
+	}
 }

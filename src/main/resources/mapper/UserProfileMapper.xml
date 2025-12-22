@@ -40,4 +40,24 @@
         ]]>
     </insert>
 
+	<select id="selectById"
+		resultType="com.en_chu.calculator_api_spring.model.UserProfile">
+        <![CDATA[
+            SELECT 
+                user_id AS id,
+                birth_year AS birthYear,
+                birth_date AS birthDate,
+                gender,
+                current_age AS currentAge,
+                life_expectancy AS lifeExpectancy,
+                marriage_year AS marriageYear,
+                career_insurance_type AS careerInsuranceType,
+                biography,
+                created_at AS createdAt,
+                updated_at AS updatedAt
+            FROM usr_profiles
+            WHERE user_id = #{uid}
+        ]]>
+    </select>
+
 </mapper>

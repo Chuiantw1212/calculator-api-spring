@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.en_chu.calculator_api_spring.entity.UserProfile;
 import com.en_chu.calculator_api_spring.model.PersonalProfileReq;
 import com.en_chu.calculator_api_spring.service.UserProfileService;
 import com.en_chu.calculator_api_spring.util.SecurityUtils;
@@ -37,15 +38,19 @@ public class UserProfileController {
 			@ApiResponse(responseCode = "400", description = "資料格式驗證失敗 (如年份錯誤、必填欄位為空)"),
 			@ApiResponse(responseCode = "403", description = "權限不足 (試圖修改他人資料)") })
 	@PutMapping("/profile")
-	public ResponseEntity<String> upsertProfile(@RequestBody @Valid PersonalProfileReq req) {
+	public ResponseEntity<UserProfile> upsertProfile(@RequestBody @Valid PersonalProfileReq req) {
+		// 1. 直接從 Token 拿 UID (不用前端傳，資安滿分)
+		String uid = SecurityUtils.getCurrentUserUid();
 
-		// 🔥 一行程式碼解決身分核對！
-		// 如果不通過，這裡直接會噴 Exception 回傳 403 給前端
-		SecurityUtils.validateUserAccess(req.getUid());
+		// 2. 查詢資料
+		UserProfile profile = userProfileService.getProfile(uid);
 
-		// 業務邏輯
-		userProfileService.saveProfile(req);
+		// 3. 如果沒資料，回傳 404 Not Found
+		if (profile == null) {
+			return ResponseEntity.notFound().build();
+		}
 
-		return ResponseEntity.ok("更新成功");
+		// 4. 有資料，回傳 200 OK + JSON
+		return ResponseEntity.ok(profile);
 	}
 }
