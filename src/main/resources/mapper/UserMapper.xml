@@ -7,7 +7,7 @@
 	<resultMap id="UserFullDataResultMap"
 		type="com.en_chu.calculator_api_spring.model.UserFullDataRes">
 
-		<id property="userId" column="p_id" />
+		<id property="id" column="p_id" />
 
 		<association property="profile"
 			javaType="com.en_chu.calculator_api_spring.model.UserProfileRes">

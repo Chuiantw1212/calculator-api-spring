@@ -5,7 +5,7 @@ import lombok.Data; // 假設你有用 Lombok，沒有的話就手寫 Getter/Set
 @Data
 public class UserFullDataRes {
 	// 1. 基本帳號資訊 (從 Users table 來)
-	private Long userId;
+	private Long id;
 	private String email;
 
 	// 2. 個人檔案 (從 UserProfile table 來)
