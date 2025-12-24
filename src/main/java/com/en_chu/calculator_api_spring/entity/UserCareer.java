@@ -17,7 +17,7 @@ public class UserCareer { // ✅ 改名
 	private Long id;
 	private String firebaseUid;
 
-	private BigDecimal monthlyBaseSalary;
+	private BigDecimal baseSalary;
 	private BigDecimal otherAllowance;
 	private BigDecimal laborInsurance;
 	private BigDecimal healthInsurance;
