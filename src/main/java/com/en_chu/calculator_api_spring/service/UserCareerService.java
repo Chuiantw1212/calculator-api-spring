@@ -1,13 +1,15 @@
 package com.en_chu.calculator_api_spring.service;
 
-import java.math.BigDecimal;
-
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.en_chu.calculator_api_spring.entity.UserCareer;
 import com.en_chu.calculator_api_spring.mapper.UserCareerMapper;
 import com.en_chu.calculator_api_spring.model.UserCareerReq;
+import com.en_chu.calculator_api_spring.model.UserCareerRes;
+import com.en_chu.calculator_api_spring.util.SecurityUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,49 +21,46 @@ public class UserCareerService {
 	private UserCareerMapper userCareerMapper;
 
 	/**
-	 * 更新或建立職涯收入資料 * @param req 前端傳來的資料 (包含薪資、保險等)
-	 * 
-	 * @param userId 當前使用者的 ID (用於新增時關聯)
+	 * 更新或建立職涯收入資料 (Upsert) * 策略：先嘗試 Update，如果回傳 0 筆 (代表第一次設定)，則執行 Insert。
 	 */
 	@Transactional
-	public void updateCareer(UserCareerReq req, Long userId) {
+	public void updateCareer(UserCareerReq req) {
+		// 1. 底層自己拿 UID，確保安全
+		String uid = SecurityUtils.getCurrentUserUid();
 
-		// 1. 業務邏輯驗證 (Business Validation)
-		validateCareerRules(req);
+		// 2. 轉換 DTO -> Entity
+		UserCareer entity = new UserCareer();
+		BeanUtils.copyProperties(req, entity);
 
-		// 2. 判斷是新增還是更新
-		// req.getId() 是由 UserService 查詢後填入的
-		// 如果是 null，代表該用戶在 user_careers 表還沒有資料
-		if (req.getId() == null) {
-			log.info("Creating new career profile for User ID: {}", userId);
-			userCareerMapper.insertCareer(req, userId);
-		} else {
-			log.info("Updating existing career profile ID: {}", req.getId());
-			userCareerMapper.updateCareer(req);
+		// 3. 設定 UID (這是最重要的 Key)
+		entity.setFirebaseUid(uid);
+
+		// 4. 嘗試更新 (Update by UID)
+		int rowsAffected = userCareerMapper.updateByUid(entity);
+
+		// 5. 如果更新筆數為 0，代表該用戶還沒建立過 Career 資料 -> 執行新增
+		if (rowsAffected == 0) {
+			log.info("No existing career found for UID {}, creating new record.", uid);
+			userCareerMapper.insert(entity);
 		}
 	}
 
 	/**
-	 * 驗證職涯資料的合理性 這裡可以放置複雜的理財檢核邏輯
+	 * 取得職涯資料
 	 */
-	private void validateCareerRules(UserCareerReq req) {
-		// 範例規則 1: 勞退自提通常不會超過 100% (雖然法律是 6%，但系統或許允許自定義)
-		if (req.getPensionRate() != null && req.getPensionRate().compareTo(new BigDecimal("100")) > 0) {
-			throw new IllegalArgumentException("勞退提撥率設定不合理 (>100%)");
+	public UserCareerRes getCareer() {
+		String uid = SecurityUtils.getCurrentUserUid();
+
+		// 使用 UID 直接查詢
+		UserCareer entity = userCareerMapper.selectByUid(uid);
+
+		if (entity == null) {
+			return null; // 或者回傳 new UserCareerRes() 視前端需求而定
 		}
 
-		// 範例規則 2: 勞保/健保費不應該比本薪還高 (除非本薪是 0)
-		if (req.getBaseSalary() != null && req.getBaseSalary().compareTo(BigDecimal.ZERO) > 0) {
-			BigDecimal insuranceTotal = req.getLaborInsurance().add(req.getHealthInsurance());
-			if (insuranceTotal.compareTo(req.getBaseSalary()) > 0) {
-				// 這裡可以選擇 throw Exception 或是 log warning
-				log.warn("Warning: Insurance costs are higher than base salary.");
-			}
-		}
+		UserCareerRes res = new UserCareerRes();
+		BeanUtils.copyProperties(entity, res);
 
-		// 範例規則 3: 如果有填本薪，則必須大於等於 0 (雖然 DTO 有 @Min，這裡可做雙重防護)
-		if (req.getBaseSalary() != null && req.getBaseSalary().compareTo(BigDecimal.ZERO) < 0) {
-			throw new IllegalArgumentException("本薪不能為負數");
-		}
+		return res;
 	}
 }

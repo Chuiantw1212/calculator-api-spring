@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.en_chu.calculator_api_spring.entity.UserProfile;
 import com.en_chu.calculator_api_spring.mapper.UserProfileMapper;
-import com.en_chu.calculator_api_spring.model.UserProfileReq; // ✅ 更新 import
+import com.en_chu.calculator_api_spring.model.UserProfileReq;
 import com.en_chu.calculator_api_spring.model.UserProfileRes;
 import com.en_chu.calculator_api_spring.util.SecurityUtils;
 
@@ -15,25 +15,35 @@ import com.en_chu.calculator_api_spring.util.SecurityUtils;
 public class UserProfileService {
 
 	@Autowired
-	private UserProfileMapper userMapper;
+	// 建議變數名稱改為 userProfileMapper 比較不會跟 UserMapper 搞混
+	private UserProfileMapper userProfileMapper;
 
+	/**
+	 * 新增個人資料
+	 */
 	@Transactional
 	public void createProfile(UserProfileReq req) {
 		String uid = SecurityUtils.getCurrentUserUid();
 
-		// 1. (選用) 檢查是否已經有資料，避免重複建立
-		if (userMapper.selectByUid(uid) != null) {
+		// 1. 檢查是否已存在 (使用 UID 查)
+		// 雖然 DB 有 unique constraint，但先查一次可以回傳比較友善的錯誤訊息
+		if (userProfileMapper.selectByUid(uid) != null) {
 			throw new RuntimeException("資料已存在，請使用更新功能");
 		}
 
 		UserProfile entity = new UserProfile();
 		BeanUtils.copyProperties(req, entity);
+
+		// 關鍵：設定 UID，Mapper XML 會利用這個 UID 去 users 表查 id 來填 FK
 		entity.setFirebaseUid(uid);
 
 		// 2. 呼叫 Insert
-		userMapper.insert(entity);
+		userProfileMapper.insert(entity);
 	}
 
+	/**
+	 * 更新個人資料
+	 */
 	@Transactional
 	public void updateProfile(UserProfileReq req) {
 		String uid = SecurityUtils.getCurrentUserUid();
@@ -41,34 +51,37 @@ public class UserProfileService {
 		UserProfile entity = new UserProfile();
 		BeanUtils.copyProperties(req, entity);
 
-		// 設定雙重鎖條件
-		entity.setId(req.getId());
+		// 【關鍵修改】
+		// 我們 "不" 設定 entity.setId(req.getId())。
+		// 因為更新的 WHERE 條件將直接使用 firebase_uid。
+		// 這樣就算前端傳了別人的 ID，也絕對不會生效。
 		entity.setFirebaseUid(uid);
 
-		// 3. 呼叫 Update
-		int rowsAffected = userMapper.update(entity);
+		// 3. 呼叫 Update (Mapper XML 必須寫 WHERE firebase_uid = #{firebaseUid})
+		int rowsAffected = userProfileMapper.updateByUid(entity);
 
 		if (rowsAffected == 0) {
-			throw new RuntimeException("更新失敗：找不到資料，或您無權修改此 ID。");
+			// 通常代表該用戶還沒有建立 Profile
+			throw new RuntimeException("更新失敗：找不到您的個人檔案，請先執行新增 (Create)");
 		}
 	}
 
+	/**
+	 * 查詢個人資料
+	 */
 	public UserProfileRes getProfile() {
 		String uid = SecurityUtils.getCurrentUserUid();
-		UserProfile entity = userMapper.selectByUid(uid);
+
+		// 直接用 UID 查，不經過 users 表
+		UserProfile entity = userProfileMapper.selectByUid(uid);
 
 		if (entity == null) {
 			return null;
 		}
 
-		// 1. 先 new 一個空的 DTO (就像 JS 的 const res = {})
 		UserProfileRes res = new UserProfileRes();
-
-		// 2. ✨ 魔法時刻：類似 Object.assign(res, entity)
-		// entity 是來源 (Source)，res 是目標 (Target)
 		BeanUtils.copyProperties(entity, res);
 
-		// 3. 搞定回傳
 		return res;
 	}
 }
