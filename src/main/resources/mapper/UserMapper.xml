@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.en_chu.calculator_api_spring.mapper.UserMapper">
+
+	<resultMap id="UserFullDataResultMap"
+		type="com.en_chu.calculator_api_spring.model.UserFullDataRes">
+		<id property="userId" column="u_id" />
+		<result property="email" column="u_email" />
+
+		<association property="profile"
+			javaType="com.en_chu.calculator_api_spring.model.UserProfileRes">
+			<id property="id" column="p_id" />
+			<result property="nickname" column="p_nickname" />
+			<result property="avatar" column="p_avatar" />
+			<result property="bio" column="p_bio" />
+		</association>
+
+		<association property="career"
+			javaType="com.en_chu.calculator_api_spring.model.UserCareerRes">
+			<id property="id" column="c_id" />
+			<result property="baseSalary" column="c_base_salary" />
+			<result property="otherAllowance" column="c_other_allowance" />
+			<result property="laborInsurance" column="c_labor_insurance" />
+			<result property="healthInsurance" column="c_health_insurance" />
+			<result property="otherDeduction" column="c_other_deduction" />
+			<result property="pensionRate" column="c_pension_rate" />
+			<result property="pensionAmount" column="c_pension_amount" />
+			<result property="stockDeduction" column="c_stock_deduction" />
+			<result property="stockCompanyMatch" column="c_stock_company_match" />
+		</association>
+	</resultMap>
+
+	<select id="selectFullUserDataByFirebaseUid"
+		resultMap="UserFullDataResultMap">
+    <![CDATA[
+        SELECT
+            -- Users 欄位
+            u.id            AS u_id,
+            u.email         AS u_email,
+
+            -- UserProfile 欄位
+            p.id            AS p_id,
+            p.nickname      AS p_nickname,
+            p.avatar        AS p_avatar,
+            p.bio           AS p_bio,
+
+            -- UserCareer 欄位
+            c.id                    AS c_id,
+            c.base_salary           AS c_base_salary,
+            c.other_allowance       AS c_other_allowance,
+            c.labor_insurance       AS c_labor_insurance,
+            c.health_insurance      AS c_health_insurance,
+            c.other_deduction       AS c_other_deduction,
+            c.pension_rate          AS c_pension_rate,
+            c.pension_amount        AS c_pension_amount,
+            c.stock_deduction       AS c_stock_deduction,
+            c.stock_company_match   AS c_stock_company_match
+
+        FROM users u
+        -- 使用 LEFT JOIN 確保就算沒填過 Profile 或 Career 也能拿到 User 基本資料
+        LEFT JOIN user_profiles p ON u.id = p.user_id
+        LEFT JOIN user_careers c ON u.id = c.user_id
+        WHERE u.firebase_uid = #{firebaseUid}
+    ]]>
+    </select>
+
+	<select id="checkUserExists" resultType="boolean">
+    <![CDATA[
+        SELECT COUNT(1) > 0
+        FROM users
+        WHERE firebase_uid = #{firebaseUid}
+    ]]>
+    </select>
+
+	<select id="selectIdByFirebaseUid" resultType="java.lang.Long">
+    <![CDATA[
+        SELECT id FROM users WHERE firebase_uid = #{firebaseUid}
+    ]]>
+    </select>
+
+	<select id="findProfileIdByUserId" resultType="java.lang.Long">
+    <![CDATA[
+        SELECT id FROM user_profiles WHERE user_id = #{userId}
+    ]]>
+    </select>
+
+	<select id="findCareerIdByUserId" resultType="java.lang.Long">
+    <![CDATA[
+        SELECT id FROM user_careers WHERE user_id = #{userId}
+    ]]>
+    </select>
+
+	<select id="findProfileByUserId"
+		resultType="com.en_chu.calculator_api_spring.model.UserProfileRes">
+    <![CDATA[
+        SELECT id, nickname, avatar, bio 
+        FROM user_profiles 
+        WHERE user_id = #{userId}
+    ]]>
+    </select>
+
+	<select id="findCareerByUserId"
+		resultType="com.en_chu.calculator_api_spring.model.UserCareerRes">
+    <![CDATA[
+        SELECT 
+            id,
+            base_salary AS baseSalary,
+            other_allowance AS otherAllowance,
+            labor_insurance AS laborInsurance,
+            health_insurance AS healthInsurance,
+            other_deduction AS otherDeduction,
+            pension_rate AS pensionRate,
+            pension_amount AS pensionAmount,
+            stock_deduction AS stockDeduction,
+            stock_company_match AS stockCompanyMatch
+        FROM user_careers 
+        WHERE user_id = #{userId}
+    ]]>
+    </select>
+
+	<insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[
+        INSERT INTO users (firebase_uid, email, created_at, updated_at)
+        VALUES (#{firebaseUid}, #{email}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    ]]>
+    </insert>
+
+	<update id="updateLastLogin">
+    <![CDATA[
+        UPDATE users
+        SET last_login_at = CURRENT_TIMESTAMP
+        WHERE firebase_uid = #{firebaseUid}
+    ]]>
+    </update>
+
+</mapper>

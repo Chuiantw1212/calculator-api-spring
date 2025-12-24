@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.en_chu.calculator_api_spring.mapper.UserCareerMapper">
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+            INSERT INTO user_careers ( -- ✅ 改名
+                firebase_uid,
+                monthly_base_salary, other_allowance,
+                labor_insurance, health_insurance, other_deduction,
+                pension_rate, pension_amount,
+                stock_deduction, stock_company_match
+            ) VALUES (
+                #{firebaseUid},
+                #{monthlyBaseSalary}, #{otherAllowance},
+                #{laborInsurance}, #{healthInsurance}, #{otherDeduction},
+                #{pensionRate}, #{pensionAmount},
+                #{stockDeduction}, #{stockCompanyMatch}
+            )
+        ]]>
+    </insert>
+
+	<update id="update">
+        <![CDATA[
+            UPDATE user_careers -- ✅ 改名
+            SET 
+                monthly_base_salary = #{monthlyBaseSalary},
+                other_allowance = #{otherAllowance},
+                labor_insurance = #{laborInsurance},
+                health_insurance = #{healthInsurance},
+                other_deduction = #{otherDeduction},
+                pension_rate = #{pensionRate},
+                pension_amount = #{pensionAmount},
+                stock_deduction = #{stockDeduction},
+                stock_company_match = #{stockCompanyMatch},
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = #{id}
+              AND firebase_uid = #{firebaseUid}
+        ]]>
+    </update>
+
+	<select id="selectByUid"
+		resultType="com.en_chu.calculator_api_spring.entity.UserCareer">
+        <![CDATA[
+            SELECT 
+                id, firebase_uid AS firebaseUid,
+                monthly_base_salary AS monthlyBaseSalary,
+                other_allowance AS otherAllowance,
+                labor_insurance AS laborInsurance,
+                health_insurance AS healthInsurance,
+                other_deduction AS otherDeduction,
+                pension_rate AS pensionRate,
+                pension_amount AS pensionAmount,
+                stock_deduction AS stockDeduction,
+                stock_company_match AS stockCompanyMatch,
+                created_at AS createdAt, updated_at AS updatedAt
+            FROM user_careers -- ✅ 改名
+            WHERE firebase_uid = #{firebaseUid}
+        ]]>
+    </select>
+
+</mapper>

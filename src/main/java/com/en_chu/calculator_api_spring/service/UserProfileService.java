@@ -15,14 +15,14 @@ import com.en_chu.calculator_api_spring.util.SecurityUtils;
 public class UserProfileService {
 
 	@Autowired
-	private UserProfileMapper userProfileMapper;
+	private UserProfileMapper userMapper;
 
 	@Transactional
 	public void createProfile(UserProfileReq req) {
 		String uid = SecurityUtils.getCurrentUserUid();
 
 		// 1. (選用) 檢查是否已經有資料，避免重複建立
-		if (userProfileMapper.selectByUid(uid) != null) {
+		if (userMapper.selectByUid(uid) != null) {
 			throw new RuntimeException("資料已存在，請使用更新功能");
 		}
 
@@ -31,7 +31,7 @@ public class UserProfileService {
 		entity.setFirebaseUid(uid);
 
 		// 2. 呼叫 Insert
-		userProfileMapper.insert(entity);
+		userMapper.insert(entity);
 	}
 
 	@Transactional
@@ -46,7 +46,7 @@ public class UserProfileService {
 		entity.setFirebaseUid(uid);
 
 		// 3. 呼叫 Update
-		int rowsAffected = userProfileMapper.update(entity);
+		int rowsAffected = userMapper.update(entity);
 
 		if (rowsAffected == 0) {
 			throw new RuntimeException("更新失敗：找不到資料，或您無權修改此 ID。");
@@ -55,7 +55,7 @@ public class UserProfileService {
 
 	public UserProfileRes getProfile() {
 		String uid = SecurityUtils.getCurrentUserUid();
-		UserProfile entity = userProfileMapper.selectByUid(uid);
+		UserProfile entity = userMapper.selectByUid(uid);
 
 		if (entity == null) {
 			return null;
