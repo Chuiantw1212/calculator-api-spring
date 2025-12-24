@@ -23,17 +23,16 @@
     ]]>
 	</update>
 
-	<insert id="insert">
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
     <![CDATA[
         INSERT INTO user_careers (
-            user_id, firebase_uid, 
+            firebase_uid, 
             base_salary, other_allowance, 
             labor_insurance, health_insurance, other_deduction,
             pension_rate, pension_amount,
             stock_deduction, stock_company_match,
             created_at, updated_at
         ) VALUES (
-            (SELECT id FROM users WHERE firebase_uid = #{firebaseUid}), 
             #{firebaseUid},
             #{baseSalary}, #{otherAllowance},
             #{laborInsurance}, #{healthInsurance}, #{otherDeduction},

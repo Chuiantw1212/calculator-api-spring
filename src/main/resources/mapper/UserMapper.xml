@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.en_chu.calculator_api_spring.mapper.UserMapper">
+<mapper
+	namespace="com.en_chu.calculator_api_spring.mapper.UserMapper">
 
 	<resultMap id="UserFullDataResultMap"
 		type="com.en_chu.calculator_api_spring.model.UserFullDataRes">
-		<id property="userId" column="u_id" />
-		<result property="email" column="u_email" />
+
+		<id property="userId" column="p_id" />
 
 		<association property="profile"
 			javaType="com.en_chu.calculator_api_spring.model.UserProfileRes">
 			<id property="id" column="p_id" />
-			<result property="nickname" column="p_nickname" />
-			<result property="avatar" column="p_avatar" />
-			<result property="bio" column="p_bio" />
+
+			<result property="birthDate" column="p_birth_date" />
+			<result property="gender" column="p_gender" />
+			<result property="currentAge" column="p_current_age" />
+			<result property="lifeExpectancy" column="p_life_expectancy" />
+			<result property="marriageYear" column="p_marriage_year" />
+			<result property="careerInsuranceType"
+				column="p_career_insurance_type" />
+			<result property="biography" column="p_biography" />
 		</association>
 
 		<association property="career"
@@ -27,7 +34,8 @@
 			<result property="pensionRate" column="c_pension_rate" />
 			<result property="pensionAmount" column="c_pension_amount" />
 			<result property="stockDeduction" column="c_stock_deduction" />
-			<result property="stockCompanyMatch" column="c_stock_company_match" />
+			<result property="stockCompanyMatch"
+				column="c_stock_company_match" />
 		</association>
 	</resultMap>
 
@@ -35,17 +43,17 @@
 		resultMap="UserFullDataResultMap">
     <![CDATA[
         SELECT
-            -- Users 欄位
-            u.id            AS u_id,
-            u.email         AS u_email,
+            -- UserProfile 欄位 (核心表)
+            p.id                    AS p_id,
+            p.birth_date            AS p_birth_date,
+            p.gender                AS p_gender,
+            p.current_age           AS p_current_age,
+            p.life_expectancy       AS p_life_expectancy,
+            p.marriage_year         AS p_marriage_year,
+            p.career_insurance_type AS p_career_insurance_type,
+            p.biography             AS p_biography,
 
-            -- UserProfile 欄位
-            p.id            AS p_id,
-            p.nickname      AS p_nickname,
-            p.avatar        AS p_avatar,
-            p.bio           AS p_bio,
-
-            -- UserCareer 欄位
+            -- UserCareer 欄位 (附屬表)
             c.id                    AS c_id,
             c.base_salary           AS c_base_salary,
             c.other_allowance       AS c_other_allowance,
@@ -57,81 +65,34 @@
             c.stock_deduction       AS c_stock_deduction,
             c.stock_company_match   AS c_stock_company_match
 
-        FROM users u
-        -- 使用 LEFT JOIN 確保就算沒填過 Profile 或 Career 也能拿到 User 基本資料
-        LEFT JOIN user_profiles p ON u.id = p.user_id
-        LEFT JOIN user_careers c ON u.id = c.user_id
-        WHERE u.firebase_uid = #{firebaseUid}
+        FROM user_profiles p
+        -- 使用 LEFT JOIN 連結 Career (透過 firebase_uid)
+        LEFT JOIN user_careers c ON p.firebase_uid = c.firebase_uid
+        WHERE p.firebase_uid = #{firebaseUid}
     ]]>
-    </select>
+	</select>
 
 	<select id="checkUserExists" resultType="boolean">
     <![CDATA[
         SELECT COUNT(1) > 0
-        FROM users
+        FROM user_profiles
         WHERE firebase_uid = #{firebaseUid}
     ]]>
-    </select>
-
-	<select id="selectIdByFirebaseUid" resultType="java.lang.Long">
-    <![CDATA[
-        SELECT id FROM users WHERE firebase_uid = #{firebaseUid}
-    ]]>
-    </select>
-
-	<select id="findProfileIdByUserId" resultType="java.lang.Long">
-    <![CDATA[
-        SELECT id FROM user_profiles WHERE user_id = #{userId}
-    ]]>
-    </select>
-
-	<select id="findCareerIdByUserId" resultType="java.lang.Long">
-    <![CDATA[
-        SELECT id FROM user_careers WHERE user_id = #{userId}
-    ]]>
-    </select>
-
-	<select id="findProfileByUserId"
-		resultType="com.en_chu.calculator_api_spring.model.UserProfileRes">
-    <![CDATA[
-        SELECT id, nickname, avatar, bio 
-        FROM user_profiles 
-        WHERE user_id = #{userId}
-    ]]>
-    </select>
-
-	<select id="findCareerByUserId"
-		resultType="com.en_chu.calculator_api_spring.model.UserCareerRes">
-    <![CDATA[
-        SELECT 
-            id,
-            base_salary AS baseSalary,
-            other_allowance AS otherAllowance,
-            labor_insurance AS laborInsurance,
-            health_insurance AS healthInsurance,
-            other_deduction AS otherDeduction,
-            pension_rate AS pensionRate,
-            pension_amount AS pensionAmount,
-            stock_deduction AS stockDeduction,
-            stock_company_match AS stockCompanyMatch
-        FROM user_careers 
-        WHERE user_id = #{userId}
-    ]]>
-    </select>
+	</select>
 
 	<insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
     <![CDATA[
-        INSERT INTO users (firebase_uid, email, created_at, updated_at)
-        VALUES (#{firebaseUid}, #{email}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        INSERT INTO user_profiles (firebase_uid, created_at, updated_at)
+        VALUES (#{firebaseUid}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     ]]>
-    </insert>
+	</insert>
 
 	<update id="updateLastLogin">
     <![CDATA[
-        UPDATE users
-        SET last_login_at = CURRENT_TIMESTAMP
+        UPDATE user_profiles
+        SET updated_at = CURRENT_TIMESTAMP
         WHERE firebase_uid = #{firebaseUid}
     ]]>
-    </update>
+	</update>
 
 </mapper>
