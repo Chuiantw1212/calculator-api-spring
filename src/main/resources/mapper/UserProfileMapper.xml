@@ -3,85 +3,56 @@
 
 <mapper namespace="com.en_chu.calculator_api_spring.mapper.UserProfileMapper">
 
-	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        <![CDATA[
-            INSERT INTO usr_profiles (
-                firebase_uid, 
-                birth_date, 
-                gender,
-                current_age, 
-                life_expectancy, 
-                marriage_year,
-                career_insurance_type, 
-                biography
-            ) VALUES (
-                #{firebaseUid}, 
-                #{birthDate}, 
-                #{gender},
-                #{currentAge}, 
-                #{lifeExpectancy}, 
-                #{marriageYear},
-                #{careerInsuranceType}, 
-                #{biography}
-            )
-        ]]>
-    </insert>
-
-	<update id="update">
-        <![CDATA[
-            UPDATE usr_profiles 
-            SET 
-                birth_date = #{birthDate},
-                gender = #{gender},
-                current_age = #{currentAge},
-                life_expectancy = #{lifeExpectancy},
-                marriage_year = #{marriageYear},
-                career_insurance_type = #{careerInsuranceType},
-                biography = #{biography},
-                updated_at = CURRENT_TIMESTAMP
-            WHERE id = #{id}
-              AND firebase_uid = #{firebaseUid}
-        ]]>
+	<update id="updateByUid">
+    <![CDATA[
+        UPDATE user_profiles 
+        SET 
+            birth_date = #{birthDate},
+            gender = #{gender},
+            current_age = #{currentAge},
+            life_expectancy = #{lifeExpectancy},
+            marriage_year = #{marriageYear},
+            career_insurance_type = #{careerInsuranceType},
+            biography = #{biography},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE 
+            firebase_uid = #{firebaseUid}
+    ]]>
     </update>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[
+        INSERT INTO user_profiles (
+            firebase_uid, 
+            birth_date, 
+            gender, 
+            current_age, 
+            life_expectancy, 
+            marriage_year, 
+            career_insurance_type, 
+            biography,
+            created_at, 
+            updated_at
+        ) VALUES (
+            #{firebaseUid},
+            #{birthDate}, 
+            #{gender}, 
+            #{currentAge}, 
+            #{lifeExpectancy}, 
+            #{marriageYear}, 
+            #{careerInsuranceType}, 
+            #{biography},
+            CURRENT_TIMESTAMP, 
+            CURRENT_TIMESTAMP
+        )
+    ]]>
+    </insert>
 
 	<select id="selectByUid"
 		resultType="com.en_chu.calculator_api_spring.entity.UserProfile">
-        <![CDATA[
-            SELECT 
-                id,
-                firebase_uid AS firebaseUid,
-                birth_date AS birthDate,
-                gender,
-                current_age AS currentAge,
-                life_expectancy AS lifeExpectancy,
-                marriage_year AS marriageYear,
-                career_insurance_type AS careerInsuranceType,
-                biography,
-                created_at AS createdAt,
-                updated_at AS updatedAt
-            FROM usr_profiles
-            WHERE firebase_uid = #{firebaseUid}
-        ]]>
-    </select>
-
-	<select id="selectById"
-		resultType="com.en_chu.calculator_api_spring.entity.UserProfile">
-        <![CDATA[
-            SELECT 
-                id,
-                firebase_uid AS firebaseUid,
-                birth_date AS birthDate,
-                gender,
-                current_age AS currentAge,
-                life_expectancy AS lifeExpectancy,
-                marriage_year AS marriageYear,
-                career_insurance_type AS careerInsuranceType,
-                biography,
-                created_at AS createdAt,
-                updated_at AS updatedAt
-            FROM usr_profiles
-            WHERE id = #{id}
-        ]]>
+    <![CDATA[
+        SELECT * FROM user_profiles WHERE firebase_uid = #{firebaseUid}
+    ]]>
     </select>
 
 </mapper>
