@@ -24,7 +24,7 @@ public class SecurityConfig {
 		http.csrf(AbstractHttpConfigurer::disable).httpBasic(AbstractHttpConfigurer::disable)
 				.formLogin(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/v1/metadata")
+						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/v1/metadata", "/admin/sync-firebase")
 						.permitAll().anyRequest().authenticated())
 				// 2. 這裡直接使用注入的 instance，不要 new
 				.addFilterBefore(firebaseTokenFilter, UsernamePasswordAuthenticationFilter.class)
