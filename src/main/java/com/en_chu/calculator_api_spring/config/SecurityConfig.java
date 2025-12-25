@@ -9,28 +9,42 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource; // 記得 import 這個介面
 
 import com.en_chu.calculator_api_spring.security.FirebaseTokenFilter;
 
 @Configuration
 public class SecurityConfig {
 
-	// 1. 注入你的 Filter (前提是 FirebaseTokenFilter 有加 @Component)
-	@Autowired
-	private FirebaseTokenFilter firebaseTokenFilter;
+    @Autowired
+    private FirebaseTokenFilter firebaseTokenFilter;
 
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.csrf(AbstractHttpConfigurer::disable).httpBasic(AbstractHttpConfigurer::disable)
-				.formLogin(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/v1/metadata", "/admin/sync-firebase")
-						.permitAll().anyRequest().authenticated())
-				// 2. 這裡直接使用注入的 instance，不要 new
-				.addFilterBefore(firebaseTokenFilter, UsernamePasswordAuthenticationFilter.class)
+    // ✅ 關鍵：將 CorsConfig 裡產生的 Bean 注入進來
+    @Autowired
+    private CorsConfigurationSource corsConfigurationSource;
 
-				.exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            // 1. 使用注入進來的 corsConfigurationSource
+            .cors(cors -> cors.configurationSource(corsConfigurationSource))
 
-		return http.build();
-	}
+            .csrf(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable)
+            .formLogin(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/v3/api-docs/**", 
+                    "/swagger-ui/**", 
+                    "/swagger-ui.html", 
+                    "/api/v1/metadata", 
+                    "/admin/sync-firebase"
+                ).permitAll()
+                .anyRequest().authenticated()
+            )
+            .addFilterBefore(firebaseTokenFilter, UsernamePasswordAuthenticationFilter.class)
+            .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+
+        return http.build();
+    }
 }

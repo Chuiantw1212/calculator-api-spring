@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.en_chu.calculator_api_spring.mapper.UserSecurityMapper">
+
+	<select id="selectListByUid"
+		resultType="com.en_chu.calculator_api_spring.entity.UserSecurity">
+    <![CDATA[
+        SELECT 
+            id,
+            firebase_uid AS firebaseUid,
+            country_code AS countryCode,
+            currency,
+            exchange_rate AS exchangeRate,
+            market_value AS marketValue,
+            realized_pnl AS realizedPnl,
+            created_at AS createdAt,
+            updated_at AS updatedAt
+        FROM user_securities
+        WHERE firebase_uid = #{firebaseUid}
+        ORDER BY market_value DESC
+    ]]>
+	</select>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id"
+		keyColumn="id">
+    <![CDATA[
+        INSERT INTO user_securities (
+            firebase_uid, 
+            country_code, 
+            currency, 
+            exchange_rate, 
+            market_value, 
+            realized_pnl,
+            created_at, 
+            updated_at
+        ) VALUES (
+            #{firebaseUid},
+            #{countryCode},
+            #{currency},
+            #{exchangeRate},
+            #{marketValue},
+            #{realizedPnl},
+            CURRENT_TIMESTAMP,
+            CURRENT_TIMESTAMP
+        )
+    ]]>
+	</insert>
+
+	<update id="updateById">
+    <![CDATA[
+        UPDATE user_securities 
+        SET 
+            country_code = #{countryCode},
+            currency = #{currency},
+            exchange_rate = #{exchangeRate},
+            market_value = #{marketValue},
+            realized_pnl = #{realizedPnl},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE 
+            id = #{id} AND firebase_uid = #{firebaseUid}
+    ]]>
+	</update>
+
+	<delete id="deleteById">
+    <![CDATA[
+        DELETE FROM user_securities 
+        WHERE id = #{id} AND firebase_uid = #{firebaseUid}
+    ]]>
+	</delete>
+
+	<delete id="deleteAllByUid">
+    <![CDATA[
+        DELETE FROM user_securities WHERE firebase_uid = #{firebaseUid}
+    ]]>
+	</delete>
+
+</mapper>
