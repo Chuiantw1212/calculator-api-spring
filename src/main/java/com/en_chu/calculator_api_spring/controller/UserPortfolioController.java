@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.en_chu.calculator_api_spring.entity.UserPortfolio; // ✅ Entity 改名
-import com.en_chu.calculator_api_spring.model.UserPortfolioUpdateReq; // ✅ DTO 改名
-import com.en_chu.calculator_api_spring.service.UserPortfolioService; // ✅ Service 改名
+import com.en_chu.calculator_api_spring.entity.UserPortfolio;
+import com.en_chu.calculator_api_spring.model.UserPortfolioUpdateReq;
+import com.en_chu.calculator_api_spring.service.UserPortfolioService;
 import com.en_chu.calculator_api_spring.util.SecurityUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,56 +23,64 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/user/portfolio") // ✅ URL 語意：使用者的投資組合
+@RequestMapping("/api/v1/user/portfolio")
 @Tag(name = "User Portfolio", description = "投資組合管理 (Stocks/ETFs/Funds)")
 public class UserPortfolioController {
 
 	@Autowired
-	private UserPortfolioService userPortfolioService;
+	private UserPortfolioService userPortfolioService; // ✅ 變數名稱修正：不再叫 securityService
 
 	// ==========================================
-	// 1. 查詢投資組合 (所有持倉)
+	// 1. 取得列表 (GET)
 	// ==========================================
-	@Operation(summary = "取得投資組合列表", description = "列出目前持有的所有證券部位")
+	@Operation(summary = "取得投資組合列表")
 	@GetMapping
-	public ResponseEntity<List<UserPortfolio>> getMyPortfolio() {
+	public ResponseEntity<List<UserPortfolio>> getList() {
+		// ✅ 這裡呼叫，如果沒登入，直接回傳 401
 		String uid = SecurityUtils.getCurrentUserUid();
+
+		// Service 方法已改名為 getUserPortfolio
 		return ResponseEntity.ok(userPortfolioService.getUserPortfolio(uid));
 	}
 
 	// ==========================================
-	// 2. 新增部位 (預設空殼)
+	// 2. 新增 (POST)
 	// ==========================================
-	@Operation(summary = "新增一筆持倉", description = "建立預設的投資部位 (空資料)")
+	@Operation(summary = "新增一筆持倉 (預設)")
 	@PostMapping
-	public ResponseEntity<UserPortfolio> createDefaultPosition() {
+	public ResponseEntity<UserPortfolio> create() {
 		String uid = SecurityUtils.getCurrentUserUid();
-		return ResponseEntity.ok(userPortfolioService.createDefaultPosition(uid));
+
+		// Service 方法已改名為 createDefaultPosition
+		UserPortfolio newRecord = userPortfolioService.createDefaultPosition(uid);
+		return ResponseEntity.ok(newRecord);
 	}
 
 	// ==========================================
-	// 3. 更新部位
-	// ==========================================
-	@Operation(summary = "更新持倉數值")
-	@PutMapping("/{id}")
-	public ResponseEntity<String> updatePosition(@PathVariable Long id,
-			@RequestBody @Valid UserPortfolioUpdateReq req) {
-
-		String uid = SecurityUtils.getCurrentUserUid();
-		// 這裡 Service 方法名稱建議也從 updateSecurity 改成 updatePosition
-		userPortfolioService.updatePosition(uid, id, req);
-
-		return ResponseEntity.ok("部位更新成功");
-	}
-
-	// ==========================================
-	// 4. 刪除部位
+	// 3. 刪除 (DELETE)
 	// ==========================================
 	@Operation(summary = "刪除持倉")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deletePosition(@PathVariable Long id) {
+	public ResponseEntity<String> delete(@PathVariable Long id) {
 		String uid = SecurityUtils.getCurrentUserUid();
+
+		// Service 方法已改名為 deletePosition
 		userPortfolioService.deletePosition(uid, id);
-		return ResponseEntity.ok("部位已刪除");
+		return ResponseEntity.ok().body("Deleted successfully");
+	}
+
+	// ==========================================
+	// 4. 更新 (PUT)
+	// ==========================================
+	@Operation(summary = "更新持倉數值")
+	@PutMapping("/{id}")
+	public ResponseEntity<String> update(@PathVariable Long id, @RequestBody @Valid UserPortfolioUpdateReq req) { // 建議加上
+																													// @Valid
+
+		String uid = SecurityUtils.getCurrentUserUid();
+
+		// Service 方法已改名為 updatePosition
+		userPortfolioService.updatePosition(uid, id, req);
+		return ResponseEntity.ok().body("Updated successfully");
 	}
 }
