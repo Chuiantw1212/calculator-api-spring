@@ -2,13 +2,11 @@ package com.en_chu.calculator_api_spring.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+// Transactional 在這裡可能只用於 syncUser，讀取通常不需要（除非有 Lazy Loading）
+// import org.springframework.transaction.annotation.Transactional; 
 
 import com.en_chu.calculator_api_spring.mapper.UserMapper;
-import com.en_chu.calculator_api_spring.model.UserCareerReq;
 import com.en_chu.calculator_api_spring.model.UserFullDataRes;
-import com.en_chu.calculator_api_spring.model.UserProfileReq;
-// SecurityUtils 不需要在這裡用了，因為 uid 是從參數傳進來的
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,47 +17,24 @@ public class UserService {
 	@Autowired
 	private UserMapper userMapper;
 
-	@Autowired
-	private UserProfileService userProfileService;
-
-	@Autowired
-	private UserCareerService userCareerService;
+	// 注意：這裡不再需要注入 UserProfileService 和 UserCareerService 了
+	// 除非 syncUser 方法裡面需要用到它們
 
 	// ==========================================
-	// 1. 取得完整資料
+	// 1. 取得完整資料 (Aggregation)
 	// ==========================================
 
-	// 修改：增加 String uid 參數，配合 Controller
+	/**
+	 * 負責整合並讀取使用者的完整資料 這是 UserService 的核心職責之一：提供一個統一的讀取視圖
+	 */
 	public UserFullDataRes getFullUserData(String uid) {
-		// 直接使用傳入的 uid，不需要再呼叫 SecurityUtils.getCurrentUserUid()
+		// 直接使用傳入的 uid
 		return userMapper.selectFullUserDataByFirebaseUid(uid);
 	}
 
 	// ==========================================
-	// 2. Profile 更新
+	// 2. 使用者同步 (如果是全域邏輯，保留在此)
 	// ==========================================
 
-	/**
-	 * 更新 Profile 修改：增加 String uid 參數，並將其傳遞給底層 Service
-	 */
-	@Transactional
-	public void updateProfile(String uid, UserProfileReq req) {
-		// 將 Controller 傳來的 uid 繼續往下傳
-		userProfileService.updateProfile(uid, req);
-	}
-
-	// ==========================================
-	// 3. Career 更新
-	// ==========================================
-
-	/**
-	 * 更新 Career 修改：增加 String uid 參數，並將其傳遞給底層 Service
-	 */
-	@Transactional
-	public void updateCareer(String uid, UserCareerReq req) {
-		// 將 Controller 傳來的 uid 繼續往下傳
-		userCareerService.updateCareer(uid, req);
-	}
-
-	// ... 其他方法 (如 syncUser) ...
+	// public void syncUser(UserSyncReq req) { ... }
 }
