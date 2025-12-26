@@ -9,7 +9,7 @@ import com.en_chu.calculator_api_spring.entity.UserCareer;
 import com.en_chu.calculator_api_spring.mapper.UserCareerMapper;
 import com.en_chu.calculator_api_spring.model.UserCareerReq;
 import com.en_chu.calculator_api_spring.model.UserCareerRes;
-import com.en_chu.calculator_api_spring.util.SecurityUtils;
+// import com.en_chu.calculator_api_spring.util.SecurityUtils; // ❌ 移除
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,12 +21,12 @@ public class UserCareerService {
 	private UserCareerMapper userCareerMapper;
 
 	/**
-	 * 更新或建立職涯收入資料 (Upsert) * 策略：先嘗試 Update，如果回傳 0 筆 (代表第一次設定)，則執行 Insert。
+	 * 更新或建立職涯收入資料 (Upsert) 修改：增加 String uid 參數
 	 */
 	@Transactional
-	public void updateCareer(UserCareerReq req) {
-		// 1. 底層自己拿 UID，確保安全
-		String uid = SecurityUtils.getCurrentUserUid();
+	public void updateCareer(String uid, UserCareerReq req) {
+		// 1. 直接使用傳入的 UID
+		// String uid = SecurityUtils.getCurrentUserUid(); // ❌ 舊做法
 
 		// 2. 轉換 DTO -> Entity
 		UserCareer entity = new UserCareer();
@@ -36,6 +36,7 @@ public class UserCareerService {
 		entity.setFirebaseUid(uid);
 
 		// 4. 嘗試更新 (Update by UID)
+		// Mapper 會根據 firebase_uid 去找資料
 		int rowsAffected = userCareerMapper.updateByUid(entity);
 
 		// 5. 如果更新筆數為 0，代表該用戶還沒建立過 Career 資料 -> 執行新增
@@ -46,16 +47,14 @@ public class UserCareerService {
 	}
 
 	/**
-	 * 取得職涯資料
+	 * 取得職涯資料 修改：增加 String uid 參數
 	 */
-	public UserCareerRes getCareer() {
-		String uid = SecurityUtils.getCurrentUserUid();
-
-		// 使用 UID 直接查詢
+	public UserCareerRes getCareer(String uid) {
+		// 使用傳入的 UID 直接查詢
 		UserCareer entity = userCareerMapper.selectByUid(uid);
 
 		if (entity == null) {
-			return null; // 或者回傳 new UserCareerRes() 視前端需求而定
+			return null;
 		}
 
 		UserCareerRes res = new UserCareerRes();

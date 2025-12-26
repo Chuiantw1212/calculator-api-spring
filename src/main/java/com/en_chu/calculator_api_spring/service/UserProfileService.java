@@ -9,24 +9,20 @@ import com.en_chu.calculator_api_spring.entity.UserProfile;
 import com.en_chu.calculator_api_spring.mapper.UserProfileMapper;
 import com.en_chu.calculator_api_spring.model.UserProfileReq;
 import com.en_chu.calculator_api_spring.model.UserProfileRes;
-import com.en_chu.calculator_api_spring.util.SecurityUtils;
+// import com.en_chu.calculator_api_spring.util.SecurityUtils; // ❌ 移除：這裡不需要依賴 SecurityUtils 了
 
 @Service
 public class UserProfileService {
 
 	@Autowired
-	// 建議變數名稱改為 userProfileMapper 比較不會跟 UserMapper 搞混
 	private UserProfileMapper userProfileMapper;
 
 	/**
-	 * 新增個人資料
+	 * 新增個人資料 修改：增加 String uid 參數
 	 */
 	@Transactional
-	public void createProfile(UserProfileReq req) {
-		String uid = SecurityUtils.getCurrentUserUid();
-
-		// 1. 檢查是否已存在 (使用 UID 查)
-		// 雖然 DB 有 unique constraint，但先查一次可以回傳比較友善的錯誤訊息
+	public void createProfile(String uid, UserProfileReq req) {
+		// 1. 檢查是否已存在 (使用傳入的 UID 查)
 		if (userProfileMapper.selectByUid(uid) != null) {
 			throw new RuntimeException("資料已存在，請使用更新功能");
 		}
@@ -34,7 +30,7 @@ public class UserProfileService {
 		UserProfile entity = new UserProfile();
 		BeanUtils.copyProperties(req, entity);
 
-		// 關鍵：設定 UID，Mapper XML 會利用這個 UID 去 users 表查 id 來填 FK
+		// 關鍵：設定傳入的 UID
 		entity.setFirebaseUid(uid);
 
 		// 2. 呼叫 Insert
@@ -42,19 +38,15 @@ public class UserProfileService {
 	}
 
 	/**
-	 * 更新個人資料
+	 * 更新個人資料 修改：增加 String uid 參數
 	 */
 	@Transactional
-	public void updateProfile(UserProfileReq req) {
-		String uid = SecurityUtils.getCurrentUserUid();
-
+	public void updateProfile(String uid, UserProfileReq req) {
 		UserProfile entity = new UserProfile();
 		BeanUtils.copyProperties(req, entity);
 
 		// 【關鍵修改】
-		// 我們 "不" 設定 entity.setId(req.getId())。
-		// 因為更新的 WHERE 條件將直接使用 firebase_uid。
-		// 這樣就算前端傳了別人的 ID，也絕對不會生效。
+		// 使用 Controller -> UserService 傳遞下來的 uid
 		entity.setFirebaseUid(uid);
 
 		// 3. 呼叫 Update (Mapper XML 必須寫 WHERE firebase_uid = #{firebaseUid})
@@ -67,12 +59,10 @@ public class UserProfileService {
 	}
 
 	/**
-	 * 查詢個人資料
+	 * 查詢個人資料 修改：增加 String uid 參數
 	 */
-	public UserProfileRes getProfile() {
-		String uid = SecurityUtils.getCurrentUserUid();
-
-		// 直接用 UID 查，不經過 users 表
+	public UserProfileRes getProfile(String uid) {
+		// 直接用傳入的 UID 查
 		UserProfile entity = userProfileMapper.selectByUid(uid);
 
 		if (entity == null) {

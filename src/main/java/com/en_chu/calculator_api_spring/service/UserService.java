@@ -8,7 +8,7 @@ import com.en_chu.calculator_api_spring.mapper.UserMapper;
 import com.en_chu.calculator_api_spring.model.UserCareerReq;
 import com.en_chu.calculator_api_spring.model.UserFullDataRes;
 import com.en_chu.calculator_api_spring.model.UserProfileReq;
-import com.en_chu.calculator_api_spring.util.SecurityUtils;
+// SecurityUtils 不需要在這裡用了，因為 uid 是從參數傳進來的
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,29 +25,41 @@ public class UserService {
 	@Autowired
 	private UserCareerService userCareerService;
 
-	// ... (getFullUserData 保持原樣) ...
+	// ==========================================
+	// 1. 取得完整資料
+	// ==========================================
 
-	/**
-	 * 更新 Profile 職責：單純委派。底層 Service 會自己去 SecurityContext 拿 UID。
-	 */
-	@Transactional
-	public void updateProfile(UserProfileReq req) {
-		// 不需要傳 UID，直接把 Request 丟下去
-		userProfileService.updateProfile(req);
-	}
-
-	/**
-	 * 更新 Career 職責：單純委派。
-	 */
-	@Transactional
-	public void updateCareer(UserCareerReq req) {
-		// 不需要傳 UID，直接把 Request 丟下去
-		userCareerService.updateCareer(req);
-	}
-
-	// ... (getFullUserData / syncUser 等方法保持原樣) ...
-	public UserFullDataRes getFullUserData() {
-		String uid = SecurityUtils.getCurrentUserUid();
+	// 修改：增加 String uid 參數，配合 Controller
+	public UserFullDataRes getFullUserData(String uid) {
+		// 直接使用傳入的 uid，不需要再呼叫 SecurityUtils.getCurrentUserUid()
 		return userMapper.selectFullUserDataByFirebaseUid(uid);
 	}
+
+	// ==========================================
+	// 2. Profile 更新
+	// ==========================================
+
+	/**
+	 * 更新 Profile 修改：增加 String uid 參數，並將其傳遞給底層 Service
+	 */
+	@Transactional
+	public void updateProfile(String uid, UserProfileReq req) {
+		// 將 Controller 傳來的 uid 繼續往下傳
+		userProfileService.updateProfile(uid, req);
+	}
+
+	// ==========================================
+	// 3. Career 更新
+	// ==========================================
+
+	/**
+	 * 更新 Career 修改：增加 String uid 參數，並將其傳遞給底層 Service
+	 */
+	@Transactional
+	public void updateCareer(String uid, UserCareerReq req) {
+		// 將 Controller 傳來的 uid 繼續往下傳
+		userCareerService.updateCareer(uid, req);
+	}
+
+	// ... 其他方法 (如 syncUser) ...
 }
