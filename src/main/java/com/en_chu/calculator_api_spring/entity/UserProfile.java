@@ -2,16 +2,19 @@ package com.en_chu.calculator_api_spring.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserProfile {
+@EqualsAndHashCode(callSuper = true) // 2. 比較時包含父類別
+public class UserProfile  extends UserBaseEntity {
 
 	// 1. 內部主鍵 (DB Primary Key)
 	private Long id;

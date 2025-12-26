@@ -4,18 +4,19 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserSecurity {
+@EqualsAndHashCode(callSuper = true) // 2. 比較時包含父類別
+public class UserPortfolio extends UserBaseEntity {
 
 	private Long id;
-	private String firebaseUid; // 關聯欄位
 
 	private String countryCode;
 	private String currency;

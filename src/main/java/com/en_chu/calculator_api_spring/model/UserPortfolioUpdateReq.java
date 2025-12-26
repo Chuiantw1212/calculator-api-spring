@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import lombok.Data;
 
 @Data
-public class UserSecurityUpdateReq {
+public class UserPortfolioUpdateReq {
 	// 不需要 id，因為 id 會在 URL Path 裡
 	// 不需要 firebase_uid，因為會從 Token 取
 
