@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "更新職涯收入請求物件")
-public class UserCareerReq {
+public class UserCareerDto {
 
 	@Schema(description = "資料 ID (新增時可為空，更新時必填)", example = "1")
 	private Long id;

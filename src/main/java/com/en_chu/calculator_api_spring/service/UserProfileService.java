@@ -7,9 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.en_chu.calculator_api_spring.entity.UserProfile;
 import com.en_chu.calculator_api_spring.mapper.UserProfileMapper;
-import com.en_chu.calculator_api_spring.model.UserProfileReq;
-import com.en_chu.calculator_api_spring.model.UserProfileRes;
-// import com.en_chu.calculator_api_spring.util.SecurityUtils; // ❌ 移除：這裡不需要依賴 SecurityUtils 了
+import com.en_chu.calculator_api_spring.model.UserProfileDto;
 
 @Service
 public class UserProfileService {
@@ -21,7 +19,7 @@ public class UserProfileService {
 	 * 新增個人資料 修改：增加 String uid 參數
 	 */
 	@Transactional
-	public void createProfile(String uid, UserProfileReq req) {
+	public void createProfile(String uid, UserProfileDto req) {
 		// 1. 檢查是否已存在 (使用傳入的 UID 查)
 		if (userProfileMapper.selectByUid(uid) != null) {
 			throw new RuntimeException("資料已存在，請使用更新功能");
@@ -41,7 +39,7 @@ public class UserProfileService {
 	 * 更新個人資料 修改：增加 String uid 參數
 	 */
 	@Transactional
-	public void updateProfile(String uid, UserProfileReq req) {
+	public void updateProfile(String uid, UserProfileDto req) {
 		UserProfile entity = new UserProfile();
 		BeanUtils.copyProperties(req, entity);
 
@@ -61,7 +59,7 @@ public class UserProfileService {
 	/**
 	 * 查詢個人資料 修改：增加 String uid 參數
 	 */
-	public UserProfileRes getProfile(String uid) {
+	public UserProfileDto getProfile(String uid) {
 		// 直接用傳入的 UID 查
 		UserProfile entity = userProfileMapper.selectByUid(uid);
 
@@ -69,7 +67,7 @@ public class UserProfileService {
 			return null;
 		}
 
-		UserProfileRes res = new UserProfileRes();
+		UserProfileDto res = new UserProfileDto();
 		BeanUtils.copyProperties(entity, res);
 
 		return res;

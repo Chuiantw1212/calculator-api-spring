@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.en_chu.calculator_api_spring.entity.UserPortfolio;
 import com.en_chu.calculator_api_spring.mapper.UserPortfolioMapper; // ✅ 改名
-import com.en_chu.calculator_api_spring.model.UserPortfolioUpdateReq; // ✅ 改名
+import com.en_chu.calculator_api_spring.model.UserPortfolioDto; // ✅ 改名
 
 @Service
 public class UserPortfolioService {
@@ -58,7 +58,7 @@ public class UserPortfolioService {
 	 * 4. 更新部位 (Update Position)
 	 */
 	@Transactional
-	public void updatePosition(String uid, Long id, UserPortfolioUpdateReq req) { // ✅ 改名 (包含參數型別)
+	public void updatePosition(String uid, Long id, UserPortfolioDto req) { // ✅ 改名 (包含參數型別)
 		// 1. 建立空物件
 		UserPortfolio entity = new UserPortfolio();
 

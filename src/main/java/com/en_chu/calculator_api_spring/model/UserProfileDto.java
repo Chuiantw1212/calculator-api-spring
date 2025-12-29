@@ -14,7 +14,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "個人基本資料更新請求 (Request DTO)")
-public class UserProfileReq {
+public class UserProfileDto {
 	// 這是對應資料庫 user_id 的欄位
 	// 為了配合 Mapper XML 的 #{id}，這裡變數名稱建議取名為 id
 	private Long id;

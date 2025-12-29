@@ -7,9 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.en_chu.calculator_api_spring.entity.UserCareer;
 import com.en_chu.calculator_api_spring.mapper.UserCareerMapper;
-import com.en_chu.calculator_api_spring.model.UserCareerReq;
-import com.en_chu.calculator_api_spring.model.UserCareerRes;
-// import com.en_chu.calculator_api_spring.util.SecurityUtils; // ❌ 移除
+import com.en_chu.calculator_api_spring.model.UserCareerDto;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +22,7 @@ public class UserCareerService {
 	 * 更新或建立職涯收入資料 (Upsert) 修改：增加 String uid 參數
 	 */
 	@Transactional
-	public void updateCareer(String uid, UserCareerReq req) {
+	public void updateCareer(String uid, UserCareerDto req) {
 		// 1. 直接使用傳入的 UID
 		// String uid = SecurityUtils.getCurrentUserUid(); // ❌ 舊做法
 
@@ -49,7 +47,7 @@ public class UserCareerService {
 	/**
 	 * 取得職涯資料 修改：增加 String uid 參數
 	 */
-	public UserCareerRes getCareer(String uid) {
+	public UserCareerDto getCareer(String uid) {
 		// 使用傳入的 UID 直接查詢
 		UserCareer entity = userCareerMapper.selectByUid(uid);
 
@@ -57,7 +55,7 @@ public class UserCareerService {
 			return null;
 		}
 
-		UserCareerRes res = new UserCareerRes();
+		UserCareerDto res = new UserCareerDto();
 		BeanUtils.copyProperties(entity, res);
 
 		return res;

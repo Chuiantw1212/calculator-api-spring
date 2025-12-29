@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.en_chu.calculator_api_spring.entity.UserPortfolio;
-import com.en_chu.calculator_api_spring.model.UserPortfolioUpdateReq;
+import com.en_chu.calculator_api_spring.model.UserPortfolioDto;
 import com.en_chu.calculator_api_spring.service.UserPortfolioService;
 import com.en_chu.calculator_api_spring.util.SecurityUtils;
 
@@ -74,7 +74,7 @@ public class UserPortfolioController {
 	// ==========================================
 	@Operation(summary = "更新持倉數值")
 	@PutMapping("/{id}")
-	public ResponseEntity<String> update(@PathVariable Long id, @RequestBody @Valid UserPortfolioUpdateReq req) { // 建議加上
+	public ResponseEntity<String> update(@PathVariable Long id, @RequestBody @Valid UserPortfolioDto req) { // 建議加上
 																													// @Valid
 
 		String uid = SecurityUtils.getCurrentUserUid();

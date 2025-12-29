@@ -9,9 +9,9 @@ public class UserFullDataRes {
 	private String email;
 
 	// 2. 個人檔案 (從 UserProfile table 來)
-	private UserProfileRes profile;
+	private UserProfileDto profile;
 
 	// 3. 職涯資料 (從 UserCareer table 來)
 	// 假設你已經有了 UserCareerRes，沒有的話要建一個
-	private UserCareerRes career;
+	private UserCareerDto career;
 }

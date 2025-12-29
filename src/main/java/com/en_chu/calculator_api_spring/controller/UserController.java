@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.en_chu.calculator_api_spring.model.UserCareerReq;
+import com.en_chu.calculator_api_spring.model.UserCareerDto;
 import com.en_chu.calculator_api_spring.model.UserFullDataRes;
-import com.en_chu.calculator_api_spring.model.UserProfileReq;
+import com.en_chu.calculator_api_spring.model.UserProfileDto;
 import com.en_chu.calculator_api_spring.service.UserCareerService; // Import 這裡
 import com.en_chu.calculator_api_spring.service.UserProfileService; // Import 這裡
 import com.en_chu.calculator_api_spring.service.UserService;
@@ -38,7 +38,7 @@ public class UserController {
 	}
 
 	@PutMapping("/profile")
-	public ResponseEntity<String> updateProfile(@RequestBody @Valid UserProfileReq req) {
+	public ResponseEntity<String> updateProfile(@RequestBody @Valid UserProfileDto req) {
 		String uid = SecurityUtils.getCurrentUserUid();
 		// 直接調用專門的 Service
 		userProfileService.updateProfile(uid, req);
@@ -46,7 +46,7 @@ public class UserController {
 	}
 
 	@PutMapping("/career")
-	public ResponseEntity<String> updateCareer(@RequestBody @Valid UserCareerReq req) {
+	public ResponseEntity<String> updateCareer(@RequestBody @Valid UserCareerDto req) {
 		String uid = SecurityUtils.getCurrentUserUid();
 		// 直接調用專門的 Service
 		userCareerService.updateCareer(uid, req);
