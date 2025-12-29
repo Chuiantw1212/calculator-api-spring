@@ -26,7 +26,7 @@
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id"
 		keyColumn="id">
     <![CDATA[
-        INSERT INTO user_postfolios (
+        INSERT INTO user_portfolios (
             firebase_uid, 
             country_code, 
             currency, 
@@ -50,7 +50,7 @@
 
 	<update id="updateById">
     <![CDATA[
-        UPDATE user_postfolios 
+        UPDATE user_portfolios 
         SET 
             country_code = #{countryCode},
             currency = #{currency},
@@ -65,14 +65,14 @@
 
 	<delete id="deleteById">
     <![CDATA[
-        DELETE FROM user_postfolios 
+        DELETE FROM user_portfolios 
         WHERE id = #{id} AND firebase_uid = #{firebaseUid}
     ]]>
 	</delete>
 
 	<delete id="deleteAllByUid">
     <![CDATA[
-        DELETE FROM user_postfolios WHERE firebase_uid = #{firebaseUid}
+        DELETE FROM user_portfolios WHERE firebase_uid = #{firebaseUid}
     ]]>
 	</delete>
 

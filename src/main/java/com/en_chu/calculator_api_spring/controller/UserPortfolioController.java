@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/user/portfolio")
+@RequestMapping("/api/v1/user/portfolios")
 @Tag(name = "User Portfolio", description = "投資組合管理 (Stocks/ETFs/Funds)")
 public class UserPortfolioController {
 

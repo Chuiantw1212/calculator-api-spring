@@ -11,14 +11,12 @@ import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Schema(description = "個人基本資料更新請求 (Request DTO)")
-public class UserProfileDto {
-	// 這是對應資料庫 user_id 的欄位
-	// 為了配合 Mapper XML 的 #{id}，這裡變數名稱建議取名為 id
-	private Long id;
-
+public class UserProfileDto extends BaseDto {
 	@Schema(description = "出生年份", example = "1990")
 	@NotNull(message = "出生年份不能為空")
 	@Min(value = 1900, message = "出生年份必須大於 1900")

@@ -6,14 +6,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Schema(description = "更新職涯收入請求物件")
-public class UserCareerDto {
-
-	@Schema(description = "資料 ID (新增時可為空，更新時必填)", example = "1")
-	private Long id;
-
+public class UserCareerDto extends BaseDto {
 	@NotNull(message = "本薪不能為空")
 	@Min(value = 0, message = "本薪不能為負數")
 	@Schema(description = "本薪", example = "50000")

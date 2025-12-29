@@ -12,7 +12,6 @@
 		<association property="profile"
 			javaType="com.en_chu.calculator_api_spring.model.UserProfileDto">
 			<id property="id" column="p_id" />
-
 			<result property="birthDate" column="p_birth_date" />
 			<result property="gender" column="p_gender" />
 			<result property="currentAge" column="p_current_age" />
@@ -37,13 +36,26 @@
 			<result property="stockCompanyMatch"
 				column="c_stock_company_match" />
 		</association>
+
+		<collection property="portfolios"
+			ofType="com.en_chu.calculator_api_spring.model.UserPortfolioDto">
+
+			<id property="id" column="pf_id" />
+			<result property="countryCode" column="pf_country_code" />
+			<result property="currency" column="pf_currency" />
+
+			<result property="exchangeRate" column="pf_exchange_rate" />
+			<result property="marketValue" column="pf_market_value" />
+			<result property="realizedPnl" column="pf_realized_pnl" />
+
+		</collection>
 	</resultMap>
 
 	<select id="selectFullUserDataByFirebaseUid"
 		resultMap="UserFullDataResultMap">
     <![CDATA[
         SELECT
-            -- UserProfile 欄位 (核心表)
+            -- UserProfile 欄位
             p.id                    AS p_id,
             p.birth_date            AS p_birth_date,
             p.gender                AS p_gender,
@@ -53,7 +65,7 @@
             p.career_insurance_type AS p_career_insurance_type,
             p.biography             AS p_biography,
 
-            -- UserCareer 欄位 (附屬表)
+            -- UserCareer 欄位
             c.id                    AS c_id,
             c.base_salary           AS c_base_salary,
             c.other_allowance       AS c_other_allowance,
@@ -63,36 +75,35 @@
             c.pension_rate          AS c_pension_rate,
             c.pension_amount        AS c_pension_amount,
             c.stock_deduction       AS c_stock_deduction,
-            c.stock_company_match   AS c_stock_company_match
+            c.stock_company_match   AS c_stock_company_match,
+
+            -- UserPortfolio 欄位 ✅ 對應修正
+            pf.id                   AS pf_id,
+            pf.country_code         AS pf_country_code,
+            pf.currency             AS pf_currency,
+            pf.exchange_rate        AS pf_exchange_rate,
+            pf.market_value         AS pf_market_value,
+            pf.realized_pnl         AS pf_realized_pnl
 
         FROM user_profiles p
-        -- 使用 LEFT JOIN 連結 Career (透過 firebase_uid)
+        
         LEFT JOIN user_careers c ON p.firebase_uid = c.firebase_uid
+        LEFT JOIN user_portfolios pf ON p.firebase_uid = pf.firebase_uid
+        
         WHERE p.firebase_uid = #{firebaseUid}
     ]]>
 	</select>
 
 	<select id="checkUserExists" resultType="boolean">
-    <![CDATA[
-        SELECT COUNT(1) > 0
-        FROM user_profiles
-        WHERE firebase_uid = #{firebaseUid}
-    ]]>
+        <![CDATA[ SELECT COUNT(1) > 0 FROM user_profiles WHERE firebase_uid = #{firebaseUid} ]]>
 	</select>
 
 	<insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
-    <![CDATA[
-        INSERT INTO user_profiles (firebase_uid, created_at, updated_at)
-        VALUES (#{firebaseUid}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    ]]>
+        <![CDATA[ INSERT INTO user_profiles (firebase_uid, created_at, updated_at) VALUES (#{firebaseUid}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) ]]>
 	</insert>
 
 	<update id="updateLastLogin">
-    <![CDATA[
-        UPDATE user_profiles
-        SET updated_at = CURRENT_TIMESTAMP
-        WHERE firebase_uid = #{firebaseUid}
-    ]]>
+        <![CDATA[ UPDATE user_profiles SET updated_at = CURRENT_TIMESTAMP WHERE firebase_uid = #{firebaseUid} ]]>
 	</update>
 
 </mapper>
