@@ -10,7 +10,7 @@
 		<id property="id" column="p_id" />
 
 		<association property="profile"
-			javaType="com.en_chu.calculator_api_spring.model.UserProfileRes">
+			javaType="com.en_chu.calculator_api_spring.model.UserProfileDto">
 			<id property="id" column="p_id" />
 
 			<result property="birthDate" column="p_birth_date" />
@@ -24,7 +24,7 @@
 		</association>
 
 		<association property="career"
-			javaType="com.en_chu.calculator_api_spring.model.UserCareerRes">
+			javaType="com.en_chu.calculator_api_spring.model.UserCareerDto">
 			<id property="id" column="c_id" />
 			<result property="baseSalary" column="c_base_salary" />
 			<result property="otherAllowance" column="c_other_allowance" />
