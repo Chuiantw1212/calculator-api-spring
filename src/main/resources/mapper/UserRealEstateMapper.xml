@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.en_chu.calculator_api_spring.mapper.UserRealEstateMapper">
+
+	<resultMap id="BaseResultMap"
+		type="com.en_chu.calculator_api_spring.entity.UserRealEstate">
+		<id property="id" column="id" />
+		<result property="firebaseUid" column="firebase_uid" />
+		<result property="createdAt" column="created_at" />
+		<result property="updatedAt" column="updated_at" />
+
+		<result property="name" column="name" />
+		<result property="age" column="age" />
+		<result property="size" column="size" />
+		<result property="pricePerPing" column="price_per_ping" />
+		<result property="totalPrice" column="total_price" />
+		<result property="assessedValue" column="assessed_value" />
+		<result property="holdingTaxRate" column="holding_tax_rate" />
+		<result property="loanAmount" column="loan_amount" />
+		<result property="interestRate" column="interest_rate" />
+		<result property="usageType" column="usage_type" />
+		<result property="monthlyRent" column="monthly_rent" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+        <![CDATA[
+        id, firebase_uid, created_at, updated_at,
+        name, age, size, price_per_ping, total_price,
+        assessed_value, holding_tax_rate, loan_amount, interest_rate,
+        usage_type, monthly_rent
+        ]]>
+	</sql>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+        INSERT INTO user_real_estates (
+            firebase_uid, 
+            name, age, size, price_per_ping, total_price,
+            assessed_value, holding_tax_rate, loan_amount, interest_rate,
+            usage_type, monthly_rent
+        )
+        VALUES (
+            #{firebaseUid},
+            #{name}, #{age}, #{size}, #{pricePerPing}, #{totalPrice},
+            #{assessedValue}, #{holdingTaxRate}, #{loanAmount}, #{interestRate},
+            #{usageType}, #{monthlyRent}
+        )
+        ]]>
+	</insert>
+
+	<select id="selectByUid" resultMap="BaseResultMap">
+        <![CDATA[
+        SELECT 
+            id, firebase_uid, created_at, updated_at,
+            name, age, size, price_per_ping, total_price,
+            assessed_value, holding_tax_rate, loan_amount, interest_rate,
+            usage_type, monthly_rent
+        FROM user_real_estates
+        WHERE firebase_uid = #{uid}
+        ORDER BY created_at DESC
+        ]]>
+	</select>
+
+	<select id="selectByIdAndUid" resultMap="BaseResultMap">
+        <![CDATA[
+        SELECT 
+            id, firebase_uid, created_at, updated_at,
+            name, age, size, price_per_ping, total_price,
+            assessed_value, holding_tax_rate, loan_amount, interest_rate,
+            usage_type, monthly_rent
+        FROM user_real_estates
+        WHERE id = #{id} 
+          AND firebase_uid = #{uid}
+        ]]>
+	</select>
+
+	<update id="update">
+        <![CDATA[ UPDATE user_real_estates ]]>
+		<set>
+			<if test="name != null">name = #{name},</if>
+			<if test="age != null">age = #{age},</if>
+			<if test="size != null">size = #{size},</if>
+			<if test="pricePerPing != null">price_per_ping = #{pricePerPing},</if>
+			<if test="totalPrice != null">total_price = #{totalPrice},</if>
+			<if test="assessedValue != null">assessed_value = #{assessedValue},</if>
+			<if test="holdingTaxRate != null">holding_tax_rate = #{holdingTaxRate},</if>
+			<if test="loanAmount != null">loan_amount = #{loanAmount},</if>
+			<if test="interestRate != null">interest_rate = #{interestRate},</if>
+			<if test="usageType != null">usage_type = #{usageType},</if>
+			<if test="monthlyRent != null">monthly_rent = #{monthlyRent},</if>
+		</set>
+        <![CDATA[
+        WHERE id = #{id} 
+          AND firebase_uid = #{firebaseUid}
+        ]]>
+	</update>
+
+	<delete id="deleteByIdAndUid">
+        <![CDATA[
+        DELETE FROM user_real_estates
+        WHERE id = #{id} 
+          AND firebase_uid = #{uid}
+        ]]>
+	</delete>
+
+</mapper>
