@@ -37,18 +37,6 @@
 				column="c_stock_company_match" />
 		</association>
 
-		<collection property="portfolios"
-			ofType="com.en_chu.calculator_api_spring.model.UserPortfolioDto">
-
-			<id property="id" column="pf_id" />
-			<result property="countryCode" column="pf_country_code" />
-			<result property="currency" column="pf_currency" />
-
-			<result property="exchangeRate" column="pf_exchange_rate" />
-			<result property="marketValue" column="pf_market_value" />
-			<result property="realizedPnl" column="pf_realized_pnl" />
-
-		</collection>
 	</resultMap>
 
 	<select id="selectFullUserDataByFirebaseUid"
@@ -75,20 +63,16 @@
             c.pension_rate          AS c_pension_rate,
             c.pension_amount        AS c_pension_amount,
             c.stock_deduction       AS c_stock_deduction,
-            c.stock_company_match   AS c_stock_company_match,
+            c.stock_company_match   AS c_stock_company_match
 
-            -- UserPortfolio 欄位 ✅ 對應修正
-            pf.id                   AS pf_id,
-            pf.country_code         AS pf_country_code,
-            pf.currency             AS pf_currency,
-            pf.exchange_rate        AS pf_exchange_rate,
-            pf.market_value         AS pf_market_value,
-            pf.realized_pnl         AS pf_realized_pnl
+            -- ❌ 已移除：UserPortfolio 相關欄位 (pf_...)
 
         FROM user_profiles p
         
+        -- 只 JOIN Career
         LEFT JOIN user_careers c ON p.firebase_uid = c.firebase_uid
-        LEFT JOIN user_portfolios pf ON p.firebase_uid = pf.firebase_uid
+        
+        -- ❌ 已移除：LEFT JOIN user_portfolios
         
         WHERE p.firebase_uid = #{firebaseUid}
     ]]>
