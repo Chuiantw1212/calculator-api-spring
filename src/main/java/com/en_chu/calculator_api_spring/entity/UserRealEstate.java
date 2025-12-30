@@ -49,6 +49,11 @@ public class UserRealEstate extends UserBaseEntity {
 	 * 預估持有稅率 (%)
 	 */
 	private BigDecimal holdingTaxRate;
+	
+    /**
+     * [新增] 實際支付房屋稅 (年) - 用於核對與精準計算
+     */
+	private BigDecimal  actualHoldingCost; 
 
 	/**
 	 * 銀行貸款餘額

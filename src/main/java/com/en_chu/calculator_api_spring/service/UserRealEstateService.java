@@ -33,17 +33,38 @@ public class UserRealEstateService {
 		UserRealEstate entity = new UserRealEstate();
 		BeanUtils.copyProperties(req, entity);
 
-		// 2. 強制注入 UID (資安關鍵)
+		// 2. 注入 UID
 		entity.setFirebaseUid(uid);
 
-		// 3. 執行商業計算 (總價 = 單價 * 坪數)
+		// ==========================================
+		// 3. 🛡️ 處理預設值 (Default Values)
+		// ==========================================
+		// 如果前端沒傳名稱，給一個預設名稱
+		if (entity.getName() == null || entity.getName().isBlank()) {
+			entity.setName("新房產 (未命名)");
+		}
+
+		// 如果沒傳坪數，預設 0 (避免計算炸開)
+		if (entity.getSize() == null) {
+			entity.setSize(BigDecimal.ZERO);
+		}
+
+		// 如果沒傳單價，預設 0
+		if (entity.getPricePerPing() == null) {
+			entity.setPricePerPing(BigDecimal.ZERO);
+		}
+
+		// 如果沒傳用途，預設自用 (self)
+		if (entity.getUsageType() == null) {
+			entity.setUsageType("self"); // 必須對應 Enum 的 code
+		}
+
+		// 4. 計算總價 (這步一定要在設定完預設值後做)
 		calculateTotalPrice(entity);
 
-		// 4. 寫入資料庫
+		// 5. 寫入資料庫
 		mapper.insert(entity);
-		log.info("Created real estate id={} for user={}", entity.getId(), uid);
 
-		// 5. Entity -> DTO (回傳包含 ID 與時間的完整物件)
 		return convertToDto(entity);
 	}
 
@@ -69,27 +90,27 @@ public class UserRealEstateService {
 	 */
 	@Transactional
 	public UserRealEstateDto update(String uid, Long id, UserRealEstateDto req) {
-	    // 1. 準備更新用的 Entity
-	    UserRealEstate updateEntity = new UserRealEstate();
-	    BeanUtils.copyProperties(req, updateEntity);
-	    
-	    // 2. 補上 ID 與 UID (給 SQL WHERE 用)
-	    updateEntity.setId(id);
-	    updateEntity.setFirebaseUid(uid);
+		// 1. 準備更新用的 Entity
+		UserRealEstate updateEntity = new UserRealEstate();
+		BeanUtils.copyProperties(req, updateEntity);
 
-	    // 3. 重新計算總價
-	    calculateTotalPrice(updateEntity);
+		// 2. 補上 ID 與 UID (給 SQL WHERE 用)
+		updateEntity.setId(id);
+		updateEntity.setFirebaseUid(uid);
 
-	    // 4. 執行更新，並直接檢查回傳的行數 (rows)
-	    // 這裡直接做掉了「檢查存在性」的工作，省去一次 Query
-	    int rows = mapper.update(updateEntity);
-	    
-	    if (rows == 0) {
-	        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到該房地產資料，或無權限修改");
-	    }
-	    
-	    // 5. 再次查詢最新狀態回傳 (因為有 Trigger 更新時間)
-	    return getById(uid, id); 
+		// 3. 重新計算總價
+		calculateTotalPrice(updateEntity);
+
+		// 4. 執行更新，並直接檢查回傳的行數 (rows)
+		// 這裡直接做掉了「檢查存在性」的工作，省去一次 Query
+		int rows = mapper.update(updateEntity);
+
+		if (rows == 0) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到該房地產資料，或無權限修改");
+		}
+
+		// 5. 再次查詢最新狀態回傳 (因為有 Trigger 更新時間)
+		return getById(uid, id);
 	}
 
 	/**

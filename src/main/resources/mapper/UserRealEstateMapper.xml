@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper
@@ -17,6 +17,10 @@
 		<result property="pricePerPing" column="price_per_ping" />
 		<result property="totalPrice" column="total_price" />
 		<result property="assessedValue" column="assessed_value" />
+
+		<result property="actualHoldingCost"
+			column="actual_holding_cost" />
+
 		<result property="holdingTaxRate" column="holding_tax_rate" />
 		<result property="loanAmount" column="loan_amount" />
 		<result property="interestRate" column="interest_rate" />
@@ -25,55 +29,41 @@
 	</resultMap>
 
 	<sql id="Base_Column_List">
-        <![CDATA[
-        id, firebase_uid, created_at, updated_at,
-        name, age, size, price_per_ping, total_price,
-        assessed_value, holding_tax_rate, loan_amount, interest_rate,
-        usage_type, monthly_rent
-        ]]>
+		id, firebase_uid, created_at, updated_at,
+		name, age, size, price_per_ping, total_price,
+		assessed_value, holding_tax_rate,
+		actual_holding_cost, loan_amount, interest_rate,
+		usage_type, monthly_rent
 	</sql>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
         <![CDATA[
         INSERT INTO user_real_estates (
-            firebase_uid, 
-            name, age, size, price_per_ping, total_price,
-            assessed_value, holding_tax_rate, loan_amount, interest_rate,
-            usage_type, monthly_rent
-        )
-        VALUES (
-            #{firebaseUid},
-            #{name}, #{age}, #{size}, #{pricePerPing}, #{totalPrice},
-            #{assessedValue}, #{holdingTaxRate}, #{loanAmount}, #{interestRate},
-            #{usageType}, #{monthlyRent}
+            firebase_uid, name, age, size, price_per_ping, total_price,
+            assessed_value, holding_tax_rate, actual_holding_cost,
+            loan_amount, interest_rate, usage_type, monthly_rent
+        ) VALUES (
+            #{firebaseUid}, #{name}, #{age}, #{size}, #{pricePerPing}, #{totalPrice},
+            #{assessedValue}, #{holdingTaxRate}, #{actualHoldingCost},
+            #{loanAmount}, #{interestRate}, #{usageType}, #{monthlyRent}
         )
         ]]>
 	</insert>
 
 	<select id="selectByUid" resultMap="BaseResultMap">
-        <![CDATA[
-        SELECT 
-            id, firebase_uid, created_at, updated_at,
-            name, age, size, price_per_ping, total_price,
-            assessed_value, holding_tax_rate, loan_amount, interest_rate,
-            usage_type, monthly_rent
-        FROM user_real_estates
-        WHERE firebase_uid = #{uid}
-        ORDER BY created_at DESC
-        ]]>
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM user_real_estates
+		WHERE firebase_uid = #{uid}
+		ORDER BY created_at DESC
 	</select>
 
 	<select id="selectByIdAndUid" resultMap="BaseResultMap">
-        <![CDATA[
-        SELECT 
-            id, firebase_uid, created_at, updated_at,
-            name, age, size, price_per_ping, total_price,
-            assessed_value, holding_tax_rate, loan_amount, interest_rate,
-            usage_type, monthly_rent
-        FROM user_real_estates
-        WHERE id = #{id} 
-          AND firebase_uid = #{uid}
-        ]]>
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM user_real_estates
+		WHERE id = #{id}
+		AND firebase_uid = #{uid}
 	</select>
 
 	<update id="update">
@@ -86,6 +76,9 @@
 			<if test="totalPrice != null">total_price = #{totalPrice},</if>
 			<if test="assessedValue != null">assessed_value = #{assessedValue},</if>
 			<if test="holdingTaxRate != null">holding_tax_rate = #{holdingTaxRate},</if>
+
+			<if test="actualHoldingCost != null">actual_holding_cost = #{actualHoldingCost},</if>
+
 			<if test="loanAmount != null">loan_amount = #{loanAmount},</if>
 			<if test="interestRate != null">interest_rate = #{interestRate},</if>
 			<if test="usageType != null">usage_type = #{usageType},</if>

@@ -19,28 +19,24 @@
 	</resultMap>
 
 	<sql id="Base_Column_List">
-        <![CDATA[
-        id, firebase_uid, created_at, updated_at,
-        country_code, currency, exchange_rate, market_value, realized_pnl
-        ]]>
+		id, firebase_uid, created_at, updated_at,
+		country_code, currency, exchange_rate, market_value, realized_pnl
 	</sql>
 
 	<select id="selectByUid" resultMap="BaseResultMap">
-        <![CDATA[
-        SELECT <include refid="Base_Column_List" />
-        FROM user_portfolios
-        WHERE firebase_uid = #{uid}
-        ORDER BY market_value DESC
-        ]]>
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM user_portfolios
+		WHERE firebase_uid = #{uid}
+		ORDER BY market_value DESC
 	</select>
 
 	<select id="selectByIdAndUid" resultMap="BaseResultMap">
-        <![CDATA[
-        SELECT <include refid="Base_Column_List" />
-        FROM user_portfolios
-        WHERE id = #{id} 
-          AND firebase_uid = #{uid}
-        ]]>
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM user_portfolios
+		WHERE id = #{id}
+		AND firebase_uid = #{uid}
 	</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
@@ -52,7 +48,6 @@
             exchange_rate, 
             market_value, 
             realized_pnl
-            -- created_at, updated_at 交給 DB 自動處理
         ) VALUES (
             #{firebaseUid},
             #{countryCode},

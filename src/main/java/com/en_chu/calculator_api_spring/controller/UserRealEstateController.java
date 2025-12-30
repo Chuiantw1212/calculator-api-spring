@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/real-estates")
+@RequestMapping("/api/v1/user/real-estates")
 @Tag(name = "User Real Estate", description = "房地產資產管理 (CRUD)")
 @RequiredArgsConstructor
 public class UserRealEstateController {
@@ -44,10 +44,18 @@ public class UserRealEstateController {
 	// ==========================================
 	// 2. 新增 (POST)
 	// ==========================================
-	@Operation(summary = "新增房地產", description = "需傳入 name, size, usageType 等必要資訊")
+	@Operation(summary = "新增房地產")
 	@PostMapping
-	public ResponseEntity<UserRealEstateDto> create(@RequestBody @Valid UserRealEstateDto req) {
+	public ResponseEntity<UserRealEstateDto> create(
+			// 1. 設定 required = false，允許前端不傳 Body
+			@RequestBody(required = false) UserRealEstateDto req) {
 		String uid = SecurityUtils.getCurrentUserUid();
+
+		// 2. 如果 req 是 null (前端沒傳)，就 new 一個空的物件
+		if (req == null) {
+			req = new UserRealEstateDto();
+		}
+
 		return ResponseEntity.ok(userRealEstateService.create(uid, req));
 	}
 
