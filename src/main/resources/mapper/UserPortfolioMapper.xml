@@ -4,76 +4,94 @@
 <mapper
 	namespace="com.en_chu.calculator_api_spring.mapper.UserPortfolioMapper">
 
-	<select id="selectListByUid"
-		resultType="com.en_chu.calculator_api_spring.entity.UserPortfolio">
-    <![CDATA[
-        SELECT 
-            id,
-            firebase_uid AS firebaseUid,
-            country_code AS countryCode,
-            currency,
-            exchange_rate AS exchangeRate,
-            market_value AS marketValue,
-            realized_pnl AS realizedPnl,
-            created_at AS createdAt,
-            updated_at AS updatedAt
-        FROM user_securities
-        WHERE firebase_uid = #{firebaseUid}
+	<resultMap id="BaseResultMap"
+		type="com.en_chu.calculator_api_spring.entity.UserPortfolio">
+		<id property="id" column="id" />
+		<result property="firebaseUid" column="firebase_uid" />
+		<result property="createdAt" column="created_at" />
+		<result property="updatedAt" column="updated_at" />
+
+		<result property="countryCode" column="country_code" />
+		<result property="currency" column="currency" />
+		<result property="exchangeRate" column="exchange_rate" />
+		<result property="marketValue" column="market_value" />
+		<result property="realizedPnl" column="realized_pnl" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+        <![CDATA[
+        id, firebase_uid, created_at, updated_at,
+        country_code, currency, exchange_rate, market_value, realized_pnl
+        ]]>
+	</sql>
+
+	<select id="selectByUid" resultMap="BaseResultMap">
+        <![CDATA[
+        SELECT <include refid="Base_Column_List" />
+        FROM user_portfolios
+        WHERE firebase_uid = #{uid}
         ORDER BY market_value DESC
-    ]]>
+        ]]>
 	</select>
 
-	<insert id="insert" useGeneratedKeys="true" keyProperty="id"
-		keyColumn="id">
-    <![CDATA[
+	<select id="selectByIdAndUid" resultMap="BaseResultMap">
+        <![CDATA[
+        SELECT <include refid="Base_Column_List" />
+        FROM user_portfolios
+        WHERE id = #{id} 
+          AND firebase_uid = #{uid}
+        ]]>
+	</select>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
         INSERT INTO user_portfolios (
             firebase_uid, 
             country_code, 
             currency, 
             exchange_rate, 
             market_value, 
-            realized_pnl,
-            created_at, 
-            updated_at
+            realized_pnl
+            -- created_at, updated_at 交給 DB 自動處理
         ) VALUES (
             #{firebaseUid},
             #{countryCode},
             #{currency},
             #{exchangeRate},
             #{marketValue},
-            #{realizedPnl},
-            CURRENT_TIMESTAMP,
-            CURRENT_TIMESTAMP
+            #{realizedPnl}
         )
-    ]]>
+        ]]>
 	</insert>
 
-	<update id="updateById">
-    <![CDATA[
-        UPDATE user_portfolios 
-        SET 
-            country_code = #{countryCode},
-            currency = #{currency},
-            exchange_rate = #{exchangeRate},
-            market_value = #{marketValue},
-            realized_pnl = #{realizedPnl},
-            updated_at = CURRENT_TIMESTAMP
-        WHERE 
-            id = #{id} AND firebase_uid = #{firebaseUid}
-    ]]>
+	<update id="update">
+        <![CDATA[ UPDATE user_portfolios ]]>
+		<set>
+			<if test="countryCode != null">country_code = #{countryCode},</if>
+			<if test="currency != null">currency = #{currency},</if>
+			<if test="exchangeRate != null">exchange_rate = #{exchangeRate},</if>
+			<if test="marketValue != null">market_value = #{marketValue},</if>
+			<if test="realizedPnl != null">realized_pnl = #{realizedPnl},</if>
+		</set>
+        <![CDATA[
+        WHERE id = #{id} 
+          AND firebase_uid = #{firebaseUid}
+        ]]>
 	</update>
 
-	<delete id="deleteById">
-    <![CDATA[
+	<delete id="deleteByIdAndUid">
+        <![CDATA[
         DELETE FROM user_portfolios 
-        WHERE id = #{id} AND firebase_uid = #{firebaseUid}
-    ]]>
+        WHERE id = #{id} 
+          AND firebase_uid = #{uid}
+        ]]>
 	</delete>
 
 	<delete id="deleteAllByUid">
-    <![CDATA[
-        DELETE FROM user_portfolios WHERE firebase_uid = #{firebaseUid}
-    ]]>
+        <![CDATA[
+        DELETE FROM user_portfolios 
+        WHERE firebase_uid = #{uid}
+        ]]>
 	</delete>
 
 </mapper>

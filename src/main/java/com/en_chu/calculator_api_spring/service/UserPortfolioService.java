@@ -1,79 +1,111 @@
 package com.en_chu.calculator_api_spring.service;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.en_chu.calculator_api_spring.entity.UserPortfolio;
-import com.en_chu.calculator_api_spring.mapper.UserPortfolioMapper; // ✅ 改名
-import com.en_chu.calculator_api_spring.model.UserPortfolioDto; // ✅ 改名
+import com.en_chu.calculator_api_spring.mapper.UserPortfolioMapper;
+import com.en_chu.calculator_api_spring.model.UserPortfolioDto;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
+@RequiredArgsConstructor // 1. 取代 @Autowired，自動注入 final 欄位
 public class UserPortfolioService {
 
-	@Autowired
-	private UserPortfolioMapper userPortfolioMapper; // ✅ 改名
+	private final UserPortfolioMapper mapper;
 
 	/**
-	 * 1. 查詢該用戶的所有投資部位 (Get Portfolio)
+	 * 1. 查詢該用戶的所有投資部位 (Get List)
 	 */
-	public List<UserPortfolio> getUserPortfolio(String uid) { // ✅ 改名
-		return userPortfolioMapper.selectListByUid(uid);
+	public List<UserPortfolioDto> getList(String uid) {
+		return mapper.selectByUid(uid).stream() // 假設 Mapper 方法名已統一為 selectByUid
+				.map(this::convertToDto) // 2. 使用抽出的小工具轉換
+				.collect(Collectors.toList());
 	}
 
 	/**
-	 * 2. 新增預設部位 (Create Position)
+	 * 2. 查詢單筆部位 (Get One) - 為了 Update 回傳使用
 	 */
-	@Transactional
-	public UserPortfolio createDefaultPosition(String uid) { // ✅ 改名
-		// 1. 使用 Builder 建構物件
-		UserPortfolio entity = UserPortfolio.builder().firebaseUid(uid) // 設定父類別欄位
-				.countryCode("TW").currency("TWD").exchangeRate(BigDecimal.ONE).marketValue(BigDecimal.ZERO)
-				.realizedPnl(BigDecimal.ZERO).build();
-
-		// 2. 寫入資料庫
-		userPortfolioMapper.insert(entity); // ✅ 改用新的 Mapper
-
-		// 3. 回傳 (UserBaseEntity 會自動處理 @JsonIgnore)
-		return entity;
+	public UserPortfolioDto getById(String uid, Long id) {
+		UserPortfolio entity = mapper.selectByIdAndUid(id, uid)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到該投資部位"));
+		return convertToDto(entity);
 	}
 
 	/**
-	 * 3. 刪除部位 (Delete Position)
+	 * 3. 新增部位 (Create) 修改建議：原本的 createDefaultPosition 寫死了數值， 建議改成接收 DTO，讓前端傳入 "TW",
+	 * "TWD" 等初始值，更具彈性。
 	 */
 	@Transactional
-	public void deletePosition(String uid, Long id) { // ✅ 改名
-		int rows = userPortfolioMapper.deleteById(id, uid); // ✅ 改用新的 Mapper
-
-		if (rows == 0) {
-			throw new RuntimeException("Delete failed: Record not found or permission denied.");
-		}
-	}
-
-	/**
-	 * 4. 更新部位 (Update Position)
-	 */
-	@Transactional
-	public void updatePosition(String uid, Long id, UserPortfolioDto req) { // ✅ 改名 (包含參數型別)
-		// 1. 建立空物件
+	public UserPortfolioDto create(String uid, UserPortfolioDto req) {
+		// Entity 建構
 		UserPortfolio entity = new UserPortfolio();
-
-		// 2. 複製前端傳來的屬性
 		BeanUtils.copyProperties(req, entity);
 
-		// 3. 關鍵步驟：手動補上 ID 與 UID
-		entity.setId(id);
+		// 強制注入安全欄位
 		entity.setFirebaseUid(uid);
 
-		// 4. 執行更新
-		int rows = userPortfolioMapper.updateById(entity); // ✅ 改用新的 Mapper
+		// 寫入 DB
+		mapper.insert(entity);
+		log.info("Created portfolio id={} for user={}", entity.getId(), uid);
+
+		// 回傳 DTO
+		return convertToDto(entity);
+	}
+
+	/**
+	 * 4. 更新部位 (Update)
+	 */
+	@Transactional
+	public UserPortfolioDto update(String uid, Long id, UserPortfolioDto req) {
+		// 準備更新物件
+		UserPortfolio updateEntity = new UserPortfolio();
+		BeanUtils.copyProperties(req, updateEntity);
+
+		// 補上 ID 與 UID (Where 條件)
+		updateEntity.setId(id);
+		updateEntity.setFirebaseUid(uid);
+
+		// 執行更新
+		int rows = mapper.update(updateEntity); // 假設 Mapper 方法名已統一為 update
 
 		if (rows == 0) {
-			throw new RuntimeException("Update failed: Record not found or permission denied.");
+			// 使用標準 HTTP 404 異常
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "更新失敗：找不到該資料或無權限");
 		}
+
+		// 重新查詢最新狀態 (包含 Trigger 更新的時間) 並回傳
+		return getById(uid, id);
+	}
+
+	/**
+	 * 5. 刪除部位 (Delete)
+	 */
+	@Transactional
+	public void delete(String uid, Long id) {
+		int rows = mapper.deleteByIdAndUid(id, uid); // 假設 Mapper 方法名已統一
+
+		if (rows == 0) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "刪除失敗：找不到該資料或無權限");
+		}
+	}
+
+	// ==========================================
+	// Private Helper Methods (你的要求)
+	// ==========================================
+
+	private UserPortfolioDto convertToDto(UserPortfolio entity) {
+		UserPortfolioDto dto = new UserPortfolioDto();
+		BeanUtils.copyProperties(entity, dto);
+		return dto;
 	}
 }
