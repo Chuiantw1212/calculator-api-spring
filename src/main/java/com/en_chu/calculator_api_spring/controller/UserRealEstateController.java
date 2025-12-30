@@ -22,7 +22,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/real-estate")
+@RequestMapping("/api/v1/real-estates")
 @Tag(name = "User Real Estate", description = "房地產資產管理 (CRUD)")
 @RequiredArgsConstructor
 public class UserRealEstateController {
