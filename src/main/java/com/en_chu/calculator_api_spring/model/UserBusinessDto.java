@@ -20,21 +20,20 @@ public class UserBusinessDto extends BaseDto {
 	// 1. 基本資料 (必填)
 	// ==========================================
 	@Schema(description = "事業名稱", example = "網拍副業", requiredMode = Schema.RequiredMode.REQUIRED)
-	@NotBlank(message = "事業名稱不能為空") // ❌ 強制必填
+	@NotBlank(message = "事業名稱不能為空")
 	private String name;
-	
+
 	@Schema(description = "開始經營日期 (YYYY-MM-DD)", example = "2023-01-01", requiredMode = Schema.RequiredMode.REQUIRED)
-	@NotNull(message = "開始經營日期必填") // ❌ 強制必填
+	@NotNull(message = "開始經營日期必填")
 	@com.fasterxml.jackson.databind.annotation.JsonDeserialize(using = com.en_chu.calculator_api_spring.util.FlexibleDateDeserializer.class)
 	private LocalDate startDate;
-	
+
 	/**
-     * 專案年期
-     * 用於定義 IRR 計算的現金流陣列長度
-     */
-	// 移除 @NotNull，只保留 @Min 防止使用者填負數
-    @Min(value = 1, message = "若填寫年期，至少需為 1 年")
-    private Integer projectYears;	
+	 * 專案年期 用於定義 IRR 計算的現金流陣列長度 (可選，null 代表永續)
+	 */
+	@Schema(description = "專案年期 (用於計算 IRR)", example = "5")
+	@Min(value = 1, message = "若填寫年期，至少需為 1 年")
+	private Integer projectYears;
 
 	@Schema(description = "稅務類別", example = "exempt", requiredMode = Schema.RequiredMode.REQUIRED)
 	@NotBlank(message = "稅務類別必填")
@@ -56,7 +55,7 @@ public class UserBusinessDto extends BaseDto {
 	private String incomeMode;
 
 	@Schema(description = "月平均收入 (系統計算核心)", example = "15000")
-	@NotNull(message = "月平均收入必填") // 即使前端算好，後端也要擋 null
+	@NotNull(message = "月平均收入必填")
 	@DecimalMin(value = "0.0", message = "月收入不能小於 0")
 	private BigDecimal monthlyIncome;
 
@@ -65,8 +64,6 @@ public class UserBusinessDto extends BaseDto {
 	@DecimalMin(value = "0.0", message = "月成本不能小於 0")
 	private BigDecimal monthlyCost;
 
-	// Optional: 累計營收 (因為 TypeScript 定義這欄位是 ? 可選的)
-	// 如果前端沒傳，Java 預設為 null，建議初始化為 0 避免計算 NPE
 	@Schema(description = "歷史累計總營收 (當 mode=total 時使用)", example = "0")
 	@DecimalMin(value = "0.0", message = "累計營收不能小於 0")
 	private BigDecimal totalAccumulatedIncome = BigDecimal.ZERO;
@@ -84,4 +81,14 @@ public class UserBusinessDto extends BaseDto {
 	@NotNull(message = "貸款利率必填 (無貸款請傳 0)")
 	@DecimalMin(value = "0.0", message = "利率不能小於 0")
 	private BigDecimal loanInterestRate;
+
+	// ==========================================
+	// 4. 財務指標 (新增 - 前端計算結果)
+	// ==========================================
+
+	@Schema(description = "投資報酬率 (ROI) - 顯示用字串", example = "25.5%")
+	private String roi;
+
+	@Schema(description = "內部報酬率 (IRR) - 顯示用字串", example = "12.8%")
+	private String irr;
 }
