@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.en_chu.calculator_api_spring.mapper.UserBusinessMapper">
+
+    <resultMap id="BaseResultMap" type="com.en_chu.calculator_api_spring.entity.UserBusiness">
+        <id property="id" column="id" />
+        <result property="firebaseUid" column="firebase_uid" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+        
+        <result property="name" column="name" />
+        <result property="startDate" column="start_date" />
+        <result column="project_years" property="projectYears" jdbcType="INTEGER"/>
+        <result property="taxCategory" column="tax_category" />
+        <result property="acquisitionCost" column="acquisition_cost" />
+        
+        <result property="incomeMode" column="income_mode" />
+        <result property="totalAccumulatedIncome" column="total_accumulated_income" />
+        <result property="monthlyIncome" column="monthly_income" />
+        <result property="monthlyCost" column="monthly_cost" />
+        
+        <result property="loanAmount" column="loan_amount" />
+        <result property="loanInterestRate" column="loan_interest_rate" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, firebase_uid, created_at, updated_at, project_years,
+        name, start_date, tax_category, acquisition_cost,
+        income_mode, total_accumulated_income, monthly_income, monthly_cost,
+        loan_amount, loan_interest_rate
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+        INSERT INTO user_businesses (
+            firebase_uid, 
+            name, 
+            start_date, 
+            project_years,
+            tax_category, 
+            acquisition_cost,
+            income_mode, 
+            total_accumulated_income, 
+            monthly_income, 
+            monthly_cost,
+            loan_amount, 
+            loan_interest_rate
+        ) VALUES (
+            #{firebaseUid}, 
+            #{name}, 
+            #{startDate}, 
+            #{projectYears},
+            #{taxCategory}, 
+            #{acquisitionCost},
+            #{incomeMode}, 
+            #{totalAccumulatedIncome}, 
+            #{monthlyIncome}, 
+            #{monthlyCost},
+            #{loanAmount}, 
+            #{loanInterestRate}
+        )
+        ]]>
+    </insert>
+
+    <select id="selectByUid" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM user_businesses
+        WHERE firebase_uid = #{uid}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="selectByIdAndUid" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM user_businesses
+        WHERE id = #{id} 
+          AND firebase_uid = #{uid}
+    </select>
+
+    <update id="update">
+        <![CDATA[ UPDATE user_businesses ]]>
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="startDate != null">start_date = #{startDate},</if>
+            <if test="projectYears != null">project_years = #{projectYears},</if>
+            <if test="taxCategory != null">tax_category = #{taxCategory},</if>
+            <if test="acquisitionCost != null">acquisition_cost = #{acquisitionCost},</if>
+            
+            <if test="incomeMode != null">income_mode = #{incomeMode},</if>
+            <if test="totalAccumulatedIncome != null">total_accumulated_income = #{totalAccumulatedIncome},</if>
+            <if test="monthlyIncome != null">monthly_income = #{monthlyIncome},</if>
+            <if test="monthlyCost != null">monthly_cost = #{monthlyCost},</if>
+            
+            <if test="loanAmount != null">loan_amount = #{loanAmount},</if>
+            <if test="loanInterestRate != null">loan_interest_rate = #{loanInterestRate},</if>
+            
+            updated_at = CURRENT_TIMESTAMP
+        </set>
+        <![CDATA[
+        WHERE id = #{id} 
+          AND firebase_uid = #{firebaseUid}
+        ]]>
+    </update>
+
+    <delete id="deleteByIdAndUid">
+        <![CDATA[
+        DELETE FROM user_businesses 
+        WHERE id = #{id} 
+          AND firebase_uid = #{uid}
+        ]]>
+    </delete>
+
+</mapper>
