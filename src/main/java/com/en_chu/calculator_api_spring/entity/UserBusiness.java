@@ -13,11 +13,11 @@ public class UserBusiness extends UserBaseEntity {
 	private String name;
 
 	private LocalDate startDate;
-	
+
 	/**
-     * 專案年期 (例如：5年、10年)
-     */
-    private Integer projectYears;
+	 * 專案年期 (例如：5年、10年)
+	 */
+	private Integer projectYears;
 
 	// deemed_6 | verified | exempt
 	private String taxCategory;
@@ -36,4 +36,13 @@ public class UserBusiness extends UserBaseEntity {
 	private BigDecimal loanAmount;
 
 	private BigDecimal loanInterestRate;
+	/**
+	 * 投資報酬率 (ROI) 存字串，例如: "25.5%"
+	 */
+	private String roi;
+
+	/**
+	 * 內部報酬率 (IRR) 存字串，例如: "12.8%" 或 "無法計算"
+	 */
+	private String irr;
 }

@@ -22,13 +22,15 @@
         
         <result property="loanAmount" column="loan_amount" />
         <result property="loanInterestRate" column="loan_interest_rate" />
+        <result column="roi" property="roi" jdbcType="VARCHAR"/>
+        <result column="irr" property="irr" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id, firebase_uid, created_at, updated_at, project_years,
         name, start_date, tax_category, acquisition_cost,
         income_mode, total_accumulated_income, monthly_income, monthly_cost,
-        loan_amount, loan_interest_rate
+        loan_amount, loan_interest_rate, roi, irr
     </sql>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
@@ -45,7 +47,9 @@
             monthly_income, 
             monthly_cost,
             loan_amount, 
-            loan_interest_rate
+            loan_interest_rate,
+            roi, 
+            irr,
         ) VALUES (
             #{firebaseUid}, 
             #{name}, 
@@ -58,7 +62,8 @@
             #{monthlyIncome}, 
             #{monthlyCost},
             #{loanAmount}, 
-            #{loanInterestRate}
+            #{loanInterestRate},
+            #{roi}, #{irr},
         )
         ]]>
     </insert>
@@ -93,6 +98,9 @@
             
             <if test="loanAmount != null">loan_amount = #{loanAmount},</if>
             <if test="loanInterestRate != null">loan_interest_rate = #{loanInterestRate},</if>
+            
+            <if test="roi != null">roi = #{roi},</if>
+            <if test="irr != null">irr = #{irr},</if>
             
             updated_at = CURRENT_TIMESTAMP
         </set>
