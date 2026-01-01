@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.en_chu.calculator_api_spring.entity.UserBusiness;
 import com.en_chu.calculator_api_spring.mapper.UserBusinessMapper;
 import com.en_chu.calculator_api_spring.model.UserBusinessDto;
+import com.en_chu.calculator_api_spring.util.PageResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +25,30 @@ public class UserBusinessService {
 	private final UserBusinessMapper mapper;
 
 	/**
-	 * 1. 取得列表
+	 * 1. 取得列表 (支援分頁) 修改：回傳型別改為 PageInfo，並接收分頁參數
 	 */
-	public List<UserBusinessDto> getList(String uid) {
-		return mapper.selectByUid(uid).stream().map(this::convertToDto).collect(Collectors.toList());
-	}
+	/**
+     * 1. 取得列表 (手動分頁版)
+     */
+    public PageResponse<UserBusinessDto> getList(String uid, int currentPage, int pageSize) {
+        // 1. 計算資料庫 Offset (跳過幾筆)
+        // 第1頁跳過0筆, 第2頁跳過10筆...
+        int offset = (currentPage - 1) * pageSize;
+
+        // 2. 查詢當頁資料 (SQL LIMIT)
+        List<UserBusiness> entities = mapper.selectPage(uid, pageSize, offset);
+
+        // 3. 查詢總筆數 (SQL COUNT)
+        long total = mapper.countByUid(uid);
+	
+        // 4. Entity -> DTO
+        List<UserBusinessDto> dtos = entities.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+
+        // 5. 回傳包裝好的結果
+        return new PageResponse<>(dtos, total, currentPage, pageSize);
+    }
 
 	/**
 	 * 2. 取得單筆 (用於 Update 後回傳最新狀態)
@@ -40,7 +60,7 @@ public class UserBusinessService {
 	}
 
 	/**
-	 * 3. 新增事業 這裡不需像 RealEstate 那樣計算總價，也不需預設值， 因為 Controller 的 @Valid 已經確保資料完整性。
+	 * 3. 新增事業
 	 */
 	@Transactional
 	public UserBusinessDto create(String uid, UserBusinessDto req) {
@@ -102,6 +122,7 @@ public class UserBusinessService {
 	private UserBusinessDto convertToDto(UserBusiness entity) {
 		UserBusinessDto dto = new UserBusinessDto();
 		BeanUtils.copyProperties(entity, dto);
+		// roi 與 irr 欄位名稱一致，BeanUtils 會自動複製
 		return dto;
 	}
 }

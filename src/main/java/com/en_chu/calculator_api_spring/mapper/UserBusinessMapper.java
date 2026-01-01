@@ -20,6 +20,16 @@ public interface UserBusinessMapper {
 	 * 查詢該用戶所有的事業列表 XML id="selectByUid"
 	 */
 	List<UserBusiness> selectByUid(@Param("uid") String firebaseUid);
+	
+	// 分頁查詢 (注意 PostgreSQL 的 LIMIT/OFFSET 參數)
+    List<UserBusiness> selectPage(
+        @Param("uid") String uid, 
+        @Param("limit") int limit, 
+        @Param("offset") int offset
+    );
+
+    // 總數查詢
+    long countByUid(@Param("uid") String uid);
 
 	/**
 	 * 查詢單筆事業 (包含權限檢查) XML id="selectByIdAndUid"

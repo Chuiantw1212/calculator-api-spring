@@ -1,7 +1,5 @@
 package com.en_chu.calculator_api_spring.controller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,10 +8,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.en_chu.calculator_api_spring.model.UserBusinessDto;
 import com.en_chu.calculator_api_spring.service.UserBusinessService;
+import com.en_chu.calculator_api_spring.util.PageResponse;
 import com.en_chu.calculator_api_spring.util.SecurityUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,12 +32,20 @@ public class UserBusinessController {
 	// ==========================================
 	// 1. 取得列表 (GET List)
 	// ==========================================
-	@Operation(summary = "取得所有事業列表", description = "回傳該使用者的所有創業項目")
+	@Operation(summary = "取得所有事業列表 (分頁)", description = "回傳該使用者的創業項目，支援分頁查詢")
 	@GetMapping
-	public ResponseEntity<List<UserBusinessDto>> getList() {
-		String uid = SecurityUtils.getCurrentUserUid();
-		return ResponseEntity.ok(userBusinessService.getList(uid));
-	}
+    public ResponseEntity<PageResponse<UserBusinessDto>> getList(
+            @RequestParam(defaultValue = "1") int currentPage,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        String uid = SecurityUtils.getCurrentUserUid();
+        
+        // 防呆
+        if (currentPage < 1) currentPage = 1;
+        if (pageSize < 1) pageSize = 10;
+
+        return ResponseEntity.ok(userBusinessService.getList(uid, currentPage, pageSize));
+    }
 
 	// ==========================================
 	// 2. 新增 (POST) - 嚴格模式
