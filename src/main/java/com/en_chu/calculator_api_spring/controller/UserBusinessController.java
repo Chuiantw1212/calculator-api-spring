@@ -43,6 +43,9 @@ public class UserBusinessController {
         // 防呆
         if (currentPage < 1) currentPage = 1;
         if (pageSize < 1) pageSize = 10;
+        if (pageSize > 100) {
+            pageSize = 100; // 強制最大只能查 100 筆，避免伺服器負擔過重
+        }
 
         return ResponseEntity.ok(userBusinessService.getList(uid, currentPage, pageSize));
     }
