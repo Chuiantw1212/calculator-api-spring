@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -91,4 +92,9 @@ public class UserBusinessDto extends BaseDto {
 
 	@Schema(description = "內部報酬率 (IRR) - 顯示用字串", example = "12.8%")
 	private String irr;
+	
+	@Schema(description = "分組標籤 ID (1:藍, 2:橘, 3:紫, 4:青, 5:粉)", example = "1")
+    @Min(value = 1, message = "分組 ID 最小為 1")
+    @Max(value = 5, message = "分組 ID 最大為 5")
+    private Integer groupId;
 }

@@ -45,4 +45,10 @@ public class UserBusiness extends UserBaseEntity {
 	 * 內部報酬率 (IRR) 存字串，例如: "12.8%" 或 "無法計算"
 	 */
 	private String irr;
+	
+	/**
+     * 分組 ID (1~5)
+     * 對應前端的顏色標籤設定
+     */
+    private Integer groupId;
 }

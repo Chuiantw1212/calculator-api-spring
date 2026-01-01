@@ -28,13 +28,14 @@
 		<result property="loanInterestRate" column="loan_interest_rate" />
 		<result column="roi" property="roi" jdbcType="VARCHAR" />
 		<result column="irr" property="irr" jdbcType="VARCHAR" />
+		<result column="group_id" property="groupId" jdbcType="INTEGER"/>
 	</resultMap>
 
 	<sql id="Base_Column_List">
 		id, firebase_uid, created_at, updated_at, project_years,
 		name, start_date, tax_category, acquisition_cost,
 		income_mode, total_accumulated_income, monthly_income, monthly_cost,
-		loan_amount, loan_interest_rate, roi, irr
+		loan_amount, loan_interest_rate, roi, irr, group_id
 	</sql>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
@@ -53,7 +54,8 @@
             loan_amount, 
             loan_interest_rate,
             roi, 
-            irr
+            irr,
+            group_id
         ) VALUES (
             #{firebaseUid}, 
             #{name}, 
@@ -67,7 +69,7 @@
             #{monthlyCost},
             #{loanAmount}, 
             #{loanInterestRate},
-            #{roi}, #{irr}
+            #{roi}, #{irr}, #{group_id}
         )
         ]]>
 	</insert>
@@ -107,6 +109,7 @@
         <![CDATA[ UPDATE user_businesses ]]>
 		<set>
 			<if test="name != null">name = #{name},</if>
+			<if test="groupId != null">group_id = #{groupId},</if>
 			<if test="startDate != null">start_date = #{startDate},</if>
 			<if test="projectYears != null">project_years = #{projectYears},</if>
 			<if test="taxCategory != null">tax_category = #{taxCategory},</if>
