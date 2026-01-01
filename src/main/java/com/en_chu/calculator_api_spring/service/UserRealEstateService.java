@@ -133,8 +133,9 @@ public class UserRealEstateService {
 	 */
 	private void calculateTotalPrice(UserRealEstate entity) {
 		if (entity.getPricePerPing() != null && entity.getSize() != null) {
-			// 使用 BigDecimal 運算避免精度遺失
-			BigDecimal total = entity.getPricePerPing().multiply(entity.getSize());
+			BigDecimal price = entity.getPricePerPing();
+			BigDecimal size = entity.getSize();
+			BigDecimal total = price.multiply(size).movePointRight(4);
 			entity.setTotalPrice(total);
 		} else {
 			entity.setTotalPrice(BigDecimal.ZERO);
