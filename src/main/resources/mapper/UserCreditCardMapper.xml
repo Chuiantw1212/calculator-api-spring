@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.en_chu.calculator_api_spring.mapper.UserCreditCardMapper">
+
+	<resultMap id="BaseResultMap"
+		type="com.en_chu.calculator_api_spring.entity.UserCreditCard">
+		<id column="id" property="id" jdbcType="BIGINT" />
+
+		<result column="firebase_uid" property="firebaseUid"
+			jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="bank_name" property="bankName"
+			jdbcType="VARCHAR" />
+		<result column="usage_type" property="usageType"
+			jdbcType="VARCHAR" />
+
+		<result column="estimated_monthly_expense"
+			property="estimatedMonthlyExpense" jdbcType="NUMERIC" />
+
+		<result column="created_at" property="createdAt"
+			jdbcType="TIMESTAMP" />
+		<result column="updated_at" property="updatedAt"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, firebase_uid, name, bank_name, usage_type,
+		estimated_monthly_expense,
+		created_at, updated_at
+	</sql>
+
+	<select id="selectByUid" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM user_credit_cards
+		WHERE firebase_uid = #{firebaseUid}
+		ORDER BY created_at DESC
+	</select>
+
+	<select id="selectById" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM user_credit_cards
+		WHERE id = #{id} AND firebase_uid = #{firebaseUid}
+	</select>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO user_credit_cards (
+		firebase_uid,
+		name,
+		bank_name,
+		usage_type,
+		estimated_monthly_expense
+		) VALUES (
+		#{firebaseUid},
+		#{name},
+		#{bankName},
+		#{usageType},
+		#{estimatedMonthlyExpense}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE user_credit_cards
+		<set>
+			<if test="name != null">name = #{name},</if>
+			<if test="bankName != null">bank_name = #{bankName},</if>
+			<if test="usageType != null">usage_type = #{usageType},</if>
+			<if test="estimatedMonthlyExpense != null">estimated_monthly_expense = #{estimatedMonthlyExpense},</if>
+
+			updated_at = CURRENT_TIMESTAMP
+		</set>
+		WHERE id = #{id} AND firebase_uid = #{firebaseUid}
+	</update>
+
+	<delete id="delete">
+		DELETE FROM user_credit_cards
+		WHERE id = #{id} AND firebase_uid = #{firebaseUid}
+	</delete>
+
+</mapper>
