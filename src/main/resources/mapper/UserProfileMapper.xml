@@ -3,7 +3,29 @@
 
 <mapper namespace="com.en_chu.calculator_api_spring.mapper.UserProfileMapper">
 
-	<update id="updateByUid">
+    <resultMap id="BaseResultMap" type="com.en_chu.calculator_api_spring.entity.UserProfile">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="firebase_uid" property="firebaseUid" jdbcType="VARCHAR"/>
+        
+        <result column="birth_date" property="birthDate" jdbcType="DATE"/>
+        <result column="gender" property="gender" jdbcType="VARCHAR"/>
+        <result column="current_age" property="currentAge" jdbcType="INTEGER"/>
+        <result column="life_expectancy" property="lifeExpectancy" jdbcType="INTEGER"/>
+        <result column="marriage_year" property="marriageYear" jdbcType="INTEGER"/>
+        <result column="career_insurance_type" property="careerInsuranceType" jdbcType="VARCHAR"/>
+        <result column="biography" property="biography" jdbcType="VARCHAR"/>
+        
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, firebase_uid, birth_date, gender, current_age, 
+        life_expectancy, marriage_year, career_insurance_type, biography,
+        created_at, updated_at
+    </sql>
+
+    <update id="updateByUid">
     <![CDATA[
         UPDATE user_profiles 
         SET 
@@ -20,39 +42,47 @@
     ]]>
     </update>
 
-	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
     <![CDATA[
         INSERT INTO user_profiles (
             firebase_uid, 
-            birth_date, 
-            gender, 
-            current_age, 
-            life_expectancy, 
-            marriage_year, 
-            career_insurance_type, 
-            biography,
-            created_at, 
-            updated_at
+            birth_date, gender, current_age, 
+            life_expectancy, marriage_year, 
+            career_insurance_type, biography,
+            created_at, updated_at
         ) VALUES (
             #{firebaseUid},
-            #{birthDate}, 
-            #{gender}, 
-            #{currentAge}, 
-            #{lifeExpectancy}, 
-            #{marriageYear}, 
-            #{careerInsuranceType}, 
-            #{biography},
-            CURRENT_TIMESTAMP, 
-            CURRENT_TIMESTAMP
+            #{birthDate}, #{gender}, #{currentAge}, 
+            #{lifeExpectancy}, #{marriageYear}, 
+            #{careerInsuranceType}, #{biography},
+            CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
         )
     ]]>
     </insert>
 
-	<select id="selectByUid"
-		resultType="com.en_chu.calculator_api_spring.entity.UserProfile">
-    <![CDATA[
-        SELECT * FROM user_profiles WHERE firebase_uid = #{firebaseUid}
-    ]]>
+    <select id="selectByUid" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM user_profiles 
+        WHERE firebase_uid = #{firebaseUid}
     </select>
+
+    <select id="checkUserExists" resultType="boolean">
+        SELECT COUNT(1) > 0 FROM user_profiles WHERE firebase_uid = #{firebaseUid}
+    </select>
+
+    <update id="updateLastLogin">
+        UPDATE user_profiles 
+        SET updated_at = CURRENT_TIMESTAMP 
+        WHERE firebase_uid = #{firebaseUid}
+    </update>
+
+    <insert id="insertInitUser" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user_profiles (
+            firebase_uid, created_at, updated_at
+        ) VALUES (
+            #{firebaseUid}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+        )
+    </insert>
 
 </mapper>

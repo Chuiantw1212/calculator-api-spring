@@ -43,21 +43,4 @@ public class UserCareerService {
 			userCareerMapper.insert(entity);
 		}
 	}
-
-	/**
-	 * 取得職涯資料 修改：增加 String uid 參數
-	 */
-	public UserCareerDto getCareer(String uid) {
-		// 使用傳入的 UID 直接查詢
-		UserCareer entity = userCareerMapper.selectByUid(uid);
-
-		if (entity == null) {
-			return null;
-		}
-
-		UserCareerDto res = new UserCareerDto();
-		BeanUtils.copyProperties(entity, res);
-
-		return res;
-	}
 }
