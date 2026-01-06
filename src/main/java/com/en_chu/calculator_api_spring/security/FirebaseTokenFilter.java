@@ -5,10 +5,7 @@ import java.util.ArrayList;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-/**
- * 這就是你的 verifyIdToken 函數的 Spring Boot 版本 (Middleware) 每個 Request 進來都會先經過這裡
- */
-import org.springframework.stereotype.Component; // 1. 記得 import
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,14 +25,12 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 
 		String path = request.getRequestURI();
-		System.out.println("🔍 [Filter] 請求進入: " + path);
+	    System.out.println("🔍 [Filter] 請求進入: " + path); // 除錯用，上線可註解
 
-		// 1. 檢查 Header
 		String header = request.getHeader("Authorization");
-		System.out.println("🔍 [Filter] Authorization Header: " + header);
 
+		// 1. 若沒帶 Token，直接放行 (讓 SecurityConfig 決定是否擋下)
 		if (header == null || !header.startsWith("Bearer ")) {
-			System.out.println("❌ [Filter] 沒帶 Token 或格式錯誤 (沒有 Bearer )，放行給 Security 處理 (預期會 401)");
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -43,26 +38,33 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
 		// 2. 解析 Token
 		String token = header.substring(7);
 		try {
-			System.out.println("🔍 [Filter] 開始驗證 Firebase Token...");
 			FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
 
 			String uid = decodedToken.getUid();
-			System.out.println("✅ [Filter] 驗證成功! UID: " + uid);
 
 			// 3. 設定身分
 			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(uid,
 					decodedToken, new ArrayList<>());
 			SecurityContextHolder.getContext().setAuthentication(authentication);
-			System.out.println("✅ [Filter] SecurityContext 已設定完成");
 
 		} catch (FirebaseAuthException e) {
 			System.err.println("💥 [Filter] Firebase 驗證失敗: " + e.getMessage());
-			// 這裡不需要 throw，因為 SecurityContext 沒設定，後面自然會 401
+
+			// --- [關鍵新增] 將錯誤訊息存入 Request，讓 EntryPoint 可以讀取 ---
+			request.setAttribute("firebase_exception", "Firebase 驗證失敗: " + e.getMessage());
+
+			// 清除 Context 確保安全 (雖然預設就是空的，但保險起見)
+			SecurityContextHolder.clearContext();
+
 		} catch (Exception e) {
-			System.err.println("💥 [Filter] 未知錯誤: " + e.getMessage());
-			e.printStackTrace();
+			System.err.println("💥 [Filter] Token 解析發生未知錯誤: " + e.getMessage());
+
+			// --- [關鍵新增] ---
+			request.setAttribute("firebase_exception", "Token 無效或解析錯誤");
+			SecurityContextHolder.clearContext();
 		}
 
+		// 繼續往後走，因為 SecurityContext 是空的，Spring Security 會在後續拋出 401
 		filterChain.doFilter(request, response);
 	}
 }

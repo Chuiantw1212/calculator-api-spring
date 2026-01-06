@@ -2,11 +2,7 @@ package com.en_chu.calculator_api_spring.controller;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,79 +15,86 @@ import org.springframework.web.bind.annotation.RestController;
 import com.en_chu.calculator_api_spring.entity.UserCreditCard;
 import com.en_chu.calculator_api_spring.model.UserCreditCardDto;
 import com.en_chu.calculator_api_spring.service.UserCreditCardService;
+import com.en_chu.calculator_api_spring.util.SecurityUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
+	
 @RestController
-@RequestMapping("/api/v1/credit-cards")
+@RequestMapping("/api/v1/user/credit-cards") // 調整：加上 user 前綴，與 Portfolio 一致
+@Tag(name = "User Credit Card", description = "使用者信用卡管理")
 @RequiredArgsConstructor
-@Tag(name = "信用卡管理", description = "提供信用卡的新增、修改、刪除與查詢功能")
-@Validated
 public class UserCreditCardController {
 
 	private final UserCreditCardService userCreditCardService;
 
-	private String getCurrentUserUid() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication == null || !authentication.isAuthenticated()) {
-			throw new RuntimeException("使用者未登入");
-		}
-		return authentication.getName();
-	}
-
+	// ==========================================
+	// 1. 取得列表 (GET)
+	// ==========================================
+	@Operation(summary = "取得信用卡列表", description = "回傳該使用者的所有信用卡")
 	@GetMapping
-	@Operation(summary = "取得所有信用卡")
-	public ResponseEntity<List<UserCreditCard>> getAllCards() {
-		String uid = getCurrentUserUid();
+	public ResponseEntity<List<UserCreditCard>> getList() {
+		String uid = SecurityUtils.getCurrentUserUid();
 		return ResponseEntity.ok(userCreditCardService.getCards(uid));
 	}
 
-	@GetMapping("/{id}")
+	// ==========================================
+	// 2. 取得單筆 (GET)
+	// ==========================================
 	@Operation(summary = "取得單張信用卡詳情")
-	public ResponseEntity<UserCreditCard> getCard(@PathVariable Long id) {
-		String uid = getCurrentUserUid();
+	@GetMapping("/{id}")
+	public ResponseEntity<UserCreditCard> getOne(@PathVariable Long id) {
+		String uid = SecurityUtils.getCurrentUserUid();
 		return ResponseEntity.ok(userCreditCardService.getCard(id, uid));
 	}
 
-	// --- 修改重點 ---
+	// ==========================================
+	// 3. 新增 (POST)
+	// ==========================================
+	@Operation(summary = "新增信用卡", description = "可不傳 Body，後端自動生成預設值")
 	@PostMapping
-	@Operation(summary = "新增信用卡", description = "無需傳入 Body，後端自動生成預設值")
-	public ResponseEntity<UserCreditCard> createCard(
-			// 1. 設定 required = false，允許前端不傳 Body
-			@RequestBody(required = false) UserCreditCardDto dto) {
-		String uid = getCurrentUserUid();
+	public ResponseEntity<UserCreditCard> create(
+			// 這裡保留 required = false 的邏輯
+			@RequestBody(required = false) UserCreditCardDto req) {
 
-		// 2. 如果前端沒傳 Body，dto 會是 null，我們手動 new 一個空的物件傳給 Service
-		// (雖然 Service 目前邏輯是不看 DTO 內容，但為了避免傳 null 進去導致意外，給個空物件較安全)
-		if (dto == null) {
-			dto = new UserCreditCardDto();
+		String uid = SecurityUtils.getCurrentUserUid();
+
+		// 防呆：若前端完全沒傳 body，手動補一個空的物件
+		if (req == null) {
+			req = new UserCreditCardDto();
 		}
 
-		UserCreditCard newCard = userCreditCardService.createCard(dto, uid);
-		return ResponseEntity.status(HttpStatus.CREATED).body(newCard);
-	}
-	// ----------------
-
-	@PutMapping
-	@Operation(summary = "更新信用卡")
-	public ResponseEntity<UserCreditCard> updateCard(@Valid @RequestBody UserCreditCardDto dto) {
-		if (dto.getId() == null) {
-			return ResponseEntity.badRequest().build();
-		}
-		String uid = getCurrentUserUid();
-		return ResponseEntity.ok(userCreditCardService.updateCard(dto, uid));
+		// 雖然 REST 標準建議 201 Created，但為了配合您的參考範本風格，這裡統一用 ok (200)
+		return ResponseEntity.ok(userCreditCardService.createCard(req, uid));
 	}
 
-	@DeleteMapping("/{id}")
+	// ==========================================
+	// 4. 更新 (PUT)
+	// ==========================================
+	@Operation(summary = "更新信用卡資訊")
+	@PutMapping("/{id}")
+	public ResponseEntity<UserCreditCard> update(@PathVariable Long id, @RequestBody @Valid UserCreditCardDto req) {
+
+		String uid = SecurityUtils.getCurrentUserUid();
+
+		// 確保 DTO 內的 ID 與路徑上的 ID 一致
+		req.setId(id);
+
+		return ResponseEntity.ok(userCreditCardService.updateCard(req, uid));
+	}
+
+	// ==========================================
+	// 5. 刪除 (DELETE)
+	// ==========================================
 	@Operation(summary = "刪除信用卡")
-	public ResponseEntity<Void> deleteCard(@PathVariable Long id) {
-		String uid = getCurrentUserUid();
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
+		String uid = SecurityUtils.getCurrentUserUid();
+
 		userCreditCardService.deleteCard(id, uid);
+
 		return ResponseEntity.noContent().build();
 	}
 }
