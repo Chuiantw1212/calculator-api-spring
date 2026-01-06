@@ -12,33 +12,38 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Schema(description = "更新職涯收入請求物件")
 public class UserCareerDto extends BaseDto {
-	@NotNull(message = "本薪不能為空")
-	@Min(value = 0, message = "本薪不能為負數")
-	@Schema(description = "本薪", example = "50000")
-	private BigDecimal baseSalary;
+    @NotNull(message = "本薪不能為空")
+    @Min(value = 0, message = "本薪不能為負數")
+    @Schema(description = "本薪", example = "50000")
+    private BigDecimal baseSalary;
 
-	@Schema(description = "其他津貼", example = "2400")
-	private BigDecimal otherAllowance;
+    @Schema(description = "其他津貼", example = "2400")
+    private BigDecimal otherAllowance;
 
-	@Schema(description = "勞保費", example = "1100")
-	private BigDecimal laborInsurance;
+    @Schema(description = "勞保費", example = "1100")
+    private BigDecimal laborInsurance;
 
-	@Schema(description = "健保費", example = "800")
-	private BigDecimal healthInsurance;
+    @Schema(description = "健保費", example = "800")
+    private BigDecimal healthInsurance;
 
-	@Schema(description = "其他扣項", example = "100")
-	private BigDecimal otherDeduction;
+    @Schema(description = "其他扣項", example = "100")
+    private BigDecimal otherDeduction;
 
-	// 這裡通常建議前端傳 Rate 或 Amount 擇一計算，但如果你資料庫要同時存，就都開放
-	@Schema(description = "勞退自提比率 (%)", example = "6.0")
-	private BigDecimal pensionRate;
+    @Schema(description = "勞退自提比率 (%)", example = "6.0")
+    private BigDecimal pensionRate;
 
-	@Schema(description = "勞退自提金額", example = "3000")
-	private BigDecimal pensionAmount;
+    @Schema(description = "勞退自提金額", example = "3000")
+    private BigDecimal pensionAmount;
 
-	@Schema(description = "員工認股扣款", example = "2000")
-	private BigDecimal stockDeduction;
+    @Schema(description = "員工認股扣款", example = "2000")
+    private BigDecimal stockDeduction;
 
-	@Schema(description = "公司相對提撥", example = "1000")
-	private BigDecimal stockCompanyMatch;
+    @Schema(description = "公司相對提撥", example = "1000")
+    private BigDecimal stockCompanyMatch;
+
+    // --- 修正後的區塊 (移除了隱形字元) ---
+    @Schema(description = "每個月實領金額 (稅後)", example = "58000")
+    @NotNull(message = "實領金額不能為空")
+    @Min(value = 0, message = "金額不能為負數")
+    private BigDecimal monthlyNetIncome;
 }

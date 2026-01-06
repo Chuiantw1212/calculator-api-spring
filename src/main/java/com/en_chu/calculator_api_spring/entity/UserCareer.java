@@ -28,4 +28,7 @@ public class UserCareer extends UserBaseEntity { // 3. 繼承父類別
 	// 股票/福利
 	private BigDecimal stockDeduction;
 	private BigDecimal stockCompanyMatch;
+	
+	// 每個月實領金額
+	private BigDecimal monthlyNetIncome;
 }

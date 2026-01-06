@@ -1,53 +1,111 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper
-	namespace="com.en_chu.calculator_api_spring.mapper.UserCareerMapper">
+<mapper namespace="com.en_chu.calculator_api_spring.mapper.UserCareerMapper">
 
-	<update id="updateByUid">
+    <resultMap id="BaseResultMap" type="com.en_chu.calculator_api_spring.entity.UserCareer">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="firebase_uid" property="firebaseUid" jdbcType="VARCHAR"/>
+        
+        <result column="base_salary" property="baseSalary" jdbcType="NUMERIC"/>
+        <result column="other_allowance" property="otherAllowance" jdbcType="NUMERIC"/>
+        
+        <result column="monthly_net_income" property="monthlyNetIncome" jdbcType="NUMERIC"/>
+        
+        <result column="labor_insurance" property="laborInsurance" jdbcType="NUMERIC"/>
+        <result column="health_insurance" property="healthInsurance" jdbcType="NUMERIC"/>
+        <result column="other_deduction" property="otherDeduction" jdbcType="NUMERIC"/>
+        
+        <result column="pension_rate" property="pensionRate" jdbcType="NUMERIC"/>
+        <result column="pension_amount" property="pensionAmount" jdbcType="NUMERIC"/>
+        
+        <result column="stock_deduction" property="stockDeduction" jdbcType="NUMERIC"/>
+        <result column="stock_company_match" property="stockCompanyMatch" jdbcType="NUMERIC"/>
+        
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, firebase_uid, 
+        base_salary, other_allowance, monthly_net_income,
+        labor_insurance, health_insurance, other_deduction,
+        pension_rate, pension_amount,
+        stock_deduction, stock_company_match,
+        created_at, updated_at
+    </sql>
+
+    <update id="updateByUid">
     <![CDATA[
         UPDATE user_careers 
         SET 
             base_salary = #{baseSalary},
             other_allowance = #{otherAllowance},
+            monthly_net_income = #{monthlyNetIncome},
+            
             labor_insurance = #{laborInsurance},
             health_insurance = #{healthInsurance},
             other_deduction = #{otherDeduction},
+            
             pension_rate = #{pensionRate},
             pension_amount = #{pensionAmount},
+            
             stock_deduction = #{stockDeduction},
             stock_company_match = #{stockCompanyMatch},
+            
             updated_at = CURRENT_TIMESTAMP
         WHERE 
             firebase_uid = #{firebaseUid}
     ]]>
-	</update>
+    </update>
 
-	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
     <![CDATA[
         INSERT INTO user_careers (
             firebase_uid, 
-            base_salary, other_allowance, 
-            labor_insurance, health_insurance, other_deduction,
-            pension_rate, pension_amount,
-            stock_deduction, stock_company_match,
-            created_at, updated_at
+            base_salary, 
+            other_allowance, 
+            monthly_net_income,
+            
+            labor_insurance, 
+            health_insurance, 
+            other_deduction,
+            
+            pension_rate, 
+            pension_amount,
+            
+            stock_deduction, 
+            stock_company_match,
+            
+            created_at, 
+            updated_at
         ) VALUES (
             #{firebaseUid},
-            #{baseSalary}, #{otherAllowance},
-            #{laborInsurance}, #{healthInsurance}, #{otherDeduction},
-            #{pensionRate}, #{pensionAmount},
-            #{stockDeduction}, #{stockCompanyMatch},
-            CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+            #{baseSalary}, 
+            #{otherAllowance},
+            #{monthlyNetIncome},
+            
+            #{laborInsurance}, 
+            #{healthInsurance}, 
+            #{otherDeduction},
+            
+            #{pensionRate}, 
+            #{pensionAmount},
+            
+            #{stockDeduction}, 
+            #{stockCompanyMatch},
+            
+            CURRENT_TIMESTAMP, 
+            CURRENT_TIMESTAMP
         )
     ]]>
-	</insert>
+    </insert>
 
-	<select id="selectByUid"
-		resultType="com.en_chu.calculator_api_spring.entity.UserCareer">
-    <![CDATA[
-        SELECT * FROM user_careers WHERE firebase_uid = #{firebaseUid}
-    ]]>
-	</select>
+    <select id="selectByUid" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM user_careers 
+        WHERE firebase_uid = #{firebaseUid}
+    </select>
 
 </mapper>
