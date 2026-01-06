@@ -36,59 +36,59 @@ public class UserCreditCardController {
 
 	private final UserCreditCardService userCreditCardService;
 
-	/**
-	 * 輔助方法：從 Security Context 取得當前登入使用者的 Firebase UID 假設您的 Security Filter Chain
-	 * 已經將 UID 設定為 Principal 或 Authentication 的 Name
-	 */
 	private String getCurrentUserUid() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication == null || !authentication.isAuthenticated()) {
-			// 這裡通常由 Security Filter 攔截，但做雙重檢查較安全
 			throw new RuntimeException("使用者未登入");
 		}
-		// 根據您的 JWT Filter 實作，UID 可能在 Name 或 Principal 中
 		return authentication.getName();
 	}
 
 	@GetMapping
-	@Operation(summary = "取得所有信用卡", description = "列出當前登入使用者的所有信用卡設定")
+	@Operation(summary = "取得所有信用卡")
 	public ResponseEntity<List<UserCreditCard>> getAllCards() {
 		String uid = getCurrentUserUid();
-		List<UserCreditCard> cards = userCreditCardService.getCards(uid);
-		return ResponseEntity.ok(cards);
+		return ResponseEntity.ok(userCreditCardService.getCards(uid));
 	}
 
 	@GetMapping("/{id}")
-	@Operation(summary = "取得單張信用卡詳情", description = "根據 ID 查詢信用卡，需驗證擁有權")
+	@Operation(summary = "取得單張信用卡詳情")
 	public ResponseEntity<UserCreditCard> getCard(@PathVariable Long id) {
 		String uid = getCurrentUserUid();
-		UserCreditCard card = userCreditCardService.getCard(id, uid);
-		return ResponseEntity.ok(card);
+		return ResponseEntity.ok(userCreditCardService.getCard(id, uid));
 	}
 
+	// --- 修改重點 ---
 	@PostMapping
-	@Operation(summary = "新增信用卡", description = "支援部分欄位輸入，後端會自動補齊預設值")
-	public ResponseEntity<UserCreditCard> createCard(@Valid @RequestBody UserCreditCardDto dto) {
+	@Operation(summary = "新增信用卡", description = "無需傳入 Body，後端自動生成預設值")
+	public ResponseEntity<UserCreditCard> createCard(
+			// 1. 設定 required = false，允許前端不傳 Body
+			@RequestBody(required = false) UserCreditCardDto dto) {
 		String uid = getCurrentUserUid();
+
+		// 2. 如果前端沒傳 Body，dto 會是 null，我們手動 new 一個空的物件傳給 Service
+		// (雖然 Service 目前邏輯是不看 DTO 內容，但為了避免傳 null 進去導致意外，給個空物件較安全)
+		if (dto == null) {
+			dto = new UserCreditCardDto();
+		}
+
 		UserCreditCard newCard = userCreditCardService.createCard(dto, uid);
 		return ResponseEntity.status(HttpStatus.CREATED).body(newCard);
 	}
+	// ----------------
 
 	@PutMapping
-	@Operation(summary = "更新信用卡", description = "僅更新有傳值的欄位 (Partial Update)")
+	@Operation(summary = "更新信用卡")
 	public ResponseEntity<UserCreditCard> updateCard(@Valid @RequestBody UserCreditCardDto dto) {
-		// 更新時 ID 是必須的，通常建議在 DTO 驗證，或是這裡檢查
 		if (dto.getId() == null) {
-			return ResponseEntity.badRequest().build(); // 或拋出 Exception
+			return ResponseEntity.badRequest().build();
 		}
-
 		String uid = getCurrentUserUid();
-		UserCreditCard updatedCard = userCreditCardService.updateCard(dto, uid);
-		return ResponseEntity.ok(updatedCard);
+		return ResponseEntity.ok(userCreditCardService.updateCard(dto, uid));
 	}
 
 	@DeleteMapping("/{id}")
-	@Operation(summary = "刪除信用卡", description = "根據 ID 刪除信用卡")
+	@Operation(summary = "刪除信用卡")
 	public ResponseEntity<Void> deleteCard(@PathVariable Long id) {
 		String uid = getCurrentUserUid();
 		userCreditCardService.deleteCard(id, uid);

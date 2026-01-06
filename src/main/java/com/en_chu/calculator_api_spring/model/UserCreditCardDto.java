@@ -11,16 +11,19 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class UserCreditCardDto extends BaseDto {
 
-	@Schema(description = "卡片名稱 (若為空，後端預設為 '新信用卡')", example = "富邦 J 卡")
-    private String name;
+    @Schema(description = "卡片名稱", example = "玉山 U Bear")
+    private String name; // 不再強制驗證，由 Service 補預設值
 
-    @Schema(description = "發卡銀行 (若為空，後端預設為 '未設定銀行')", example = "台北富邦")
-    private String bankName;
+    @Schema(description = "扣款帳戶", example = "台新 Richart")
+    private String deductionAccount;
 
-    @Schema(description = "用途分類 (若為空，後端預設為 'daily')", example = "daily")
+    @Schema(description = "用途分類", example = "online")
     private String usageType;
 
-    @Schema(description = "每月試算支出 (若為空，後端預設為 0)", example = "15000")
-    @Min(value = 0, message = "支出金額不能為負數")
-    private BigDecimal estimatedMonthlyExpense;
+    @Schema(description = "存放位置", example = "digital")
+    private String storageLocation;
+
+    @Schema(description = "平均月開支", example = "3500")
+    @Min(value = 0)
+    private BigDecimal averageMonthlyExpense;
 }
