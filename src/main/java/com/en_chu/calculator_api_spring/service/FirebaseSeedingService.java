@@ -1,6 +1,8 @@
 package com.en_chu.calculator_api_spring.service;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,63 +12,121 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.WriteBatch;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j // 1. 自動生成 Log 物件，讓你用 log.info() 印出漂亮日誌
-@Service // 2. 標記為 Spring 管理的 Service，讓它能被 @Autowired 注入
+@Slf4j
+@Service
 public class FirebaseSeedingService {
 
 	@Autowired
-	private Firestore firestore; // 3. 注入你在 FirebaseConfig 註冊好的 Firestore 零件
+	private Firestore firestore;
 
 	@Autowired
-	private ObjectMapper objectMapper; // 4. 注入 Jackson 核心工具，用來把 JSON 字串轉成 Java Map
+	private ObjectMapper objectMapper;
 
 	public void syncAllConfigs() {
 		try {
-			// 5. 建立一個「資源路徑解析器」，它是 Spring 用來搜尋檔案的神器
 			PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-
-			// 6. 掃描 classpath 下 init-data 資料夾中所有以 .json 結尾的檔案
-			// 這讓你未來增加新設定檔時，不需改動任何一行程式碼
 			Resource[] resources = resolver.getResources("classpath:init-data/*.json");
 
 			log.info("偵測到 {} 個設定檔，準備開始同步...", resources.length);
 
-			for (Resource resource : resources) { // 7. 開始巡迴處理每一個找到的檔案
-
-				// 8. 使用 try-with-resources 語法讀取 Input串流，確保讀取完後自動關閉檔案，避免記憶體洩漏
+			for (Resource resource : resources) {
 				try (InputStream is = resource.getInputStream()) {
 
-					// 9. 【核心關鍵】將 JSON 內容轉為通用 Map
-					// 使用 TypeReference 告訴 Jackson：「我不確定裡面長怎樣，通通幫我轉成鍵值對就對了」
-					// 這讓 opt_ (陣列) 與 cfg_ (物件) 都能被同一個邏輯處理
+					// 1. 先讀成通用 Map
 					Map<String, Object> data = objectMapper.readValue(is, new TypeReference<Map<String, Object>>() {
 					});
-
-					// 10. 從解析出來的資料中抓取 "id" 欄位，這將作為 Firebase 的 Document ID
 					String docId = (String) data.get("id");
 
-					if (docId != null) {
-						// 11. 執行上傳動作
-						// collection("metadata")：指定存放在 metadata 這個集合
-						// document(docId)：指定文件名稱（如 opt_gender）
-						// set(data)：將整包 Map 直接塞進去，Firestore 會自動處理資料型態
-						// .get()：因為 Firebase 是非同步操作，加個 .get() 讓 Java 等它傳完再跑下一行
-						firestore.collection("metadata").document(docId).set(data).get();
+					if (docId == null) {
+						log.warn("跳過檔案 {}: 缺少 'id' 欄位", resource.getFilename());
+						continue;
+					}
 
-						log.info("同步成功: 檔案 [{}] -> Firestore 文件 [{}]", resource.getFilename(), docId);
-					} else {
-						log.warn("跳過檔案 {}: 內容缺少 'id' 欄位", resource.getFilename());
+					// ==========================================
+					// 2. 例外處理：如果是生命表 (opt_life_table)
+					// ==========================================
+					if ("opt_life_table".equals(docId)) {
+						log.info("🚀 偵測到生命表資料，啟動特殊結構轉換程序...");
+						syncLifeTableData(docId, data);
+					}
+					// ==========================================
+					// 3. 標準處理：其他 metadata (整包塞入)
+					// ==========================================
+					else {
+						firestore.collection("metadata").document(docId).set(data).get();
+						log.info("同步成功 (Metadata): [{}]", docId);
 					}
 				}
 			}
 			log.info("所有設定檔同步任務完成！");
 		} catch (Exception e) {
-			// 12. 捕捉任何可能的錯誤（如檔案損壞、網路斷線），並記錄在 Log 中
 			log.error("同步過程中發生災難性錯誤: ", e);
 		}
+	}
+
+	/**
+	 * 特殊處理：將生命表 List 拆散為單一文件 (Granular Document) * 目標結構： Collection: opt_life_table
+	 * Document ID: "2025_MALE_0" Fields: { "year": 2025, "gender": "MALE", "age":
+	 * 0, "expected_lifespan": 78.22 }
+	 */
+	private void syncLifeTableData(String collectionName, Map<String, Object> sourceData) throws Exception {
+		// 1. 使用 Jackson 安全轉型 (解決 Unchecked cast 警告)
+		List<Map<String, Object>> list = objectMapper.convertValue(sourceData.get("list"),
+				new TypeReference<List<Map<String, Object>>>() {
+				});
+
+		if (list == null || list.isEmpty()) {
+			return;
+		}
+
+		log.info("🚀 開始處理生命表資料拆分，共 {} 筆...", list.size());
+
+		WriteBatch batch = firestore.batch();
+		int batchCount = 0;
+		int totalCount = 0;
+
+		for (Map<String, Object> row : list) {
+			Integer year = (Integer) row.get("year");
+			String gender = (String) row.get("gender");
+			Integer age = (Integer) row.get("age");
+
+			// 處理數值轉換 (安全起見)
+			Object lifespanObj = row.get("expected_lifespan");
+			Double lifespan = (lifespanObj instanceof Number) ? ((Number) lifespanObj).doubleValue() : 0.0;
+
+			// 2025_MALE_0
+			String docKey = year + "_" + gender + "_" + age;
+
+			Map<String, Object> docData = new HashMap<>();
+			docData.put("year", year);
+			docData.put("gender", gender);
+			docData.put("age", age);
+			docData.put("expected_lifespan", lifespan);
+
+			DocumentReference docRef = firestore.collection(collectionName).document(docKey);
+			batch.set(docRef, docData);
+
+			batchCount++;
+			totalCount++;
+
+			// 每 500 筆提交一次
+			if (batchCount >= 500) {
+				batch.commit().get();
+				batch = firestore.batch();
+				batchCount = 0;
+			}
+		}
+
+		if (batchCount > 0) {
+			batch.commit().get();
+		}
+
+		log.info("同步成功 (LifeTable): 已將 {} 筆資料拆分為獨立文件 (Collection: {})", totalCount, collectionName);
 	}
 }
