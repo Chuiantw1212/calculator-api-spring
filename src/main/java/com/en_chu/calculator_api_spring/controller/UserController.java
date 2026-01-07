@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.en_chu.calculator_api_spring.model.UserCareerDto;
 import com.en_chu.calculator_api_spring.model.UserFullDataRes;
+import com.en_chu.calculator_api_spring.model.UserLaborPensionDto; // 1. 新增 Import
 import com.en_chu.calculator_api_spring.model.UserProfileDto;
-import com.en_chu.calculator_api_spring.service.UserCareerService; // Import 這裡
-import com.en_chu.calculator_api_spring.service.UserProfileService; // Import 這裡
+import com.en_chu.calculator_api_spring.service.UserCareerService;
+import com.en_chu.calculator_api_spring.service.UserLaborPensionService; // 2. 新增 Import
+import com.en_chu.calculator_api_spring.service.UserProfileService;
 import com.en_chu.calculator_api_spring.service.UserService;
 import com.en_chu.calculator_api_spring.util.SecurityUtils;
 
@@ -23,13 +25,16 @@ import jakarta.validation.Valid;
 public class UserController {
 
 	@Autowired
-	private UserService userService; // 負責讀取
+	private UserService userService;
 
 	@Autowired
-	private UserProfileService userProfileService; // 負責 Profile 寫入
+	private UserProfileService userProfileService;
 
 	@Autowired
-	private UserCareerService userCareerService; // 負責 Career 寫入
+	private UserCareerService userCareerService;
+
+	@Autowired
+	private UserLaborPensionService userLaborPensionService; // 3. 注入 Service
 
 	@GetMapping("/me")
 	public ResponseEntity<UserFullDataRes> getMe() {
@@ -40,7 +45,6 @@ public class UserController {
 	@PutMapping("/profile")
 	public ResponseEntity<String> updateProfile(@RequestBody @Valid UserProfileDto req) {
 		String uid = SecurityUtils.getCurrentUserUid();
-		// 直接調用專門的 Service
 		userProfileService.updateProfile(uid, req);
 		return ResponseEntity.ok("更新成功");
 	}
@@ -48,8 +52,16 @@ public class UserController {
 	@PutMapping("/career")
 	public ResponseEntity<String> updateCareer(@RequestBody @Valid UserCareerDto req) {
 		String uid = SecurityUtils.getCurrentUserUid();
-		// 直接調用專門的 Service
 		userCareerService.updateCareer(uid, req);
+		return ResponseEntity.ok("更新成功");
+	}
+
+	// 4. 新增這個 Endpoint
+	@PutMapping("/labor-pension")
+	public ResponseEntity<String> updateLaborPension(@RequestBody @Valid UserLaborPensionDto req) {
+		String uid = SecurityUtils.getCurrentUserUid();
+		// 直接調用專門的 Service
+		userLaborPensionService.updateLaborPension(uid, req);
 		return ResponseEntity.ok("更新成功");
 	}
 }

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.en_chu.calculator_api_spring.mapper.UserLaborPensionMapper">
+
+	<resultMap id="BaseResultMap"
+		type="com.en_chu.calculator_api_spring.entity.UserLaborPension">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="firebase_uid" property="firebaseUid"
+			jdbcType="VARCHAR" />
+
+		<result column="expected_retirement_age"
+			property="expectedRetirementAge" jdbcType="INTEGER" />
+		<result column="remaining_life_at_retirement"
+			property="remainingLifeAtRetirement" jdbcType="NUMERIC" />
+		<result column="retirement_roi" property="retirementRoi"
+			jdbcType="NUMERIC" />
+
+		<result column="employer_contribution"
+			property="employerContribution" jdbcType="NUMERIC" />
+		<result column="employer_earnings" property="employerEarnings"
+			jdbcType="NUMERIC" />
+		<result column="personal_contribution"
+			property="personalContribution" jdbcType="NUMERIC" />
+		<result column="personal_earnings" property="personalEarnings"
+			jdbcType="NUMERIC" />
+
+		<result column="current_work_seniority"
+			property="currentWorkSeniority" jdbcType="NUMERIC" />
+
+		<result column="created_at" property="createdAt"
+			jdbcType="TIMESTAMP" />
+		<result column="updated_at" property="updatedAt"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, firebase_uid,
+		expected_retirement_age, remaining_life_at_retirement, retirement_roi,
+		employer_contribution, employer_earnings, personal_contribution, personal_earnings,
+		current_work_seniority,
+		created_at, updated_at
+	</sql>
+
+	<select id="selectByUid" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM user_labor_pensions
+		WHERE firebase_uid = #{firebaseUid}
+	</select>
+
+	<update id="updateByUid">
+		UPDATE user_labor_pensions
+		SET
+		expected_retirement_age = #{expectedRetirementAge},
+		remaining_life_at_retirement = #{remainingLifeAtRetirement},
+		retirement_roi = #{retirementRoi},
+
+		employer_contribution = #{employerContribution},
+		employer_earnings = #{employerEarnings},
+		personal_contribution = #{personalContribution},
+		personal_earnings = #{personalEarnings},
+
+		current_work_seniority = #{currentWorkSeniority},
+
+		updated_at = CURRENT_TIMESTAMP
+		WHERE firebase_uid = #{firebaseUid}
+	</update>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO user_labor_pensions
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			firebase_uid,
+			<if test="expectedRetirementAge != null">expected_retirement_age,</if>
+			<if test="remainingLifeAtRetirement != null">remaining_life_at_retirement,</if>
+			<if test="retirementRoi != null">retirement_roi,</if>
+			<if test="employerContribution != null">employer_contribution,</if>
+			<if test="employerEarnings != null">employer_earnings,</if>
+			<if test="personalContribution != null">personal_contribution,</if>
+			<if test="personalEarnings != null">personal_earnings,</if>
+			<if test="currentWorkSeniority != null">current_work_seniority,</if>
+			created_at,
+			updated_at
+		</trim>
+		<trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+			#{firebaseUid},
+			<if test="expectedRetirementAge != null">#{expectedRetirementAge},</if>
+			<if test="remainingLifeAtRetirement != null">#{remainingLifeAtRetirement},</if>
+			<if test="retirementRoi != null">#{retirementRoi},</if>
+			<if test="employerContribution != null">#{employerContribution},</if>
+			<if test="employerEarnings != null">#{employerEarnings},</if>
+			<if test="personalContribution != null">#{personalContribution},</if>
+			<if test="personalEarnings != null">#{personalEarnings},</if>
+			<if test="currentWorkSeniority != null">#{currentWorkSeniority},</if>
+			CURRENT_TIMESTAMP,
+			CURRENT_TIMESTAMP
+		</trim>
+	</insert>
+
+</mapper>

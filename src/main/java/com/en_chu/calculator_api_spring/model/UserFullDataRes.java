@@ -1,22 +1,21 @@
 package com.en_chu.calculator_api_spring.model;
 
-import java.util.List;
-
-import lombok.Data; // 假設你有用 Lombok，沒有的話就手寫 Getter/Setter
-import lombok.EqualsAndHashCode;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class UserFullDataRes  extends BaseDto {	
-	private String email;
+@Schema(description = "使用者完整聚合資料 (Aggregation)")
+public class UserFullDataRes {
 
-	// 2. 個人檔案 (從 UserProfile table 來)
-	private UserProfileDto profile;
+    @Schema(description = "系統內部 ID (對應 Profile ID)")
+    private Long id;
 
-	// 3. 職涯資料 (從 UserCareer table 來)
-	// 假設你已經有了 UserCareerRes，沒有的話要建一個
-	private UserCareerDto career;
+    @Schema(description = "基本資料")
+    private UserProfileDto profile;
 
-	// ✅ 必須新增這個欄位，變數名稱要跟 XML 裡的 property="portfolios" 一樣
-	private List<UserPortfolioDto> portfolios;
+    @Schema(description = "職涯收入")
+    private UserCareerDto career;
+    
+    @Schema(description = "勞工退休金設定")
+    private UserLaborPensionDto laborPension; 
 }
