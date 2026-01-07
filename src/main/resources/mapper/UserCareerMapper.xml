@@ -16,8 +16,8 @@
         <result column="health_insurance" property="healthInsurance" jdbcType="NUMERIC"/>
         <result column="other_deduction" property="otherDeduction" jdbcType="NUMERIC"/>
         
-        <result column="pension_rate" property="pensionRate" jdbcType="NUMERIC"/>
-        <result column="pension_amount" property="pensionAmount" jdbcType="NUMERIC"/>
+        <result column="pension_personal_rate" property="pensionPersonalRate" jdbcType="NUMERIC"/>
+        <result column="pension_personal_amount" property="pensionPersonalAmount" jdbcType="NUMERIC"/>
         
         <result column="stock_deduction" property="stockDeduction" jdbcType="NUMERIC"/>
         <result column="stock_company_match" property="stockCompanyMatch" jdbcType="NUMERIC"/>
@@ -30,7 +30,7 @@
         id, firebase_uid, 
         base_salary, other_allowance, monthly_net_income,
         labor_insurance, health_insurance, other_deduction,
-        pension_rate, pension_amount,
+        pension_personal_rate, pension_personal_amount,
         stock_deduction, stock_company_match,
         created_at, updated_at
     </sql>
@@ -47,8 +47,8 @@
             health_insurance = #{healthInsurance},
             other_deduction = #{otherDeduction},
             
-            pension_rate = #{pensionRate},
-            pension_amount = #{pensionAmount},
+            pension_personal_rate = #{pensionPersonalRate},
+            pension_personal_amount = #{pensionPersonalAmount},
             
             stock_deduction = #{stockDeduction},
             stock_company_match = #{stockCompanyMatch},
@@ -71,8 +71,8 @@
             health_insurance, 
             other_deduction,
             
-            pension_rate, 
-            pension_amount,
+            pension_personal_rate, 
+            pension_personal_amount,
             
             stock_deduction, 
             stock_company_match,
@@ -89,8 +89,8 @@
             #{healthInsurance}, 
             #{otherDeduction},
             
-            #{pensionRate}, 
-            #{pensionAmount},
+            #{pensionPersonalRate}, 
+            #{pensionPersonalAmount},
             
             #{stockDeduction}, 
             #{stockCompanyMatch},

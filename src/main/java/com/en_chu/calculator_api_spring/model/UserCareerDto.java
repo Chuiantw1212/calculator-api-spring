@@ -30,10 +30,10 @@ public class UserCareerDto extends BaseDto {
     private BigDecimal otherDeduction;
 
     @Schema(description = "勞退自提比率 (%)", example = "6.0")
-    private BigDecimal pensionRate;
+    private BigDecimal pensionPersonalRate;
 
     @Schema(description = "勞退自提金額", example = "3000")
-    private BigDecimal pensionAmount;
+    private BigDecimal pensionPersonalAmount;
 
     @Schema(description = "員工認股扣款", example = "2000")
     private BigDecimal stockDeduction;

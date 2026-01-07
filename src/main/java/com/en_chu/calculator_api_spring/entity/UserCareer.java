@@ -22,8 +22,8 @@ public class UserCareer extends UserBaseEntity { // 3. 繼承父類別
 	private BigDecimal otherDeduction;
 
 	// 退休金
-	private BigDecimal pensionRate;
-	private BigDecimal pensionAmount;
+	private BigDecimal pensionPersonalRate;
+	private BigDecimal pensionPersonalAmount;
 
 	// 股票/福利
 	private BigDecimal stockDeduction;
