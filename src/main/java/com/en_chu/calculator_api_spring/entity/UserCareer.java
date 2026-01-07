@@ -31,4 +31,10 @@ public class UserCareer extends UserBaseEntity { // 3. 繼承父類別
 	
 	// 每個月實領金額
 	private BigDecimal monthlyNetIncome;
+	
+	// 新增：雇主提撥金額
+    private BigDecimal pensionEmployerAmount;
+
+    // 新增：總提撥金額 (個人 + 雇主)
+    private BigDecimal pensionTotalAmount;
 }

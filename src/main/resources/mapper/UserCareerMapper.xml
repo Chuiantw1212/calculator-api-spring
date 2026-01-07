@@ -18,6 +18,8 @@
         
         <result column="pension_personal_rate" property="pensionPersonalRate" jdbcType="NUMERIC"/>
         <result column="pension_personal_amount" property="pensionPersonalAmount" jdbcType="NUMERIC"/>
+        <result column="pension_employer_amount" property="pensionEmployerAmount" jdbcType="NUMERIC"/>
+        <result column="pension_total_amount" property="pensionTotalAmount" jdbcType="NUMERIC"/>
         
         <result column="stock_deduction" property="stockDeduction" jdbcType="NUMERIC"/>
         <result column="stock_company_match" property="stockCompanyMatch" jdbcType="NUMERIC"/>
@@ -30,7 +32,7 @@
         id, firebase_uid, 
         base_salary, other_allowance, monthly_net_income,
         labor_insurance, health_insurance, other_deduction,
-        pension_personal_rate, pension_personal_amount,
+        pension_personal_rate, pension_personal_amount, pension_employer_amount, pension_total_amount,
         stock_deduction, stock_company_match,
         created_at, updated_at
     </sql>
@@ -49,6 +51,8 @@
             
             pension_personal_rate = #{pensionPersonalRate},
             pension_personal_amount = #{pensionPersonalAmount},
+            pension_employer_amount = #{pensionEmployerAmount},
+            pension_total_amount = #{pensionTotalAmount},
             
             stock_deduction = #{stockDeduction},
             stock_company_match = #{stockCompanyMatch},
@@ -73,6 +77,8 @@
             
             pension_personal_rate, 
             pension_personal_amount,
+            pension_employer_amount, 
+            pension_total_amount,
             
             stock_deduction, 
             stock_company_match,
@@ -91,6 +97,8 @@
             
             #{pensionPersonalRate}, 
             #{pensionPersonalAmount},
+            #{pensionEmployerAmount}, 
+            #{pensionTotalAmount},
             
             #{stockDeduction}, 
             #{stockCompanyMatch},

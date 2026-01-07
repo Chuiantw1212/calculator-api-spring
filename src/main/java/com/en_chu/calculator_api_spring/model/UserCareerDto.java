@@ -29,11 +29,17 @@ public class UserCareerDto extends BaseDto {
     @Schema(description = "其他扣項", example = "100")
     private BigDecimal otherDeduction;
 
-    @Schema(description = "勞退自提比率 (%)", example = "6.0")
+    @Schema(description = "個人勞退自提率 (%)", example = "6.0")
     private BigDecimal pensionPersonalRate;
 
-    @Schema(description = "勞退自提金額", example = "3000")
+    @Schema(description = "個人勞退自提金額", example = "3000")
     private BigDecimal pensionPersonalAmount;
+
+    @Schema(description = "雇主勞退提繳金額 (通常為薪資 6%)", example = "3000")
+    private BigDecimal pensionEmployerAmount;
+
+    @Schema(description = "每月勞退投入總額 (個人+雇主)", example = "6000")
+    private BigDecimal pensionTotalAmount;
 
     @Schema(description = "員工認股扣款", example = "2000")
     private BigDecimal stockDeduction;
