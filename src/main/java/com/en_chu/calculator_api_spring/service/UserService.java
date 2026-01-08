@@ -5,13 +5,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.en_chu.calculator_api_spring.entity.UserCareer;
+import com.en_chu.calculator_api_spring.entity.UserLaborInsurance;
 import com.en_chu.calculator_api_spring.entity.UserLaborPension;
 import com.en_chu.calculator_api_spring.entity.UserProfile;
 import com.en_chu.calculator_api_spring.mapper.UserCareerMapper;
+import com.en_chu.calculator_api_spring.mapper.UserLaborInsuranceMapper;
 import com.en_chu.calculator_api_spring.mapper.UserLaborPensionMapper; // 新增導入
 import com.en_chu.calculator_api_spring.mapper.UserProfileMapper;
 import com.en_chu.calculator_api_spring.model.UserCareerDto;
 import com.en_chu.calculator_api_spring.model.UserFullDataRes;
+import com.en_chu.calculator_api_spring.model.UserLaborInsuranceDto;
 import com.en_chu.calculator_api_spring.model.UserLaborPensionDto; // 新增導入
 import com.en_chu.calculator_api_spring.model.UserProfileDto;
 
@@ -26,14 +29,16 @@ public class UserService {
 	// 1. 注入所有需要的 Mappers
 	private final UserProfileMapper userProfileMapper;
 	private final UserCareerMapper userCareerMapper;
-	private final UserLaborPensionMapper userLaborPensionMapper; // ✅ 新增這行
+	private final UserLaborPensionMapper userLaborPensionMapper;
+	private final UserLaborInsuranceMapper userLaborInsuranceMapper;
 
 	// ==========================================
 	// 1. 取得完整資料 (Aggregation / 組裝工廠)
 	// ==========================================
 
 	/**
-	 * 負責整合並讀取使用者的完整資料 策略：分別查詢 Profile, Career, LaborPension，再轉為 DTO 組裝
+	 * 負責整合並讀取使用者的完整資料 策略：分別查詢 Profile, Career, LaborPension, LaborInsurance，再轉為 DTO
+	 * 組裝
 	 */
 	public UserFullDataRes getFullUserData(String uid) {
 		log.info("🔍 [UserService] 開始組裝使用者資料: UID={}", uid);
@@ -67,7 +72,7 @@ public class UserService {
 			log.info("ℹ️ [UserService] 該用戶尚未設定 Career 資料");
 		}
 
-		// --- Step 3. 取得勞工退休金資料 (Labor Pension) --- ✅ 新增區塊
+		// --- Step 3. 取得勞工退休金資料 (Labor Pension) ---
 		UserLaborPension pensionEntity = userLaborPensionMapper.selectByUid(uid);
 
 		if (pensionEntity != null) {
@@ -78,6 +83,19 @@ public class UserService {
 			log.info("✅ [UserService] Labor Pension 讀取成功 (預退年齡: {})", pensionDto.getExpectedRetirementAge());
 		} else {
 			log.info("ℹ️ [UserService] 該用戶尚未設定 Labor Pension 資料");
+		}
+
+		// --- Step 4. 取得勞工保險資料 (Labor Insurance) --- ✅ 新增區塊
+		UserLaborInsurance insuranceEntity = userLaborInsuranceMapper.selectByUid(uid);
+
+		if (insuranceEntity != null) {
+			UserLaborInsuranceDto insuranceDto = new UserLaborInsuranceDto();
+			BeanUtils.copyProperties(insuranceEntity, insuranceDto);
+
+			response.setLaborInsurance(insuranceDto);
+			log.info("✅ [UserService] Labor Insurance 讀取成功 (平均薪資: {})", insuranceDto.getAverageMonthlySalary());
+		} else {
+			log.info("ℹ️ [UserService] 該用戶尚未設定 Labor Insurance 資料");
 		}
 
 		return response;

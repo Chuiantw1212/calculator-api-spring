@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.en_chu.calculator_api_spring.mapper.UserLaborInsuranceMapper">
+
+    <resultMap id="BaseResultMap" type="com.en_chu.calculator_api_spring.entity.UserLaborInsurance">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="firebase_uid" property="firebaseUid" jdbcType="VARCHAR"/>
+        
+        <result column="expected_claim_age" property="expectedClaimAge" jdbcType="INTEGER"/>
+        <result column="average_monthly_salary" property="averageMonthlySalary" jdbcType="NUMERIC"/>
+        <result column="insurance_seniority" property="insuranceSeniority" jdbcType="INTEGER"/>
+        
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, firebase_uid, expected_claim_age, average_monthly_salary, insurance_seniority, created_at, updated_at
+    </sql>
+
+    <select id="selectByUid" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM user_labor_insurances
+        WHERE firebase_uid = #{firebaseUid}
+    </select>
+
+    <update id="updateByUid">
+        UPDATE user_labor_insurances
+        <set>
+            <if test="expectedClaimAge != null">expected_claim_age = #{expectedClaimAge},</if>
+            <if test="averageMonthlySalary != null">average_monthly_salary = #{averageMonthlySalary},</if>
+            <if test="insuranceSeniority != null">insurance_seniority = #{insuranceSeniority},</if>
+            updated_at = CURRENT_TIMESTAMP
+        </set>
+        WHERE firebase_uid = #{firebaseUid}
+    </update>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user_labor_insurances
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            firebase_uid,
+            <if test="expectedClaimAge != null">expected_claim_age,</if>
+            <if test="averageMonthlySalary != null">average_monthly_salary,</if>
+            <if test="insuranceSeniority != null">insurance_seniority,</if>
+            created_at,
+            updated_at
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            #{firebaseUid},
+            <if test="expectedClaimAge != null">#{expectedClaimAge},</if>
+            <if test="averageMonthlySalary != null">#{averageMonthlySalary},</if>
+            <if test="insuranceSeniority != null">#{insuranceSeniority},</if>
+            CURRENT_TIMESTAMP,
+            CURRENT_TIMESTAMP
+        </trim>
+    </insert>
+
+</mapper>

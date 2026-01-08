@@ -1,0 +1,28 @@
+{
+  "id": "opt_aging_medical",
+  "name": "高齡醫療公積金 (非長照)",
+  "description": "健保不給付的「身體零件維修費」，如牙齒、眼睛、聽力與高階健檢。",
+  "list": [
+    {
+      "key": "basic",
+      "label": "健保優先型 (Standard)",
+      "amount": 3000,
+      "desc": "以健保醫材為主。僅預留掛號費、部分負擔與營養品 (年額度 3.6萬)。",
+      "sort": 1
+    },
+    {
+      "key": "enhanced",
+      "label": "品質加強型 (Enhanced)",
+      "amount": 6000,
+      "desc": "預備自費項目：如多焦水晶體(白內障)、單顆植牙或中階助聽器 (年額度 7.2萬)。",
+      "sort": 2
+    },
+    {
+      "key": "premium",
+      "label": "高端醫療型 (Premium)",
+      "amount": 10000,
+      "desc": "包含全口重建、高階助聽器(3-5年汰換)與年度高階MRI健檢 (年額度 12萬)。",
+      "sort": 3
+    }
+  ]
+}

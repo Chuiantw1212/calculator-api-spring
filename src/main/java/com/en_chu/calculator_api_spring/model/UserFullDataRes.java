@@ -17,5 +17,8 @@ public class UserFullDataRes {
     private UserCareerDto career;
     
     @Schema(description = "勞工退休金設定")
-    private UserLaborPensionDto laborPension; 
+    private UserLaborPensionDto laborPension;
+    
+    @Schema(description = "勞工保險金設定")
+    private UserLaborInsuranceDto laborInsurance;
 }

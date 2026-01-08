@@ -1,0 +1,55 @@
+{
+  "id": "opt_care_costs",
+  "name": "長照照顧模式配置",
+  "description": "失能期間的每月照護費用預估 (資料來源：衛福部111年老人狀況調查、市場行情修正)",
+  "list": [
+    {
+      "key": "family",
+      "label": "家人自行照顧",
+      "amount": 0,
+      "livingExpenseAdjustment": 1.0,
+      "note": "帳面無支出。但需考量被照顧者的全額生活費，以及家屬離職照顧的「薪資機會成本」。",
+      "sort": 1
+    },
+    {
+      "key": "day_care",
+      "label": "居家/日間照顧 (長照2.0)",
+      "amount": 15000,
+      "livingExpenseAdjustment": 1.0,
+      "note": "費用含長照2.0自付額及部分自費時數。適用於輕中度失能，夜間需家人接手。",
+      "sort": 2
+    },
+    {
+      "key": "foreign_helper",
+      "label": "外籍看護 (24H)",
+      "amount": 32000,
+      "livingExpenseAdjustment": 1.0,
+      "note": "含薪資、健保、就業安定費。雇主需另負擔看護食宿，家庭水電與伙食開銷通常會微幅增加。",
+      "sort": 3
+    },
+    {
+      "key": "domestic_helper_24h",
+      "label": "本國看護 (24H專責)",
+      "amount": 90000,
+      "livingExpenseAdjustment": 1.0,
+      "note": "市場行情約 3,000元/日。費用極高，通常僅作為申請外籍看護期間的「短期過渡方案」。",
+      "sort": 4
+    },
+    {
+      "key": "institution_general",
+      "label": "一般住宿機構 (Basic)",
+      "amount": 38000,
+      "livingExpenseAdjustment": 0.2,
+      "note": "費用含食宿。生活費僅需保留 20% 用於尿布、醫療耗材、營養品與轉診交通費。",
+      "sort": 5
+    },
+    {
+      "key": "institution_premium",
+      "label": "高品質住宿機構 (Premium)",
+      "amount": 65000,
+      "livingExpenseAdjustment": 0.25,
+      "note": "單人/雙人房，含食宿。保留 25% 生活費以支應高品質社交、課程或額外復健需求。",
+      "sort": 6
+    }
+  ]
+}

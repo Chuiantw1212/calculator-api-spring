@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.en_chu.calculator_api_spring.model.UserCareerDto;
 import com.en_chu.calculator_api_spring.model.UserFullDataRes;
+import com.en_chu.calculator_api_spring.model.UserLaborInsuranceDto;
 import com.en_chu.calculator_api_spring.model.UserLaborPensionDto; // 1. 新增 Import
 import com.en_chu.calculator_api_spring.model.UserProfileDto;
 import com.en_chu.calculator_api_spring.service.UserCareerService;
+import com.en_chu.calculator_api_spring.service.UserLaborInsuranceService;
 import com.en_chu.calculator_api_spring.service.UserLaborPensionService; // 2. 新增 Import
 import com.en_chu.calculator_api_spring.service.UserProfileService;
 import com.en_chu.calculator_api_spring.service.UserService;
@@ -34,7 +36,10 @@ public class UserController {
 	private UserCareerService userCareerService;
 
 	@Autowired
-	private UserLaborPensionService userLaborPensionService; // 3. 注入 Service
+	private UserLaborPensionService userLaborPensionService; 
+	
+	@Autowired
+	private UserLaborInsuranceService userLaborInsuranceService;
 
 	@GetMapping("/me")
 	public ResponseEntity<UserFullDataRes> getMe() {
@@ -56,12 +61,17 @@ public class UserController {
 		return ResponseEntity.ok("更新成功");
 	}
 
-	// 4. 新增這個 Endpoint
 	@PutMapping("/labor-pension")
 	public ResponseEntity<String> updateLaborPension(@RequestBody @Valid UserLaborPensionDto req) {
 		String uid = SecurityUtils.getCurrentUserUid();
 		// 直接調用專門的 Service
 		userLaborPensionService.updateLaborPension(uid, req);
 		return ResponseEntity.ok("更新成功");
+	}
+	
+	@PutMapping("/labor-insurance")
+	public ResponseEntity<UserLaborInsuranceDto> update(@Valid @RequestBody UserLaborInsuranceDto req) {
+		String uid = SecurityUtils.getCurrentUserUid();
+		return ResponseEntity.ok(userLaborInsuranceService.updateLaborInsurance(uid, req));
 	}
 }
