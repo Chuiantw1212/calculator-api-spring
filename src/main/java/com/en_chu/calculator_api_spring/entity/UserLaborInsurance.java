@@ -34,4 +34,9 @@ public class UserLaborInsurance extends UserBaseEntity {
 	 * 保險年資 (單位: 月)
 	 */
 	private Integer insuranceSeniority;
+	
+	/**
+     * 預估餘命 (年)
+     */
+    private BigDecimal predictedRemainingLife;
 }

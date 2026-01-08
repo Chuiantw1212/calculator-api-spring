@@ -11,12 +11,17 @@
         <result column="average_monthly_salary" property="averageMonthlySalary" jdbcType="NUMERIC"/>
         <result column="insurance_seniority" property="insuranceSeniority" jdbcType="INTEGER"/>
         
+        <result column="predicted_remaining_life" property="predictedRemainingLife" jdbcType="NUMERIC"/>
+        
         <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
         <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, firebase_uid, expected_claim_age, average_monthly_salary, insurance_seniority, created_at, updated_at
+        id, firebase_uid, 
+        expected_claim_age, average_monthly_salary, insurance_seniority,
+        predicted_remaining_life, 
+        created_at, updated_at
     </sql>
 
     <select id="selectByUid" resultMap="BaseResultMap">
@@ -31,6 +36,9 @@
             <if test="expectedClaimAge != null">expected_claim_age = #{expectedClaimAge},</if>
             <if test="averageMonthlySalary != null">average_monthly_salary = #{averageMonthlySalary},</if>
             <if test="insuranceSeniority != null">insurance_seniority = #{insuranceSeniority},</if>
+            
+            <if test="predictedRemainingLife != null">predicted_remaining_life = #{predictedRemainingLife},</if>
+            
             updated_at = CURRENT_TIMESTAMP
         </set>
         WHERE firebase_uid = #{firebaseUid}
@@ -43,6 +51,9 @@
             <if test="expectedClaimAge != null">expected_claim_age,</if>
             <if test="averageMonthlySalary != null">average_monthly_salary,</if>
             <if test="insuranceSeniority != null">insurance_seniority,</if>
+            
+            <if test="predictedRemainingLife != null">predicted_remaining_life,</if>
+            
             created_at,
             updated_at
         </trim>
@@ -51,6 +62,9 @@
             <if test="expectedClaimAge != null">#{expectedClaimAge},</if>
             <if test="averageMonthlySalary != null">#{averageMonthlySalary},</if>
             <if test="insuranceSeniority != null">#{insuranceSeniority},</if>
+            
+            <if test="predictedRemainingLife != null">#{predictedRemainingLife},</if>
+            
             CURRENT_TIMESTAMP,
             CURRENT_TIMESTAMP
         </trim>
