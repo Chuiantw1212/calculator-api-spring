@@ -30,4 +30,8 @@ public class UserLaborInsuranceDto extends BaseDto {
     @Min(value = 0, message = "預估餘命不能為負數")
     @Schema(description = "請領時預估餘命 (年)", example = "20.5")
     private BigDecimal predictedRemainingLife;
+	
+	@Schema(description = "預估每月領取金額 (勞保年金)", example = "24500")
+    @Min(value = 0)
+    private BigDecimal predictedMonthlyAnnuity;
 }

@@ -3,21 +3,21 @@
   "name": "退休活躍度調整配置",
   "list": [
     {
-      "key": "active",
+      "code": "active",
       "label": "活躍圓夢 (Active)",
       "value": 1.2,
       "desc": "每年安排國外旅遊或昂貴興趣 (基數 x 120%)",
       "sort": 1
     },
     {
-      "key": "moderate",
+      "code": "moderate",
       "label": "偶爾休閒 (Moderate)",
       "value": 1.1,
       "desc": "以國內旅遊、聚餐為主 (基數 x 110%)",
       "sort": 2
     },
     {
-      "key": "basic",
+      "code": "basic",
       "label": "安穩居家 (Basic)",
       "value": 1.0,
       "desc": "維持與現在相同的日常開銷 (基數 x 100%)",

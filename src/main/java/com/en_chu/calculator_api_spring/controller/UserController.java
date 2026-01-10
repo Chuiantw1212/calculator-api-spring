@@ -13,10 +13,12 @@ import com.en_chu.calculator_api_spring.model.UserFullDataRes;
 import com.en_chu.calculator_api_spring.model.UserLaborInsuranceDto;
 import com.en_chu.calculator_api_spring.model.UserLaborPensionDto; // 1. 新增 Import
 import com.en_chu.calculator_api_spring.model.UserProfileDto;
+import com.en_chu.calculator_api_spring.model.UserRetirementExpenseDto;
 import com.en_chu.calculator_api_spring.service.UserCareerService;
 import com.en_chu.calculator_api_spring.service.UserLaborInsuranceService;
 import com.en_chu.calculator_api_spring.service.UserLaborPensionService; // 2. 新增 Import
 import com.en_chu.calculator_api_spring.service.UserProfileService;
+import com.en_chu.calculator_api_spring.service.UserRetirementExpenseService;
 import com.en_chu.calculator_api_spring.service.UserService;
 import com.en_chu.calculator_api_spring.util.SecurityUtils;
 
@@ -36,10 +38,13 @@ public class UserController {
 	private UserCareerService userCareerService;
 
 	@Autowired
-	private UserLaborPensionService userLaborPensionService; 
-	
+	private UserLaborPensionService userLaborPensionService;
+
 	@Autowired
 	private UserLaborInsuranceService userLaborInsuranceService;
+
+	@Autowired
+	private UserRetirementExpenseService userRetirementExpenseService;
 
 	@GetMapping("/me")
 	public ResponseEntity<UserFullDataRes> getMe() {
@@ -68,10 +73,16 @@ public class UserController {
 		userLaborPensionService.updateLaborPension(uid, req);
 		return ResponseEntity.ok("更新成功");
 	}
-	
+
 	@PutMapping("/labor-insurance")
 	public ResponseEntity<UserLaborInsuranceDto> update(@Valid @RequestBody UserLaborInsuranceDto req) {
 		String uid = SecurityUtils.getCurrentUserUid();
 		return ResponseEntity.ok(userLaborInsuranceService.updateLaborInsurance(uid, req));
 	}
+
+	@PutMapping("/retirement-expense")
+    public ResponseEntity<UserRetirementExpenseDto> updateRetirementExpense(@RequestBody @Valid UserRetirementExpenseDto req) {
+        String uid = SecurityUtils.getCurrentUserUid();
+        return ResponseEntity.ok(userRetirementExpenseService.updateRetirementExpense(uid, req));
+    }
 }

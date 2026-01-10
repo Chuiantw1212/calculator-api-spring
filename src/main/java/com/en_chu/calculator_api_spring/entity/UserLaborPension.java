@@ -27,4 +27,14 @@ public class UserLaborPension extends UserBaseEntity {
 
 	// --- 3. 年資 ---
 	private BigDecimal currentWorkSeniority;
+	
+	/**
+     * 預估退休時累積總額 (稅前 FV)
+     */
+    private BigDecimal predictedLumpSum;
+
+    /**
+     * 預估稅後實領淨額 (Net FV)
+     */
+    private BigDecimal predictedNetLumpSum;
 }

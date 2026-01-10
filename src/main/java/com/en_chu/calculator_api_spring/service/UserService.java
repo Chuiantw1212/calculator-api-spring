@@ -8,15 +8,18 @@ import com.en_chu.calculator_api_spring.entity.UserCareer;
 import com.en_chu.calculator_api_spring.entity.UserLaborInsurance;
 import com.en_chu.calculator_api_spring.entity.UserLaborPension;
 import com.en_chu.calculator_api_spring.entity.UserProfile;
+import com.en_chu.calculator_api_spring.entity.UserRetirementExpense;
 import com.en_chu.calculator_api_spring.mapper.UserCareerMapper;
 import com.en_chu.calculator_api_spring.mapper.UserLaborInsuranceMapper;
 import com.en_chu.calculator_api_spring.mapper.UserLaborPensionMapper; // 新增導入
 import com.en_chu.calculator_api_spring.mapper.UserProfileMapper;
+import com.en_chu.calculator_api_spring.mapper.UserRetirementExpenseMapper;
 import com.en_chu.calculator_api_spring.model.UserCareerDto;
 import com.en_chu.calculator_api_spring.model.UserFullDataRes;
 import com.en_chu.calculator_api_spring.model.UserLaborInsuranceDto;
 import com.en_chu.calculator_api_spring.model.UserLaborPensionDto; // 新增導入
 import com.en_chu.calculator_api_spring.model.UserProfileDto;
+import com.en_chu.calculator_api_spring.model.UserRetirementExpenseDto;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +34,7 @@ public class UserService {
 	private final UserCareerMapper userCareerMapper;
 	private final UserLaborPensionMapper userLaborPensionMapper;
 	private final UserLaborInsuranceMapper userLaborInsuranceMapper;
+	private final UserRetirementExpenseMapper userRetirementExpenseMapper;
 
 	// ==========================================
 	// 1. 取得完整資料 (Aggregation / 組裝工廠)
@@ -97,6 +101,17 @@ public class UserService {
 		} else {
 			log.info("ℹ️ [UserService] 該用戶尚未設定 Labor Insurance 資料");
 		}
+		
+		// --- Step 5. 取得退休開支資料 (Retirement Expense) ---
+        UserRetirementExpense expenseEntity = userRetirementExpenseMapper.selectByUid(uid);
+        
+        if (expenseEntity != null) {
+            UserRetirementExpenseDto expenseDto = new UserRetirementExpenseDto();
+            BeanUtils.copyProperties(expenseEntity, expenseDto);
+            
+            response.setRetirementExpense(expenseDto); // Set 到新的欄位
+            log.info("✅ [UserService] Retirement Expense 讀取成功");
+        }
 
 		return response;
 	}

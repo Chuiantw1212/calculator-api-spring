@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.en_chu.calculator_api_spring.mapper.UserRetirementExpenseMapper">
+
+    <resultMap id="BaseResultMap" type="com.en_chu.calculator_api_spring.entity.UserRetirementExpense">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="firebase_uid" property="firebaseUid" jdbcType="VARCHAR"/>
+        
+        <result column="medical_code" property="medicalCode" jdbcType="VARCHAR"/>
+        <result column="medical_expense" property="medicalExpense" jdbcType="NUMERIC"/>
+        <result column="lifestyle_code" property="lifestyleCode" jdbcType="VARCHAR"/>
+        <result column="dream_coefficient" property="dreamCoefficient" jdbcType="NUMERIC"/>
+        <result column="disability_age" property="disabilityAge" jdbcType="INTEGER"/>
+        <result column="care_mode_code" property="careModeCode" jdbcType="VARCHAR"/>
+        <result column="disability_expense" property="disabilityExpense" jdbcType="NUMERIC"/>
+        <result column="living_expense_adjustment" property="livingExpenseAdjustment" jdbcType="NUMERIC"/>
+        
+        <result column="phase1_monthly_expense" property="phase1MonthlyExpense" jdbcType="NUMERIC"/>
+        <result column="phase2_monthly_expense" property="phase2MonthlyExpense" jdbcType="NUMERIC"/>
+        <result column="phase2_start_age" property="phase2StartAge" jdbcType="INTEGER"/>
+        
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, firebase_uid, 
+        medical_code, medical_expense, 
+        lifestyle_code, dream_coefficient, 
+        disability_age, care_mode_code, disability_expense, living_expense_adjustment,
+        phase1_monthly_expense, phase2_monthly_expense, phase2_start_age,
+        created_at, updated_at
+    </sql>
+
+    <select id="selectByUid" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM user_retirement_expenses
+        WHERE firebase_uid = #{firebaseUid}
+    </select>
+
+    <update id="updateByUid">
+        UPDATE user_retirement_expenses
+        <set>
+            <if test="medicalCode != null">medical_code = #{medicalCode},</if>
+            <if test="medicalExpense != null">medical_expense = #{medicalExpense},</if>
+            <if test="lifestyleCode != null">lifestyle_code = #{lifestyleCode},</if>
+            <if test="dreamCoefficient != null">dream_coefficient = #{dreamCoefficient},</if>
+            <if test="disabilityAge != null">disability_age = #{disabilityAge},</if>
+            <if test="careModeCode != null">care_mode_code = #{careModeCode},</if>
+            <if test="disabilityExpense != null">disability_expense = #{disabilityExpense},</if>
+            <if test="livingExpenseAdjustment != null">living_expense_adjustment = #{livingExpenseAdjustment},</if>
+            
+            <if test="phase1MonthlyExpense != null">phase1_monthly_expense = #{phase1MonthlyExpense},</if>
+            <if test="phase2MonthlyExpense != null">phase2_monthly_expense = #{phase2MonthlyExpense},</if>
+            <if test="phase2StartAge != null">phase2_start_age = #{phase2StartAge},</if>
+            
+            updated_at = CURRENT_TIMESTAMP
+        </set>
+        WHERE firebase_uid = #{firebaseUid}
+    </update>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user_retirement_expenses
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            firebase_uid,
+            <if test="medicalCode != null">medical_code,</if>
+            <if test="medicalExpense != null">medical_expense,</if>
+            <if test="lifestyleCode != null">lifestyle_code,</if>
+            <if test="dreamCoefficient != null">dream_coefficient,</if>
+            <if test="disabilityAge != null">disability_age,</if>
+            <if test="careModeCode != null">care_mode_code,</if>
+            <if test="disabilityExpense != null">disability_expense,</if>
+            <if test="livingExpenseAdjustment != null">living_expense_adjustment,</if>
+            <if test="phase1MonthlyExpense != null">phase1_monthly_expense,</if>
+            <if test="phase2MonthlyExpense != null">phase2_monthly_expense,</if>
+            <if test="phase2StartAge != null">phase2_start_age,</if>
+            created_at, updated_at
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            #{firebaseUid},
+            <if test="medicalCode != null">#{medicalCode},</if>
+            <if test="medicalExpense != null">#{medicalExpense},</if>
+            <if test="lifestyleCode != null">#{lifestyleCode},</if>
+            <if test="dreamCoefficient != null">#{dreamCoefficient},</if>
+            <if test="disabilityAge != null">#{disabilityAge},</if>
+            <if test="careModeCode != null">#{careModeCode},</if>
+            <if test="disabilityExpense != null">#{disabilityExpense},</if>
+            <if test="livingExpenseAdjustment != null">#{livingExpenseAdjustment},</if>
+            <if test="phase1MonthlyExpense != null">#{phase1MonthlyExpense},</if>
+            <if test="phase2MonthlyExpense != null">#{phase2MonthlyExpense},</if>
+            <if test="phase2StartAge != null">#{phase2StartAge},</if>
+            CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+        </trim>
+    </insert>
+
+</mapper>

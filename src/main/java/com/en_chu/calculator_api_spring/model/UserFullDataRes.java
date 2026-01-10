@@ -21,4 +21,7 @@ public class UserFullDataRes {
     
     @Schema(description = "勞工保險金設定")
     private UserLaborInsuranceDto laborInsurance;
+    
+    @Schema(description = "退休開支與照護規劃")
+    private UserRetirementExpenseDto retirementExpense; // 使用 retirementExpense
 }

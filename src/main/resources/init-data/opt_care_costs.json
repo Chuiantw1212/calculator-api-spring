@@ -4,7 +4,7 @@
   "description": "失能期間的每月照護費用預估 (資料來源：衛福部111年老人狀況調查、市場行情修正)",
   "list": [
     {
-      "key": "family",
+      "code": "family",
       "label": "家人自行照顧",
       "amount": 0,
       "livingExpenseAdjustment": 1.0,
@@ -12,7 +12,7 @@
       "sort": 1
     },
     {
-      "key": "day_care",
+      "code": "day_care",
       "label": "居家/日間照顧 (長照2.0)",
       "amount": 15000,
       "livingExpenseAdjustment": 1.0,
@@ -20,7 +20,7 @@
       "sort": 2
     },
     {
-      "key": "foreign_helper",
+      "code": "foreign_helper",
       "label": "外籍看護 (24H)",
       "amount": 32000,
       "livingExpenseAdjustment": 1.0,
@@ -28,7 +28,7 @@
       "sort": 3
     },
     {
-      "key": "domestic_helper_24h",
+      "code": "domestic_helper_24h",
       "label": "本國看護 (24H專責)",
       "amount": 90000,
       "livingExpenseAdjustment": 1.0,
@@ -36,7 +36,7 @@
       "sort": 4
     },
     {
-      "key": "institution_general",
+      "code": "institution_general",
       "label": "一般住宿機構 (Basic)",
       "amount": 38000,
       "livingExpenseAdjustment": 0.2,
@@ -44,7 +44,7 @@
       "sort": 5
     },
     {
-      "key": "institution_premium",
+      "code": "institution_premium",
       "label": "高品質住宿機構 (Premium)",
       "amount": 65000,
       "livingExpenseAdjustment": 0.25,

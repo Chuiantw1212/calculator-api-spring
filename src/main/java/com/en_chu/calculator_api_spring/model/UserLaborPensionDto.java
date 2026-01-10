@@ -54,4 +54,12 @@ public class UserLaborPensionDto extends BaseDto {
 	@Schema(description = "目前已累積工作年資 (年)", example = "10.5")
 	@Min(value = 0, message = "年資不能為負數")
 	private BigDecimal currentWorkSeniority;
+	
+	@Schema(description = "預估退休時累積總額 (稅前 FV)", example = "2500000")
+    @Min(value = 0)
+    private BigDecimal predictedLumpSum;
+
+    @Schema(description = "預估稅後實領淨額 (Net FV)", example = "2450000")
+    @Min(value = 0)
+    private BigDecimal predictedNetLumpSum;
 }

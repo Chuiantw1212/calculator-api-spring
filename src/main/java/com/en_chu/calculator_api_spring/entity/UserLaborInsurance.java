@@ -39,4 +39,9 @@ public class UserLaborInsurance extends UserBaseEntity {
      * 預估餘命 (年)
      */
     private BigDecimal predictedRemainingLife;
+    
+    /**
+     * 預估每月領取金額 (勞保年金 Annuity)
+     */
+    private BigDecimal predictedMonthlyAnnuity;
 }
