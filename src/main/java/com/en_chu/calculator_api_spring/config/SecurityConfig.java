@@ -9,7 +9,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-// 1. 記得 import 我們剛剛寫的 EntryPoint
 import com.en_chu.calculator_api_spring.security.FirebaseAuthenticationEntryPoint;
 import com.en_chu.calculator_api_spring.security.FirebaseTokenFilter;
 
@@ -19,7 +18,6 @@ public class SecurityConfig {
 	@Autowired
 	private FirebaseTokenFilter firebaseTokenFilter;
 
-	// 2. 注入自定義的 EntryPoint
 	@Autowired
 	private FirebaseAuthenticationEntryPoint firebaseAuthenticationEntryPoint;
 
@@ -30,16 +28,13 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.cors(cors -> cors.configurationSource(corsConfigurationSource)).csrf(AbstractHttpConfigurer::disable)
 				.httpBasic(AbstractHttpConfigurer::disable).formLogin(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(
-						auth -> auth
-								.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
-										"/api/v1/metadata", "/admin/sync-firebase")
-								.permitAll().anyRequest().authenticated())
-				.addFilterBefore(firebaseTokenFilter, UsernamePasswordAuthenticationFilter.class)
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/v1/metadata",
 
-				// 3. 修改這裡：換成我們自定義的 EntryPoint
-				// 原本是: .authenticationEntryPoint(new
-				// HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+								// ✅ [修改] 更新為新的 Admin Controller 路徑 (使用萬用字元)
+								"/admin/sync/**")
+						.permitAll().anyRequest().authenticated())
+				.addFilterBefore(firebaseTokenFilter, UsernamePasswordAuthenticationFilter.class)
 				.exceptionHandling(e -> e.authenticationEntryPoint(firebaseAuthenticationEntryPoint));
 
 		return http.build();

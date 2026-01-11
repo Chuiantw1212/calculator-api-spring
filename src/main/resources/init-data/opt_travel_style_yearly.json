@@ -1,0 +1,49 @@
+{
+  "id": "opt_travel_style_yearly",
+  "name": "年度旅遊偏好與預算",
+  "description": "根據2025年退休人口報告，以『年』為單位的旅遊型態與預算規劃",
+  "list": [
+    {
+      "code": "NONE",
+      "label": "無特別規劃 (居家/社區活動)",
+      "description": "因經濟或健康考量不安排旅遊。休閒以免費的公園散步、看電視或社區鄰里交流為主。",
+      "defaultYearlyCost": 0,
+      "targetGroup": "行動不便者 / 預算極度受限族群"
+    },
+    {
+      "code": "TW_LIGHT",
+      "label": "國內慢遊 (平日/大眾運輸)",
+      "description": "善用平日離峰與敬老優惠，以高頻率的當日或兩天一夜輕旅行為主",
+      "defaultYearlyCost": 36000,
+      "targetGroup": "精打細算族 / 價格敏感度高"
+    },
+    {
+      "code": "TW_LEARN",
+      "label": "國內深度遊 (學習/體驗)",
+      "description": "參與社區大學或地方創生的『遊+學』行程，包含課程費與深度導覽",
+      "defaultYearlyCost": 60000,
+      "targetGroup": "壯世代 / 追求自我實現"
+    },
+    {
+      "code": "TW_MINI",
+      "label": "國內包車/小團 (Mini Tour)",
+      "description": "完全依賴包車或計程車接送的點對點旅遊，解決體能與交通轉乘問題",
+      "defaultYearlyCost": 144000,
+      "targetGroup": "高齡長者 (75+) / 需服務支援"
+    },
+    {
+      "code": "INT_SHORT",
+      "label": "亞洲短程旅遊 (日韓/東南亞)",
+      "description": "平均每年 1-2 次鄰近國家旅遊，退休族最普遍的海外休閒選擇",
+      "defaultYearlyCost": 100000,
+      "targetGroup": "中產階級退休族"
+    },
+    {
+      "code": "INT_LONG",
+      "label": "國際高端旅遊 (長程/郵輪)",
+      "description": "歐美長程線旅遊或高端郵輪行程，屬於資產富豪階級的消費",
+      "defaultYearlyCost": 300000,
+      "targetGroup": "高所得族群 (所得第五分位)"
+    }
+  ]
+}

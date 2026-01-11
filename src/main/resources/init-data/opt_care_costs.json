@@ -1,55 +1,70 @@
 {
   "id": "opt_care_costs",
   "name": "長照照顧模式配置",
-  "description": "失能期間的每月照護費用預估 (資料來源：衛福部111年老人狀況調查、市場行情修正)",
+  "description": "失能期間的每月照護費用預估 (資料來源：2025長照照顧模式比例估算報告、衛福部老人狀況調查)",
   "list": [
     {
       "code": "family",
       "label": "家人自行照顧",
-      "amount": 0,
+      "amount": 12000,
       "livingExpenseAdjustment": 1.0,
-      "note": "帳面無支出。但需考量被照顧者的全額生活費，以及家屬離職照顧的「薪資機會成本」。",
+      "ratio": 60.1,
+      "note": "帳面支出低，但最大隱形成本為家屬離職的「薪資損失」(每月約3-5萬)",
       "sort": 1
     },
     {
       "code": "day_care",
-      "label": "居家/日間照顧 (長照2.0)",
-      "amount": 15000,
+      "label": "純居家/長照2.0 (Lean)",
+      "amount": 16000,
       "livingExpenseAdjustment": 1.0,
-      "note": "費用含長照2.0自付額及部分自費時數。適用於輕中度失能，夜間需家人接手。",
+      "ratio": 4.5,
+      "note": "最省錢但家屬負擔重。含長照2.0自付額及交通費，適合輕中度失能",
       "sort": 2
     },
     {
       "code": "foreign_helper",
-      "label": "外籍看護 (24H)",
-      "amount": 32000,
+      "label": "外籍看護 (純人力)",
+      "amount": 38000,
       "livingExpenseAdjustment": 1.0,
-      "note": "含薪資、健保、就業安定費。雇主需另負擔看護食宿，家庭水電與伙食開銷通常會微幅增加。",
+      "ratio": 9.7,
+      "note": "報告指出約 70% 外看家庭未連結長照資源。雖有全日人力但缺乏專業復能，失能惡化風險較高",
       "sort": 3
+    },
+    {
+      "code": "hybrid_care",
+      "label": "混合模式 (外看+日照)",
+      "amount": 45000,
+      "livingExpenseAdjustment": 1.0,
+      "ratio": 4.1,
+      "note": "約 30% 外看家庭採用。外籍看護(3.8萬)加上日照中心自付，提升照護品質並降低逃逸風險",
+      "sort": 4
+    },
+    {
+      "code": "institution_general",
+      "label": "一般護理之家 (Standard)",
+      "amount": 55000,
+      "livingExpenseAdjustment": 0.1,
+      "ratio": 10.6,
+      "note": "剛性需求。月費4-5萬加上必備雜支(尿布/管灌)約1-1.5萬，政府補助極少",
+      "sort": 5
+    },
+    {
+      "code": "institution_premium",
+      "label": "高品質住宿機構 (Premium)",
+      "amount": 85000,
+      "livingExpenseAdjustment": 0.15,
+      "ratio": 0.6,
+      "note": "市場供給極缺(<8%)。單人房、含高品質食宿與活動，都會區私立機構行情常突破8-10萬元",
+      "sort": 6
     },
     {
       "code": "domestic_helper_24h",
       "label": "本國看護 (24H專責)",
       "amount": 90000,
       "livingExpenseAdjustment": 1.0,
-      "note": "市場行情約 3,000元/日。費用極高，通常僅作為申請外籍看護期間的「短期過渡方案」。",
-      "sort": 4
-    },
-    {
-      "code": "institution_general",
-      "label": "一般住宿機構 (Basic)",
-      "amount": 38000,
-      "livingExpenseAdjustment": 0.2,
-      "note": "費用含食宿。生活費僅需保留 20% 用於尿布、醫療耗材、營養品與轉診交通費。",
-      "sort": 5
-    },
-    {
-      "code": "institution_premium",
-      "label": "高品質住宿機構 (Premium)",
-      "amount": 65000,
-      "livingExpenseAdjustment": 0.25,
-      "note": "單人/雙人房，含食宿。保留 25% 生活費以支應高品質社交、課程或額外復健需求。",
-      "sort": 6
+      "ratio": 0.7,
+      "note": "最高端選擇。行情約3,000元/日且節日需加倍，通常僅作短期急難過渡使用",
+      "sort": 7
     }
   ]
 }

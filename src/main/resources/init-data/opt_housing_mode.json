@@ -1,0 +1,48 @@
+{
+  "id": "opt_housing_mode",
+  "name": "退休居住模式",
+  "list": [
+    {
+      "code": "OWN_HOME",
+      "label": "自有住宅 (在地老化)",
+      "description": "現金流壓力最小，但需預留修繕費",
+      "defaultMonthlyExpense": 22000,
+      "coupleMonthlyExpense": 32000
+    },
+    {
+      "code": "RENTAL",
+      "label": "一般租屋 (電梯大樓)",
+      "description": "彈性高但通膨風險最大",
+      "defaultMonthlyExpense": 40000,
+      "coupleMonthlyExpense": 50000
+    },
+    {
+      "code": "PUBLIC_APT",
+      "label": "公立老人公寓",
+      "description": "CP值最高，但候補時間長",
+      "defaultMonthlyExpense": 25000,
+      "coupleMonthlyExpense": 38000
+    },
+    {
+      "code": "VILLAGE_BASIC",
+      "label": "平價養生村 (如長庚)",
+      "description": "醫療整合佳，雙人入住最划算",
+      "defaultMonthlyExpense": 36000,
+      "coupleMonthlyExpense": 48000
+    },
+    {
+      "code": "VILLAGE_LUXURY",
+      "label": "高端養生村 (飯店式)",
+      "description": "生活品質極佳，資產消耗快",
+      "defaultMonthlyExpense": 90000,
+      "coupleMonthlyExpense": 110000
+    },
+    {
+      "code": "CARE_HOME",
+      "label": "需全日照護 (居家/機構)",
+      "description": "含外籍看護或機構費用，剛性支出",
+      "defaultMonthlyExpense": 55000,
+      "coupleMonthlyExpense": 80000
+    }
+  ]
+}
