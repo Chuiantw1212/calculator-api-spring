@@ -1,0 +1,109 @@
+{
+  "id": "conf_consumption_replacement_model",
+  "name": "退休消費替代率十等分位模型",
+  "description": "基於台灣銀髮經濟研究，將退休前每月非居住消費支出映射至建議替代率 (PR-ERR)。此指標排除房租與設算租金，反映真實商業消費力。",
+  "source": "Taiwan's Silver Economy: The Post-Retirement Expense Replacement Ratio (2025)",
+  "currency": "TWD",
+  "list": [
+    {
+      "code": "D1",
+      "label": "第一十分位 (生存型)",
+      "rangeMin": 0,
+      "rangeMax": 21000,
+      "replacementRate": 0.659,
+      "behaviorType": "Survivalist",
+      "description": "非自願性緊縮。長期負儲蓄，消費僅限於食物與大眾運輸，高度依賴補貼。",
+      "consumptionDynamics": "Involuntary Contraction"
+    },
+    {
+      "code": "D2",
+      "label": "第二十分位 (溫飽型)",
+      "rangeMin": 21001,
+      "rangeMax": 26000,
+      "replacementRate": 0.724,
+      "behaviorType": "Subsistence",
+      "description": "僅滿足基本需求。水電費與醫療部分負擔排擠了所有非必要支出，幾乎無信用卡消費。",
+      "consumptionDynamics": "Basic Needs Crowding Out"
+    },
+    {
+      "code": "D3",
+      "label": "第三十分位 (拮据型)",
+      "rangeMin": 26001,
+      "rangeMax": 33000,
+      "replacementRate": 0.763,
+      "behaviorType": "Constrained",
+      "description": "緊縮度日。因勞務收入中斷而減少消費，偶爾外食但嚴格控制成本。",
+      "consumptionDynamics": "Austerity"
+    },
+    {
+      "code": "D4",
+      "label": "第四十分位 (下中產)",
+      "rangeMin": 33001,
+      "rangeMax": 41000,
+      "replacementRate": 0.811,
+      "behaviorType": "Lower Middle",
+      "description": "理性縮減。支出下降主要反映工作相關成本(通勤/治裝)的消除，對物價敏感。",
+      "consumptionDynamics": "Rational Reduction"
+    },
+    {
+      "code": "D5",
+      "label": "第五十分位 (中產階級)",
+      "rangeMin": 41001,
+      "rangeMax": 50000,
+      "replacementRate": 0.859,
+      "behaviorType": "Middle Class",
+      "description": "消費平滑。年金取代薪資，維持適度的「慢活」休閒，如國旅與家庭聚餐。",
+      "consumptionDynamics": "Consumption Smoothing"
+    },
+    {
+      "code": "D6",
+      "label": "第六十分位 (中產階級)",
+      "rangeMin": 50001,
+      "rangeMax": 61000,
+      "replacementRate": 0.874,
+      "behaviorType": "Middle Class",
+      "description": "舒適生活。非必要性支出持續，百貨公司購物、電子產品與車輛維護仍在消費籃中。",
+      "consumptionDynamics": "Comfortable"
+    },
+    {
+      "code": "D7",
+      "label": "第七十分位 (中高產)",
+      "rangeMin": 61001,
+      "rangeMax": 74000,
+      "replacementRate": 0.918,
+      "behaviorType": "Upper Middle",
+      "description": "活躍老化。積極參與「Go-go」活動，國內旅遊增加，醫療支出轉向預防醫學。",
+      "consumptionDynamics": "Active Aging"
+    },
+    {
+      "code": "D8",
+      "label": "第八十分位 (富裕層)",
+      "rangeMin": 74001,
+      "rangeMax": 94000,
+      "replacementRate": 0.951,
+      "behaviorType": "Affluent",
+      "description": "生活方式維持。資產收入補貼年金，替代率接近100%。常態性亞洲區旅遊與購車。",
+      "consumptionDynamics": "Lifestyle Maintenance"
+    },
+    {
+      "code": "D9",
+      "label": "第九十分位 (高淨值)",
+      "rangeMin": 94001,
+      "rangeMax": 134000,
+      "replacementRate": 0.963,
+      "behaviorType": "High Net Worth",
+      "description": "休閒替代。工作時間被高成本休閒取代，包含全球旅遊與奢侈品零售。",
+      "consumptionDynamics": "Leisure Substitution"
+    },
+    {
+      "code": "D10",
+      "label": "第十分位 (極富裕)",
+      "rangeMin": 134001,
+      "rangeMax": null,
+      "replacementRate": 0.988,
+      "behaviorType": "Ultra-Affluent",
+      "description": "脫鉤。消費與年齡/勞動狀態無關，由資產維護、傳承之旅與慈善驅動。",
+      "consumptionDynamics": "Decoupled"
+    }
+  ]
+}
