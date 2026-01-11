@@ -1,5 +1,5 @@
 {
-  "id": "conf_consumption_replacement_model",
+  "id": "opt_consumption_replacement_model",
   "name": "退休消費替代率十等分位模型",
   "description": "基於台灣銀髮經濟研究，將退休前每月非居住消費支出映射至建議替代率 (PR-ERR)。此指標排除房租與設算租金，反映真實商業消費力。",
   "source": "Taiwan's Silver Economy: The Post-Retirement Expense Replacement Ratio (2025)",

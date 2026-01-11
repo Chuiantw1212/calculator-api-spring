@@ -1,0 +1,87 @@
+{
+  "id": "opt_active_lifestyle",
+  "name": "活躍老化生活風格 (Lifestyle Deciles)",
+  "description": "選擇您退休後『期望』的年度休閒圓夢規格 (L1-L10)。系統將自動比對您的『原本財務階層 (D1-D10)』，精算『階層跳躍』所需的額外準備金。",
+  "list": [
+    {
+      "code": "L1",
+      "label": "L1 在地安居 (Survival)",
+      "amount_yearly": 0,
+      "implied_tiers": ["D1"],
+      "desc": "📖【居家/免費資源】\n以圖書館、公園散步、公立長青學苑為主。無額外旅遊預算，生活重心在於社區內。",
+      "gap_logic": "基礎生存狀態，無額外圓夢開銷。"
+    },
+    {
+      "code": "L2",
+      "label": "L2 簡約慢活 (Basic)",
+      "amount_yearly": 12000,
+      "implied_tiers": ["D2"],
+      "desc": "🚌【社區/一日遊】\n偶爾參加里民旅遊或進香團(當日往返)。休閒以訂閱串流影音(Netflix/YouTube)與低價興趣為主。",
+      "gap_logic": "僅需極低額外預算。"
+    },
+    {
+      "code": "L3",
+      "label": "L3 樸實樂活 (Modest)",
+      "amount_yearly": 36000,
+      "implied_tiers": ["D3"],
+      "desc": "🚅【國旅/返鄉】\n每年 1-2 次經費拮据的國內旅遊或探親。平日參加收費低廉的社團活動。",
+      "gap_logic": "月均 $3,000，適合依靠勞保年金生活的族群。"
+    },
+    {
+      "code": "L4",
+      "label": "L4 舒適小康 (Comfort)",
+      "amount_yearly": 60000,
+      "implied_tiers": ["D4"],
+      "desc": "🏨【優質國旅】\n每年 2 次多日國內旅遊(含住宿)。固定參加健身房或才藝課程。生活有餘裕但不奢華。",
+      "gap_logic": "月均 $5,000，下中產階級的標準生活。"
+    },
+    {
+      "code": "L5",
+      "label": "L5 標準中產 (Middle)",
+      "amount_yearly": 100000,
+      "implied_tiers": ["D5"],
+      "desc": "🌏【亞洲體驗】\n平均每 1-2 年安排一次鄰近國家(日韓泰)旅遊。平日聚餐頻率高，重視生活質感。",
+      "gap_logic": "月均 $8,300，標準三明治族群的退休目標。"
+    },
+    {
+      "code": "L6",
+      "label": "L6 寬裕中產 (Upper Middle)",
+      "amount_yearly": 150000,
+      "implied_tiers": ["D6"],
+      "desc": "✈️【常態旅遊】\n每年固定一次亞洲精緻旅遊，搭配多次國內高鐵遊。擁有需付費的長期嗜好(如攝影/露營)。",
+      "gap_logic": "月均 $12,500，開始進入『享受人生』的階段。"
+    },
+    {
+      "code": "L7",
+      "label": "L7 專業富足 (Professional)",
+      "amount_yearly": 240000,
+      "implied_tiers": ["D7"],
+      "desc": "🛳️【長程圓夢】\n每 2-3 年安排一次歐美長程旅遊或郵輪。平日社交活躍，不需刻意節省娛樂開銷。",
+      "gap_logic": "月均 $20,000，專業人士(主管/醫師/教授)的常態。"
+    },
+    {
+      "code": "L8",
+      "label": "L8 享樂寬裕 (Affluent)",
+      "amount_yearly": 400000,
+      "implied_tiers": ["D8"],
+      "desc": "🏌️【高端休閒】\n每年固定長程商務艙旅遊。擁有高爾夫、品酒或高級俱樂部會籍。休閒是生活重心。",
+      "gap_logic": "月均 $33,000，資產階級的入門檻。"
+    },
+    {
+      "code": "L9",
+      "label": "L9 高淨值 (High Net Worth)",
+      "amount_yearly": 800000,
+      "implied_tiers": ["D9"],
+      "desc": "💎【奢華體驗】\n隨心所欲的全球旅行，入住頂級飯店。消費與價格脫鉤，重視『獨特體驗』與『尊榮服務』。",
+      "gap_logic": "月均 $66,000，將原本工作的時間全部轉化為高消費娛樂。"
+    },
+    {
+      "code": "L10",
+      "label": "L10 極致傳承 (Ultra)",
+      "amount_yearly": 1500000,
+      "implied_tiers": ["D10"],
+      "desc": "🌟【慈善/傳承】\n以家族傳承之旅、慈善公益與收藏拍賣為主。休閒預算無上限，重點在於資產配置而非開銷。",
+      "gap_logic": "月均 $125,000+，金字塔頂端的資產運作模式。"
+    }
+  ]
+}
