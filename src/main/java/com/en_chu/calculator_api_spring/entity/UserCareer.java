@@ -37,4 +37,19 @@ public class UserCareer extends UserBaseEntity { // 3. 繼承父類別
 
     // 新增：總提撥金額 (個人 + 雇主)
     private BigDecimal pensionTotalAmount;
+    
+    /**
+     * 年終與非經常性獎金
+     */
+    private BigDecimal annualBonus;
+
+    /**
+     * 全年總薪資 (月薪*12 + 獎金，或使用者自行輸入)
+     */
+    private BigDecimal annualTotalIncome;
+    
+    /**
+     * 健保扶養人數 (0~3，超過3人以3人計)
+     */
+    private Integer dependents;
 }

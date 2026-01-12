@@ -3,6 +3,7 @@ package com.en_chu.calculator_api_spring.model;
 import java.math.BigDecimal;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -47,9 +48,21 @@ public class UserCareerDto extends BaseDto {
     @Schema(description = "公司相對提撥", example = "1000")
     private BigDecimal stockCompanyMatch;
 
-    // --- 修正後的區塊 (移除了隱形字元) ---
     @Schema(description = "每個月實領金額 (稅後)", example = "58000")
     @NotNull(message = "實領金額不能為空")
     @Min(value = 0, message = "金額不能為負數")
     private BigDecimal monthlyNetIncome;
+    
+    @Schema(description = "年終與非經常性獎金 (預估)", example = "120000")
+    @Min(0)
+    private BigDecimal annualBonus;
+
+    @Schema(description = "全年總薪資 (用於階層判斷 D1-D10)", example = "780000")
+    @Min(0)
+    private BigDecimal annualTotalIncome;
+    
+    @Schema(description = "健保扶養人數 (眷屬人數)", example = "0")
+    @Min(0)
+    @Max(3) // 健保費計算上限通常為 3 人 (第 4 人以上免費)
+    private Integer dependents;
 }

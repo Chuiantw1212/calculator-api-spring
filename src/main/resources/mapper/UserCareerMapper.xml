@@ -9,8 +9,12 @@
         
         <result column="base_salary" property="baseSalary" jdbcType="NUMERIC"/>
         <result column="other_allowance" property="otherAllowance" jdbcType="NUMERIC"/>
-        
         <result column="monthly_net_income" property="monthlyNetIncome" jdbcType="NUMERIC"/>
+        
+        <result column="annual_bonus" property="annualBonus" jdbcType="NUMERIC"/>
+        <result column="annual_total_income" property="annualTotalIncome" jdbcType="NUMERIC"/>
+        
+        <result column="dependents" property="dependents" jdbcType="INTEGER"/>
         
         <result column="labor_insurance" property="laborInsurance" jdbcType="NUMERIC"/>
         <result column="health_insurance" property="healthInsurance" jdbcType="NUMERIC"/>
@@ -31,7 +35,8 @@
     <sql id="Base_Column_List">
         id, firebase_uid, 
         base_salary, other_allowance, monthly_net_income,
-        labor_insurance, health_insurance, other_deduction,
+        annual_bonus, annual_total_income,
+        dependents, labor_insurance, health_insurance, other_deduction,
         pension_personal_rate, pension_personal_amount, pension_employer_amount, pension_total_amount,
         stock_deduction, stock_company_match,
         created_at, updated_at
@@ -44,6 +49,12 @@
             base_salary = #{baseSalary},
             other_allowance = #{otherAllowance},
             monthly_net_income = #{monthlyNetIncome},
+            
+            annual_bonus = #{annualBonus},
+            annual_total_income = #{annualTotalIncome},
+            
+            /* ✅ [新增] */
+            dependents = #{dependents},
             
             labor_insurance = #{laborInsurance},
             health_insurance = #{healthInsurance},
@@ -71,6 +82,12 @@
             other_allowance, 
             monthly_net_income,
             
+            annual_bonus,
+            annual_total_income,
+            
+            /* ✅ [新增] */
+            dependents,
+            
             labor_insurance, 
             health_insurance, 
             other_deduction,
@@ -90,6 +107,12 @@
             #{baseSalary}, 
             #{otherAllowance},
             #{monthlyNetIncome},
+            
+            #{annualBonus},
+            #{annualTotalIncome},
+            
+            /* ✅ [新增] */
+            #{dependents},
             
             #{laborInsurance}, 
             #{healthInsurance}, 

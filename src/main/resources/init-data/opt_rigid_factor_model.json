@@ -1,0 +1,89 @@
+{
+  "id": "opt_rigid_factor_model",
+  "name": "剛性保留係數薪資級距模型",
+  "description": "基於113年薪資統計與剛性保留係數(RER Model)，將年薪映射至剛性支出佔比。係數用於估算退休後維持生存的最低剛性預算。",
+  "source": "113年工業及服務業受僱員工全年總薪資深度稽核報告 (2026適用)",
+  "currency": "TWD",
+  "list": [
+    {
+      "code": "D1",
+      "label": "第一十分位 (赤字生存)",
+      "rangeMin": 0,
+      "rangeMax": 330000,
+      "rigidFactor": 0.90,
+      "description": "收入幾乎全用於食宿與醫療，對抗通膨能力極低，剛性需求佔比極高。"
+    },
+    {
+      "code": "D2",
+      "label": "第二十分位 (勉強維持)",
+      "rangeMin": 330001,
+      "rangeMax": 381000,
+      "rigidFactor": 0.80,
+      "description": "雖脫離赤字，但主要差異僅在些微的食品選擇，剛性佔比仍高。"
+    },
+    {
+      "code": "D3",
+      "label": "第三十分位 (脆弱平衡)",
+      "rangeMin": 381001,
+      "rangeMax": 434000,
+      "rigidFactor": 0.75,
+      "description": "開始出現如通訊升級等非剛性消費，但遇外部衝擊（如生病）即需縮減餐費。"
+    },
+    {
+      "code": "D4",
+      "label": "第四十分位 (勞工常態)",
+      "rangeMin": 434001,
+      "rangeMax": 490000,
+      "rigidFactor": 0.70,
+      "description": "醫療高佔比在此階層依然顯著，限制了其他消費的擴張。"
+    },
+    {
+      "code": "D5",
+      "label": "第五十分位 (中位數陷阱)",
+      "rangeMin": 490001,
+      "rangeMax": 546000,
+      "rigidFactor": 0.65,
+      "description": "雖收入增加，但為追求更好的居住品質（房貸）與教育，生存係數下降緩慢。"
+    },
+    {
+      "code": "D6",
+      "label": "第六十分位 (轉折點)",
+      "rangeMin": 546001,
+      "rangeMax": 664000,
+      "rigidFactor": 0.62,
+      "description": "外食比例大幅上升（本模型剔除外食於分子），剛性係數顯著下滑。"
+    },
+    {
+      "code": "D7",
+      "label": "第七十分位 (寬裕起點)",
+      "rangeMin": 664001,
+      "rangeMax": 783000,
+      "rigidFactor": 0.58,
+      "description": "居住支出的邊際效用遞減。家庭預算轉向休閒旅遊與投資，分母擴大稀釋了剛性分子。"
+    },
+    {
+      "code": "D8",
+      "label": "第八十分位 (資產積累期)",
+      "rangeMin": 783001,
+      "rangeMax": 1007000,
+      "rigidFactor": 0.55,
+      "description": "交通支出中「購車」比例大增，剔除後顯示剛性運營成本相對低廉。"
+    },
+    {
+      "code": "D9",
+      "label": "第九十分位 (富裕受薪)",
+      "rangeMin": 1007001,
+      "rangeMax": 1336000,
+      "rigidFactor": 0.52,
+      "description": "醫療轉向預防性高端服務（非剛性）。食品佔比極低，多為自有資產維護。"
+    },
+    {
+      "code": "D10",
+      "label": "第十分位 (財富自由)",
+      "rangeMin": 1336001,
+      "rangeMax": null,
+      "rigidFactor": 0.48,
+      "description": "超過半數支出為非必要消費。台灣富裕層對高端醫療與房產的偏好維持了一定的基數。"
+    }
+  ]
+}
