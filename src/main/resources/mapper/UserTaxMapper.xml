@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.en_chu.calculator_api_spring.mapper.UserTaxMapper">
+
+	<resultMap id="BaseResultMap"
+		type="com.en_chu.calculator_api_spring.entity.UserTax">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="firebase_uid" property="firebaseUid"
+			jdbcType="VARCHAR" />
+
+		<result column="estimated_other_income"
+			property="estimatedOtherIncome" jdbcType="NUMERIC" />
+
+		<result column="created_at" property="createdAt"
+			jdbcType="TIMESTAMP" />
+		<result column="updated_at" property="updatedAt"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, firebase_uid,
+		estimated_other_income,
+		created_at, updated_at
+	</sql>
+
+	<update id="updateByUid">
+    <![CDATA[
+        UPDATE user_taxes 
+        SET 
+            estimated_other_income = #{estimatedOtherIncome},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE 
+            firebase_uid = #{firebaseUid}
+    ]]>
+	</update>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[
+        INSERT INTO user_taxes (
+            firebase_uid, 
+            estimated_other_income,
+            created_at, 
+            updated_at
+        ) VALUES (
+            #{firebaseUid},
+            #{estimatedOtherIncome},
+            CURRENT_TIMESTAMP, 
+            CURRENT_TIMESTAMP
+        )
+    ]]>
+	</insert>
+
+	<select id="selectByUid" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM user_taxes
+		WHERE firebase_uid = #{firebaseUid}
+	</select>
+
+</mapper>
