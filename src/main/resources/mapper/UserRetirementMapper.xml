@@ -71,6 +71,25 @@
         )
     ]]>
     </insert>
+    
+    <update id="updateSelectiveByUid">
+        UPDATE user_retirements
+        <set>
+            <if test="householdType != null">household_type = #{householdType},</if>
+            
+            <if test="housingMode != null">housing_mode = #{housingMode},</if>
+            <if test="housingCost != null">housing_cost = #{housingCost},</if>
+            
+            <if test="healthTierCode != null">health_tier_code = #{healthTierCode},</if>
+            <if test="healthCost != null">health_cost = #{healthCost},</if>
+            
+            <if test="activeLivingCode != null">active_living_code = #{activeLivingCode},</if>
+            <if test="activeLivingCost != null">active_living_cost = #{activeLivingCost},</if>
+            
+            updated_at = CURRENT_TIMESTAMP
+        </set>
+        WHERE firebase_uid = #{firebaseUid}
+    </update>
 
     <select id="selectByUid" resultMap="BaseResultMap">
         SELECT 

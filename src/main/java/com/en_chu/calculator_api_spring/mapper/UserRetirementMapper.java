@@ -10,6 +10,8 @@ public interface UserRetirementMapper {
     int insert(UserRetirement record);
 
     int updateByUid(UserRetirement record);
+    
+    int updateSelectiveByUid(UserRetirement record);
 
     UserRetirement selectByUid(@Param("firebaseUid") String firebaseUid);
 }

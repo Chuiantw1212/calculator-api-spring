@@ -48,4 +48,33 @@ public class UserRetirementService {
     public UserRetirement getByUid(String uid) {
         return userRetirementMapper.selectByUid(uid);
     }
+    
+    /**
+     * 局部更新退休設定 (PATCH)
+     * 只更新 DTO 中非 null 的欄位
+     */
+    @Transactional
+    public void patchRetirement(String uid, UserRetirementDto req) {
+        
+        // 1. 建立 Entity 並複製屬性
+        // BeanUtils 會將 req 中的 null 也複製過去，
+        // 但因為我們是 new 一個新的 Entity，所以沒設值的欄位自然就是 null
+        UserRetirement entity = new UserRetirement();
+        BeanUtils.copyProperties(req, entity);
+        
+        // 2. 設定 Key
+        entity.setFirebaseUid(uid);
+
+        // 3. 執行局部更新
+        int rows = userRetirementMapper.updateSelectiveByUid(entity);
+        
+        // 4. 如果更新筆數為 0，代表資料不存在，改為執行新增 (Insert)
+        // 這種情況下，缺失的欄位會變成資料庫的預設值或 NULL
+        if (rows == 0) {
+            log.info("No record found for PATCH, inserting new one: {}", uid);
+            userRetirementMapper.insert(entity);
+        } else {
+            log.info("Patched retirement settings for UID: {}", uid);
+        }
+    }
 }
