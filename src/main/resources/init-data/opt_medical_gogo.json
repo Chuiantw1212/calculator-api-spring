@@ -1,0 +1,38 @@
+{
+  "id": "opt_medical_gogo",
+  "name": "退休活躍期 (Go-Go Years) 保健開支模型",
+  "source": "2026年台灣高齡家庭醫療支出趨勢與 Go-Go 模式分析",
+  "currency": "TWD",
+  "list": [
+    {
+      "code": "MQ1",
+      "label": "生存醫療型 (Survival Healthcare)",
+      "monthlyCost": 6000,
+      "description": "維持性醫療：僅涵蓋基本健保門診與必要慢性病藥物 [cite: 942]。對所得末20%人口而言，此項支出具高度剛性，每五塊錢就有一塊錢花在看病上 [cite: 946]。"
+    },
+    {
+      "code": "MQ2",
+      "label": "基礎防禦型 (Standard Defense)",
+      "monthlyCost": 9400,
+      "description": "穩定型保健：除基本診治外，包含適量的基礎保健食品與偶爾的自費診療 [cite: 942]。此級距旨在維持現狀，對於健康突發狀況的緩衝力仍有限 [cite: 942]。"
+    },
+    {
+      "code": "MQ3",
+      "label": "中產平衡型 (Moderate Wellness)",
+      "monthlyCost": 12000,
+      "description": "預防性投資：包含定期基礎健檢與中價位保健品 [cite: 942]。此級距能負擔部分自費醫材，以延緩生理機能退化並維持活躍度 [cite: 942, 948]。"
+    },
+    {
+      "code": "MQ4",
+      "label": "品質優化型 (Active Optimization)",
+      "monthlyCost": 15300,
+      "description": "功能維護導向：具備負擔高端自費項目能力（如高品質人工水晶體、植牙、自費物理治療） [cite: 38, 944, 407]。透過投資健康來確保 Go-Go Years 的旅遊與社交品質 [cite: 407]。"
+    },
+    {
+      "code": "MQ5",
+      "label": "尊榮抗老型 (Premium Anti-Aging)",
+      "monthlyCost": 21100,
+      "description": "健康資本投資：包含高端影像健檢、再生醫療及高品質營養補充 [cite: 944, 1005]。視醫療支出為「維持活躍」的必要資產投資，旨在極大化健康餘命 [cite: 948]。"
+    }
+  ]
+}
