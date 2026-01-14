@@ -32,7 +32,7 @@ public class CorsConfig {
 		// 使用注入進來的 List
 		configuration.setAllowedOrigins(allowedOrigins);
 
-		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 		configuration.setAllowedHeaders(List.of("*"));
 		configuration.setAllowCredentials(true);
 		configuration.setMaxAge(3600L);
