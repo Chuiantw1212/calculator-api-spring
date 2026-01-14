@@ -1,0 +1,38 @@
+{
+  "id": "opt_housing_solo",
+  "name": "退休居住選項 (獨居模式)",
+  "source": "退休居住選項費用分析 (2026)",
+  "currency": "TWD",
+  "list": [
+    {
+      "code": "SOLO_OWN_OLD",
+      "label": "自有老屋 (Aging in Place)",
+      "monthlyCost": 23000,
+      "description": "名目持有成本低(約8千)，但需攤提期初適老化修繕費(約360-450萬)。面臨資產流動性差與獨居照護風險。"
+    },
+    {
+      "code": "SOLO_RENT_SUITE",
+      "label": "租賃-獨立套房 (Rental Suite)",
+      "monthlyCost": 16000,
+      "description": "都會區獨立套房租金。單位面積成本最高，面臨房東拒租高齡者之風險，且缺乏社交支持。"
+    },
+    {
+      "code": "SOLO_RENT_APT",
+      "label": "租賃-整層住家 (Whole Apartment)",
+      "monthlyCost": 30000,
+      "description": "享有完整生活空間，但單人負擔極重。打掃維護困難，且水電管理費無法分攤。"
+    },
+    {
+      "code": "SOLO_INST_STD",
+      "label": "養生村-單人房 (Standard Institution)",
+      "monthlyCost": 30000,
+      "description": "以長庚/樂陶居單人房為基準。享有完整醫療與社群服務，但相比雙人入住，需多負擔約 40% 費用。"
+    },
+    {
+      "code": "SOLO_INST_LUX",
+      "label": "養生村-都會豪華 (Luxury Institution)",
+      "monthlyCost": 72000,
+      "description": "以康寧生活會館為基準。位於市中心豪宅規格，鄰近頂級醫療，適合高資產且重視交通便利者。"
+    }
+  ]
+}

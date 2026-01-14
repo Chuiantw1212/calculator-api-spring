@@ -1,0 +1,38 @@
+{
+  "id": "opt_active_living",
+  "name": "退休活躍生活開支模型 (不含居住與醫療)",
+  "source": "所得分位組活躍生活模型 (2026)",
+  "currency": "TWD",
+  "list": [
+    {
+      "code": "Q1",
+      "label": "生存防禦型 (Survival Defense)",
+      "monthlyCost": 22000,
+      "description": "生存底線：主要用於自理膳食與基本交通。在台北僅能依賴公共福利（如敬老卡、老人共餐）維持微型活躍。"
+    },
+    {
+      "code": "Q2",
+      "label": "過渡受限型 (Restricted Transition)",
+      "monthlyCost": 30000,
+      "description": "在地社交：能負擔偶爾的聚餐與里民旅遊，但對通膨壓力敏感，休閒以國內低價團為主。"
+    },
+    {
+      "code": "Q3",
+      "label": "寬裕活躍型 (Active Affluent)",
+      "monthlyCost": 60000,
+      "description": "精彩退休標配：台北中產主流目標。包含每季精緻國旅、日韓平價團、頻繁餐廳聚餐與興趣課程。"
+    },
+    {
+      "code": "Q4",
+      "label": "品質進階型 (Quality Advanced)",
+      "monthlyCost": 80000,
+      "description": "跨國移動：每年 1-2 次亞洲行、使用計程車或 Uber 替代擁車、具備較高品質的數位與社交生活。"
+    },
+    {
+      "code": "Q5",
+      "label": "富足尊榮型 (Prestige)",
+      "monthlyCost": 150000,
+      "description": "體驗極致：歐美商務艙旅遊、高端俱樂部、私人教練及大額代際贈與（孫輩紅包），幾乎不受通膨影響。"
+    }
+  ]
+}

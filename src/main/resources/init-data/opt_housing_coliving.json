@@ -1,0 +1,38 @@
+{
+  "id": "opt_housing_coliving",
+  "name": "退休居住選項 (共居模式)",
+  "source": "退休居住選項費用分析 (2026)",
+  "currency": "TWD",
+  "list": [
+    {
+      "code": "COLIVING_BRAND_SHARED",
+      "label": "品牌共居-多人房 (Shared Room)",
+      "monthlyCost": 8000,
+      "description": "如香蕉同居/玖樓。極致成本分攤，適合預算有限且心態年輕者，需適應室友生活習慣。"
+    },
+    {
+      "code": "COLIVING_APT_SHARE",
+      "label": "家庭式合租 (Apartment Share)",
+      "monthlyCost": 14000,
+      "description": "3人合租整層住家。享有客廳廚房等完整機能，人均成本比獨立套房低約20%-30%，且可互相照應。"
+    },
+    {
+      "code": "COLIVING_INST_DBL",
+      "label": "養生村-雙人入住 (Institution Double)",
+      "monthlyCost": 16750,
+      "description": "長庚養生村雙人房人均價。透過分攤房費，人均成本較單人入住節省約 39%，CP值最高。"
+    },
+    {
+      "code": "COLIVING_INST_FAMILY",
+      "label": "養生村-三人家庭房 (Institution Family)",
+      "monthlyCost": 15000,
+      "description": "樂陶居家庭房模式。三人共居享有新式大樓與專業服務，費用甚至低於北市老舊公寓雅房租金。"
+    },
+    {
+      "code": "COLIVING_INST_LUX_DBL",
+      "label": "養生村-豪華雙人 (Luxury Double)",
+      "monthlyCost": 38500,
+      "description": "康寧/潤福雙人模式。雖然總價高，但雙人分攤後可將豪宅級服務的成本壓低至中產階級可負擔範圍。"
+    }
+  ]
+}

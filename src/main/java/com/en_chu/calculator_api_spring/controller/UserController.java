@@ -13,15 +13,15 @@ import com.en_chu.calculator_api_spring.model.UserFullDataRes;
 import com.en_chu.calculator_api_spring.model.UserLaborInsuranceDto;
 import com.en_chu.calculator_api_spring.model.UserLaborPensionDto;
 import com.en_chu.calculator_api_spring.model.UserProfileDto;
-import com.en_chu.calculator_api_spring.model.UserRetirementExpenseDto;
-import com.en_chu.calculator_api_spring.model.UserTaxDto; // ✅ [新增] Import
+import com.en_chu.calculator_api_spring.model.UserRetirementDto; // ✅ [新增] Import
+import com.en_chu.calculator_api_spring.model.UserTaxDto;
 import com.en_chu.calculator_api_spring.service.UserCareerService;
 import com.en_chu.calculator_api_spring.service.UserLaborInsuranceService;
 import com.en_chu.calculator_api_spring.service.UserLaborPensionService;
 import com.en_chu.calculator_api_spring.service.UserProfileService;
-import com.en_chu.calculator_api_spring.service.UserRetirementExpenseService;
+import com.en_chu.calculator_api_spring.service.UserRetirementService; // ✅ [新增] Import
 import com.en_chu.calculator_api_spring.service.UserService;
-import com.en_chu.calculator_api_spring.service.UserTaxService; // ✅ [新增] Import
+import com.en_chu.calculator_api_spring.service.UserTaxService;
 import com.en_chu.calculator_api_spring.util.SecurityUtils;
 
 import jakarta.validation.Valid;
@@ -44,13 +44,13 @@ public class UserController {
 
     @Autowired
     private UserLaborInsuranceService userLaborInsuranceService;
-
-    @Autowired
-    private UserRetirementExpenseService userRetirementExpenseService;
     
-    // ✅ [新增] 注入 Tax Service
     @Autowired
     private UserTaxService userTaxService;
+
+    // ✅ [新增] 注入 Retirement Service
+    @Autowired
+    private UserRetirementService userRetirementService;
 
     @GetMapping("/me")
     public ResponseEntity<UserFullDataRes> getMe() {
@@ -85,17 +85,18 @@ public class UserController {
         return ResponseEntity.ok(userLaborInsuranceService.updateLaborInsurance(uid, req));
     }
 
-    @PutMapping("/retirement-expense")
-    public ResponseEntity<UserRetirementExpenseDto> updateRetirementExpense(@RequestBody @Valid UserRetirementExpenseDto req) {
-        String uid = SecurityUtils.getCurrentUserUid();
-        return ResponseEntity.ok(userRetirementExpenseService.updateRetirementExpense(uid, req));
-    }
-
-    // ✅ [新增] 稅務規劃更新 Endpoint
     @PutMapping("/tax")
     public ResponseEntity<String> updateTax(@RequestBody @Valid UserTaxDto req) {
         String uid = SecurityUtils.getCurrentUserUid();
         userTaxService.updateTax(uid, req);
+        return ResponseEntity.ok("更新成功");
+    }
+
+    // ✅ [新增] 退休生活型態更新 Endpoint
+    @PutMapping("/retirement")
+    public ResponseEntity<String> updateRetirement(@RequestBody @Valid UserRetirementDto req) {
+        String uid = SecurityUtils.getCurrentUserUid();
+        userRetirementService.updateRetirement(uid, req);
         return ResponseEntity.ok("更新成功");
     }
 }
