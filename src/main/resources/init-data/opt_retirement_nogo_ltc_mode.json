@@ -1,0 +1,52 @@
+{
+  "id": "opt_retirement_nogo_ltc_mode",
+  "name": "2026 長照策略分級",
+  "currency": "TWD",
+  "list": [
+    {
+      "code": "LTC_HOME_HYBRID",
+      "category": "HOME",
+      "label": "混合模式 (外看 + 日照)",
+      "monthlyCost": 42000,
+      "defaultSupplies": 15000,
+      "defaultSubsidy": 3000,
+      "description": "2026 新制趨勢。聘僱外籍看護並搭配長照 2.0 專業服務。含外看雇主成本及日照中心自付額，能有效降低移工逃逸風險。"
+    },
+    {
+      "code": "LTC_HOME_MIGRANT",
+      "category": "HOME",
+      "label": "純外籍看護",
+      "monthlyCost": 35000,
+      "defaultSupplies": 18000,
+      "defaultSubsidy": 0,
+      "description": "經濟型方案。含薪資、加班費、健保與就安費。雜支包含食宿水電增量及醫療耗材支出。"
+    },
+    {
+      "code": "LTC_INSTITUTION_SHARED",
+      "category": "INSTITUTION",
+      "label": "一般護理之家 (3-4人房)",
+      "monthlyCost": 52000,
+      "defaultSupplies": 12000,
+      "defaultSubsidy": 10000,
+      "description": "台北市私立機構行情。含住房與一般照護。雜支需加計尿布營養品與管路處置費。符合資格者每月可獲 $10,000 補助。"
+    },
+    {
+      "code": "LTC_INSTITUTION_PREMIUM",
+      "category": "INSTITUTION",
+      "label": "高品質單人房",
+      "monthlyCost": 85000,
+      "defaultSupplies": 15000,
+      "defaultSubsidy": 10000,
+      "description": "高資產族群首選。享有獨立空間與較佳照護比，對醫療通膨敏感度最高，注重晚年尊嚴與隱私。"
+    },
+    {
+      "code": "LTC_HOME_LOCAL",
+      "category": "HOME",
+      "label": "本籍全天看護 (24H)",
+      "monthlyCost": 110000,
+      "defaultSupplies": 12000,
+      "defaultSubsidy": 30000,
+      "description": "最高規格居家照護。在地化溝通無礙，日薪約 $3,500 起。可申請長照 2.0 居家服務補助折抵部分開銷。"
+    }
+  ]
+}

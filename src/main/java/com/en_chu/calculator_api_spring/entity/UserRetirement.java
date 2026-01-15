@@ -90,7 +90,7 @@ public class UserRetirement extends UserBaseEntity {
      * [時間軸] 長照啟動年齡 (No-Go Start)
      * 上限值：應小於 UserLaborInsurance.predictedRemainingLife
      */
-    private Integer ltcStartAge;
+    private Integer nogoStartAge; // 已更名
 
     /**
      * 照顧模式代碼
@@ -106,5 +106,11 @@ public class UserRetirement extends UserBaseEntity {
      * 每月耗材雜支 (Supplies Cost) - 尿布/營養品
      */
     private BigDecimal ltcMonthlySupplies;
+
+    /**
+     * 政府補助金額 (LTC Subsidy)
+     * New!
+     */
+    private BigDecimal ltcSubsidy;
 
 }

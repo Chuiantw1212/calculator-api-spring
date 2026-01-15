@@ -59,15 +59,18 @@ public class UserRetirementDto extends BaseDto {
     // Phase 3: 長照期 (No-Go Years)
     // ==========================================
 
-    @Schema(description = "[時間軸] 長照啟動年齡", example = "85")
-    private Integer ltcStartAge;
+    @Schema(description = "[時間軸] 長照啟動年齡 (No-Go Start)", example = "80")
+    private Integer nogoStartAge; // 已更名
 
-    @Schema(description = "照顧模式代碼", example = "HOME_CARE")
+    @Schema(description = "照顧模式代碼", example = "LTC_HOME_HYBRID")
     private String ltcCareMode;
 
-    @Schema(description = "每月人力/機構費 (主費用)", example = "45000")
+    @Schema(description = "每月人力/機構費 (主費用)", example = "42000")
     private BigDecimal ltcMonthlyCost;
 
-    @Schema(description = "每月耗材雜支", example = "5000")
+    @Schema(description = "每月耗材雜支", example = "15000")
     private BigDecimal ltcMonthlySupplies;
+
+    @Schema(description = "政府長照補助金額", example = "3000")
+    private BigDecimal ltcSubsidy; // 新增
 }
