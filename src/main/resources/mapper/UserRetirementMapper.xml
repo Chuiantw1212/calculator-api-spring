@@ -1,69 +1,51 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper
-	namespace="com.en_chu.calculator_api_spring.mapper.UserRetirementMapper">
+<mapper namespace="com.en_chu.calculator_api_spring.mapper.UserRetirementMapper">
 
-	<resultMap id="BaseResultMap"
-		type="com.en_chu.calculator_api_spring.entity.UserRetirement">
-		<id column="id" property="id" jdbcType="BIGINT" />
-		<result column="firebase_uid" property="firebaseUid"
-			jdbcType="VARCHAR" />
+    <resultMap id="BaseResultMap" type="com.en_chu.calculator_api_spring.entity.UserRetirement">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="firebase_uid" property="firebaseUid" jdbcType="VARCHAR" />
 
-		<result column="household_type" property="householdType"
-			jdbcType="VARCHAR" />
+        <result column="household_type" property="householdType" jdbcType="VARCHAR" />
 
-		<result column="housing_mode" property="housingMode"
-			jdbcType="VARCHAR" />
-		<result column="housing_cost" property="housingCost"
-			jdbcType="NUMERIC" />
+        <result column="housing_mode" property="housingMode" jdbcType="VARCHAR" />
+        <result column="housing_cost" property="housingCost" jdbcType="NUMERIC" />
 
-		<result column="health_tier_code" property="healthTierCode"
-			jdbcType="VARCHAR" />
-		<result column="health_cost" property="healthCost"
-			jdbcType="NUMERIC" />
+        <result column="health_tier_code" property="healthTierCode" jdbcType="VARCHAR" />
+        <result column="health_cost" property="healthCost" jdbcType="NUMERIC" />
 
-		<result column="active_living_code" property="activeLivingCode"
-			jdbcType="VARCHAR" />
-		<result column="active_living_cost" property="activeLivingCost"
-			jdbcType="NUMERIC" />
+        <result column="active_living_code" property="activeLivingCode" jdbcType="VARCHAR" />
+        <result column="active_living_cost" property="activeLivingCost" jdbcType="NUMERIC" />
 
-		<result column="slow_go_start_age" property="slowGoStartAge"
-			jdbcType="INTEGER" />
-		<result column="defense_tier_code" property="defenseTierCode"
-			jdbcType="VARCHAR" />
-		<result column="monthly_medical_cost"
-			property="monthlyMedicalCost" jdbcType="NUMERIC" />
-		<result column="critical_illness_reserve"
-			property="criticalIllnessReserve" jdbcType="NUMERIC" />
+        <result column="slow_go_start_age" property="slowGoStartAge" jdbcType="INTEGER" />
+        <result column="defense_tier_code" property="defenseTierCode" jdbcType="VARCHAR" />
+        <result column="monthly_medical_cost" property="monthlyMedicalCost" jdbcType="NUMERIC" />
+        
+        <result column="critical_illness_code" property="criticalIllnessCode" jdbcType="VARCHAR" />
+        <result column="critical_illness_reserve" property="criticalIllnessReserve" jdbcType="NUMERIC" />
 
-		<result column="ltc_start_age" property="ltcStartAge"
-			jdbcType="INTEGER" />
-		<result column="ltc_care_mode" property="ltcCareMode"
-			jdbcType="VARCHAR" />
-		<result column="ltc_monthly_cost" property="ltcMonthlyCost"
-			jdbcType="NUMERIC" />
-		<result column="ltc_monthly_supplies"
-			property="ltcMonthlySupplies" jdbcType="NUMERIC" />
+        <result column="ltc_start_age" property="ltcStartAge" jdbcType="INTEGER" />
+        <result column="ltc_care_mode" property="ltcCareMode" jdbcType="VARCHAR" />
+        <result column="ltc_monthly_cost" property="ltcMonthlyCost" jdbcType="NUMERIC" />
+        <result column="ltc_monthly_supplies" property="ltcMonthlySupplies" jdbcType="NUMERIC" />
 
-		<result column="created_at" property="createdAt"
-			jdbcType="TIMESTAMP" />
-		<result column="updated_at" property="updatedAt"
-			jdbcType="TIMESTAMP" />
-	</resultMap>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    </resultMap>
 
-	<sql id="Base_Column_List">
-		id, firebase_uid,
-		household_type,
-		housing_mode, housing_cost,
-		health_tier_code, health_cost,
-		active_living_code, active_living_cost,
-		slow_go_start_age, defense_tier_code, monthly_medical_cost, critical_illness_reserve,
-		ltc_start_age, ltc_care_mode, ltc_monthly_cost, ltc_monthly_supplies,
-		created_at, updated_at
-	</sql>
+    <sql id="Base_Column_List">
+        id, firebase_uid,
+        household_type,
+        housing_mode, housing_cost,
+        health_tier_code, health_cost,
+        active_living_code, active_living_cost,
+        slow_go_start_age, defense_tier_code, monthly_medical_cost, 
+        critical_illness_code, critical_illness_reserve, ltc_start_age, ltc_care_mode, ltc_monthly_cost, ltc_monthly_supplies,
+        created_at, updated_at
+    </sql>
 
-	<update id="updateByUid">
+    <update id="updateByUid">
     <![CDATA[
         UPDATE user_retirements 
         SET 
@@ -81,6 +63,8 @@
             slow_go_start_age = #{slowGoStartAge},
             defense_tier_code = #{defenseTierCode},
             monthly_medical_cost = #{monthlyMedicalCost},
+            
+            critical_illness_code = #{criticalIllnessCode},       /* 修正處: 補上更新 */
             critical_illness_reserve = #{criticalIllnessReserve},
             
             ltc_start_age = #{ltcStartAge},
@@ -92,9 +76,9 @@
         WHERE 
             firebase_uid = #{firebaseUid}
     ]]>
-	</update>
+    </update>
 
-	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
     <![CDATA[
         INSERT INTO user_retirements (
             firebase_uid, 
@@ -102,7 +86,8 @@
             housing_mode, housing_cost,
             health_tier_code, health_cost,
             active_living_code, active_living_cost,
-            slow_go_start_age, defense_tier_code, monthly_medical_cost, critical_illness_reserve,
+            slow_go_start_age, defense_tier_code, monthly_medical_cost, 
+            critical_illness_code, critical_illness_reserve,
             ltc_start_age, ltc_care_mode, ltc_monthly_cost, ltc_monthly_supplies,
             created_at, updated_at
         ) VALUES (
@@ -111,47 +96,50 @@
             #{housingMode}, #{housingCost},
             #{healthTierCode}, #{healthCost},
             #{activeLivingCode}, #{activeLivingCost},
-            #{slowGoStartAge}, #{defenseTierCode}, #{monthlyMedicalCost}, #{criticalIllnessReserve},
+            #{slowGoStartAge}, #{defenseTierCode}, #{monthlyMedicalCost}, 
+            #{criticalIllnessCode}, #{criticalIllnessReserve},
             #{ltcStartAge}, #{ltcCareMode}, #{ltcMonthlyCost}, #{ltcMonthlySupplies},
             CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
         )
     ]]>
-	</insert>
+    </insert>
 
-	<update id="updateSelectiveByUid">
-		UPDATE user_retirements
-		<set>
-			<if test="householdType != null">household_type = #{householdType},</if>
+    <update id="updateSelectiveByUid">
+        UPDATE user_retirements
+        <set>
+            <if test="householdType != null">household_type = #{householdType},</if>
 
-			<if test="housingMode != null">housing_mode = #{housingMode},</if>
-			<if test="housingCost != null">housing_cost = #{housingCost},</if>
+            <if test="housingMode != null">housing_mode = #{housingMode},</if>
+            <if test="housingCost != null">housing_cost = #{housingCost},</if>
 
-			<if test="healthTierCode != null">health_tier_code = #{healthTierCode},</if>
-			<if test="healthCost != null">health_cost = #{healthCost},</if>
+            <if test="healthTierCode != null">health_tier_code = #{healthTierCode},</if>
+            <if test="healthCost != null">health_cost = #{healthCost},</if>
 
-			<if test="activeLivingCode != null">active_living_code = #{activeLivingCode},</if>
-			<if test="activeLivingCost != null">active_living_cost = #{activeLivingCost},</if>
+            <if test="activeLivingCode != null">active_living_code = #{activeLivingCode},</if>
+            <if test="activeLivingCost != null">active_living_cost = #{activeLivingCost},</if>
 
-			<if test="slowGoStartAge != null">slow_go_start_age = #{slowGoStartAge},</if>
-			<if test="defenseTierCode != null">defense_tier_code = #{defenseTierCode},</if>
-			<if test="monthlyMedicalCost != null">monthly_medical_cost = #{monthlyMedicalCost},</if>
-			<if test="criticalIllnessReserve != null">critical_illness_reserve = #{criticalIllnessReserve},</if>
+            <if test="slowGoStartAge != null">slow_go_start_age = #{slowGoStartAge},</if>
+            <if test="defenseTierCode != null">defense_tier_code = #{defenseTierCode},</if>
+            <if test="monthlyMedicalCost != null">monthly_medical_cost = #{monthlyMedicalCost},</if>
+            
+            <if test="criticalIllnessCode != null">critical_illness_code = #{criticalIllnessCode},</if>
+            <if test="criticalIllnessReserve != null">critical_illness_reserve = #{criticalIllnessReserve},</if>
 
-			<if test="ltcStartAge != null">ltc_start_age = #{ltcStartAge},</if>
-			<if test="ltcCareMode != null">ltc_care_mode = #{ltcCareMode},</if>
-			<if test="ltcMonthlyCost != null">ltc_monthly_cost = #{ltcMonthlyCost},</if>
-			<if test="ltcMonthlySupplies != null">ltc_monthly_supplies = #{ltcMonthlySupplies},</if>
+            <if test="ltcStartAge != null">ltc_start_age = #{ltcStartAge},</if>
+            <if test="ltcCareMode != null">ltc_care_mode = #{ltcCareMode},</if>
+            <if test="ltcMonthlyCost != null">ltc_monthly_cost = #{ltcMonthlyCost},</if>
+            <if test="ltcMonthlySupplies != null">ltc_monthly_supplies = #{ltcMonthlySupplies},</if>
 
-			updated_at = CURRENT_TIMESTAMP
-		</set>
-		WHERE firebase_uid = #{firebaseUid}
-	</update>
+            updated_at = CURRENT_TIMESTAMP
+        </set>
+        WHERE firebase_uid = #{firebaseUid}
+    </update>
 
-	<select id="selectByUid" resultMap="BaseResultMap">
-		SELECT
-		<include refid="Base_Column_List" />
-		FROM user_retirements
-		WHERE firebase_uid = #{firebaseUid}
-	</select>
+    <select id="selectByUid" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM user_retirements
+        WHERE firebase_uid = #{firebaseUid}
+    </select>
 
 </mapper>

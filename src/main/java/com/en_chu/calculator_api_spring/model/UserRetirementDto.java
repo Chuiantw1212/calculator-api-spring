@@ -48,6 +48,9 @@ public class UserRetirementDto extends BaseDto {
 
     @Schema(description = "醫療月預算 (保費+自費預備)", example = "5000")
     private BigDecimal monthlyMedicalCost;
+    
+    @Schema(description = "重大傷病計算代碼", example = "CI_High_Coverage")
+    private String criticalIllnessCode;
 
     @Schema(description = "重大傷病一次性準備金", example = "1000000")
     private BigDecimal criticalIllnessReserve;

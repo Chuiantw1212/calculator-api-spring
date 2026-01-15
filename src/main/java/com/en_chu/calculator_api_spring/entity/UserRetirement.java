@@ -70,6 +70,11 @@ public class UserRetirement extends UserBaseEntity {
      * *注意：此階段醫療通膨通常較高 (J-Curve)*
      */
     private BigDecimal monthlyMedicalCost;
+    
+    /**
+     * 重大傷病計算代碼 (對應 opt_critical_illness)
+     */
+    private String criticalIllnessCode;
 
     /**
      * 重大傷病一次性準備金 (Critical Illness Reserve)
