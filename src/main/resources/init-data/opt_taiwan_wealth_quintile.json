@@ -1,0 +1,77 @@
+{
+  "id": "opt_taiwan_wealth_quintile",
+  "name": "2021 台灣家庭財富五分位數統計 (主計總處)",
+  "currency": "TWD",
+  "list": [
+    {
+      "code": "Q1",
+      "label": "Q1 (最低 20%)",
+      "avgNetWorth": 770000,
+      "grossAssets": 4812500,
+      "allocation": {
+        "realEstate": 54.0,
+        "securities": 0.05,
+        "insurance": 2.02,
+        "cash": 43.93
+      },
+      "debtRatio": 84.0,
+      "description": "資產結構極度脆弱且高度槓桿。雖然帳面總資產近 481 萬元，但平均負債高達 405 萬元，導致淨值僅剩 77 萬元。現金占比雖高，但多用於應對債務支出。"
+    },
+    {
+      "code": "Q2",
+      "label": "Q2 (邊緣中產)",
+      "avgNetWorth": 4930000,
+      "grossAssets": 6402600,
+      "allocation": {
+        "realEstate": 60.0,
+        "securities": 5.0,
+        "insurance": 10.0,
+        "cash": 25.0
+      },
+      "debtRatio": 23.0,
+      "description": "進入中產階級的門檻，資產配置以自住房地產為主（佔 60%）。金融資產配置較為保守，債務壓力較 Q1 顯著下降，但缺乏面對長照或大病等突發性大額支出的財務彈性。"
+    },
+    {
+      "code": "Q3",
+      "label": "Q3 (中位組/核心中產)",
+      "avgNetWorth": 9060000,
+      "grossAssets": 10785700,
+      "allocation": {
+        "realEstate": 52.9,
+        "securities": 10.0,
+        "insurance": 15.0,
+        "cash": 22.1
+      },
+      "debtRatio": 16.0,
+      "description": "台灣財富結構的核心，財富中位數約為 894 萬。資產結構穩定，由房地產主導，但金融化程度（股票、保險）逐年提升，已具備初步的風險轉移意識。"
+    },
+    {
+      "code": "Q4",
+      "label": "Q4 (中產上層)",
+      "avgNetWorth": 19890000,
+      "grossAssets": 21857000,
+      "allocation": {
+        "realEstate": 40.0,
+        "securities": 25.0,
+        "insurance": 18.0,
+        "cash": 17.0
+      },
+      "debtRatio": 9.0,
+      "description": "財務狀況優渥，投資組合更具積極性，證券與收益型資產占比提升至 25%。負債比率極低，具備良好的信用擴張能力與抗通膨資產配置。"
+    },
+    {
+      "code": "Q5",
+      "label": "Q5 (最高 20%)",
+      "avgNetWorth": 51330000,
+      "grossAssets": 53468800,
+      "allocation": {
+        "realEstate": 25.0,
+        "securities": 42.0,
+        "insurance": 18.0,
+        "cash": 15.0
+      },
+      "debtRatio": 4.0,
+      "description": "高資產族群。金融資產（股票、基金、保險）占比超過 75%，資產成長由資本市場驅動。受益於近年股市大漲，財富與第一分位數差距擴大至 66.9 倍，具備全方位的照護選擇權。"
+    }
+  ]
+}
