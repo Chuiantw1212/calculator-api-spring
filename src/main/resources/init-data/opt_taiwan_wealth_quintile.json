@@ -1,77 +1,77 @@
 {
   "id": "opt_taiwan_wealth_quintile",
-  "name": "2021 台灣家庭財富五分位數統計 (主計總處)",
+  "name": "2021 台灣家庭財富五分位數統計 (官方校正版)",
   "currency": "TWD",
   "list": [
     {
       "code": "Q1",
-      "label": "Q1 (最低 20%)",
+      "label": "Q1 (最低 20% - 負債枷鎖層)",
       "avgNetWorth": 770000,
-      "grossAssets": 4812500,
+      "grossAssets": 4820000,
       "allocation": {
         "realEstate": 54.0,
-        "securities": 0.05,
-        "insurance": 2.02,
-        "cash": 43.93
+        "securities": 0.0,
+        "insurance": 2.0,
+        "cash": 44.0
       },
       "debtRatio": 84.0,
-      "description": "資產結構極度脆弱且高度槓桿。雖然帳面總資產近 481 萬元，但平均負債高達 405 萬元，導致淨值僅剩 77 萬元。現金占比雖高，但多用於應對債務支出。"
+      "description": "資產規模雖有 482 萬，但被 405 萬高額負債抵銷。雖然帳面 ROE 可能因分母極小而高達 27%，但此為「槓桿幻覺」，極易因升息或房價波動陷入負資產。"
     },
     {
       "code": "Q2",
       "label": "Q2 (邊緣中產)",
-      "avgNetWorth": 4930000,
-      "grossAssets": 6402600,
+      "avgNetWorth": 4500000,
+      "grossAssets": 6800000,
       "allocation": {
-        "realEstate": 60.0,
+        "realEstate": 61.0,
         "securities": 5.0,
         "insurance": 10.0,
-        "cash": 25.0
+        "cash": 24.0
       },
-      "debtRatio": 23.0,
-      "description": "進入中產階級的門檻，資產配置以自住房地產為主（佔 60%）。金融資產配置較為保守，債務壓力較 Q1 顯著下降，但缺乏面對長照或大病等突發性大額支出的財務彈性。"
+      "debtRatio": 33.8,
+      "description": "基於插值推估模型，此階層開始累積少量保險與存款。相較於 Q1，負債壓力顯著減輕，但仍以房產為資產重心。"
     },
     {
       "code": "Q3",
-      "label": "Q3 (中位組/核心中產)",
-      "avgNetWorth": 9060000,
-      "grossAssets": 10785700,
+      "label": "Q3 (中位數組 - 房產僵化層)",
+      "avgNetWorth": 8940000,
+      "grossAssets": 12940000,
       "allocation": {
-        "realEstate": 52.9,
+        "realEstate": 65.0,
         "securities": 10.0,
-        "insurance": 15.0,
-        "cash": 22.1
+        "insurance": 13.0,
+        "cash": 12.0
       },
-      "debtRatio": 16.0,
-      "description": "台灣財富結構的核心，財富中位數約為 894 萬。資產結構穩定，由房地產主導，但金融化程度（股票、保險）逐年提升，已具備初步的風險轉移意識。"
+      "debtRatio": 30.9,
+      "description": "資產高度鎖定於自用住宅，現金流 ROA 僅 0.89%，呈現「富裕的貧窮感」。這類家庭在退休規劃中，常面臨有房產但無足夠現金支應長照開支的困境。"
     },
     {
       "code": "Q4",
       "label": "Q4 (中產上層)",
-      "avgNetWorth": 19890000,
-      "grossAssets": 21857000,
+      "avgNetWorth": 19500000,
+      "grossAssets": 24500000,
       "allocation": {
-        "realEstate": 40.0,
-        "securities": 25.0,
-        "insurance": 18.0,
-        "cash": 17.0
+        "realEstate": 45.0,
+        "securities": 22.0,
+        "insurance": 16.5,
+        "cash": 16.5
       },
-      "debtRatio": 9.0,
-      "description": "財務狀況優渥，投資組合更具積極性，證券與收益型資產占比提升至 25%。負債比率極低，具備良好的信用擴張能力與抗通膨資產配置。"
+      "debtRatio": 20.4,
+      "description": "資產結構由保守轉向平衡，證券配置占比顯著提升。此階層具備較佳的風險抵禦能力與被動收入潛力。"
     },
     {
       "code": "Q5",
-      "label": "Q5 (最高 20%)",
+      "label": "Q5 (最高 20% - 資本優勢層)",
       "avgNetWorth": 51330000,
-      "grossAssets": 53468800,
+      "grossAssets": 53650000,
       "allocation": {
-        "realEstate": 25.0,
-        "securities": 42.0,
-        "insurance": 18.0,
-        "cash": 15.0
+        "realEstate": 29.0,
+        "securities": 42.6,
+        "insurance": 15.6,
+        "cash": 12.8
       },
-      "debtRatio": 4.0,
-      "description": "高資產族群。金融資產（股票、基金、保險）占比超過 75%，資產成長由資本市場驅動。受益於近年股市大漲，財富與第一分位數差距擴大至 66.9 倍，具備全方位的照護選擇權。"
+      "debtRatio": 4.3,
+      "description": "擁有高度流動性的金融資產 (71%)，主要透過股市資本利得獲取 15.5% 的被動總報酬 ROA。此組別負債率極低，具備最強的抗風險韌性與照護選擇權。"
     }
   ]
 }
