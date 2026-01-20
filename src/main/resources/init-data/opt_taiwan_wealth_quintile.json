@@ -1,77 +1,161 @@
 {
-  "id": "opt_taiwan_wealth_quintile",
-  "name": "2021 台灣家庭財富五分位數統計 (官方校正版)",
+  "id": "opt_taipei_wealth_decile_v19_clean",
+  "name": "臺北市家戶財富十分位戰略模型 (最終純淨校準版)",
   "currency": "TWD",
+  "strategic_concept": {
+    "core_logic": "台北資產結構的倒 U 型特徵與資本增值效率分析",
+    "description": "臺北市財富結構呈現極端分化：中產階級資產高度鎖定於自用住宅與基礎保險，而頂層富豪則透過高度多元化的金融與海外配置實現跨代財富增值。"
+  },
   "list": [
     {
-      "code": "Q1",
-      "label": "Q1 (最低 20% - 負債枷鎖層)",
-      "avgNetWorth": 770000,
-      "grossAssets": 4820000,
+      "code": "D1",
+      "label": "D1 (社會底層)",
+      "netWorthRangeMin": 0,
+      "netWorthRangeMax": 1500000,
+      "persona": "經濟困難的租屋族、領領補助的獨居老人。",
       "allocation": {
-        "realEstate": 54.0,
+        "realEstate": 0.0,
+        "cash": 100.0,
         "securities": 0.0,
-        "insurance": 2.0,
-        "cash": 44.0
+        "insurance": 0.0,
+        "offshore": 0.0
       },
-      "debtRatio": 84.0,
-      "description": "資產規模雖有 482 萬，但被 405 萬高額負債抵銷。雖然帳面 ROE 可能因分母極小而高達 27%，但此為「槓桿幻覺」，極易因升息或房價波動陷入負資產。"
+      "description": "淨值極低且增長停滯。因無房產，完全被排除在台北資產增值紅利之外，資產僅限於應付生活支出之微薄存款。"
     },
     {
-      "code": "Q2",
-      "label": "Q2 (邊緣中產)",
-      "avgNetWorth": 4500000,
-      "grossAssets": 6800000,
+      "code": "D2",
+      "label": "D2 (租屋專業層)",
+      "netWorthRangeMin": 1500000,
+      "netWorthRangeMax": 3000000,
+      "persona": "具備薪資所得但尚未購屋之年輕專業人士、社會新鮮人。",
       "allocation": {
-        "realEstate": 61.0,
+        "realEstate": 0.0,
+        "cash": 85.0,
+        "securities": 10.0,
+        "insurance": 5.0,
+        "offshore": 0.0
+      },
+      "description": "具備一定薪資流動性，但儲蓄受高房租侵蝕，資產配置以高流動性存款為主，輔以少量嘗試性證券投資。"
+    },
+    {
+      "code": "D3",
+      "label": "D3 (邊緣有殼層)",
+      "netWorthRangeMin": 3000000,
+      "netWorthRangeMax": 7000000,
+      "persona": "持有蛋白區小套房，或持有外縣市房產但在台北工作者。",
+      "allocation": {
+        "realEstate": 70.0,
+        "cash": 20.0,
+        "securities": 0.0,
+        "insurance": 10.0,
+        "offshore": 0.0
+      },
+      "description": "剛跨入資產門檻，但因房貸負擔率極高，資產高度固化，幾乎無餘裕配置有價證券。"
+    },
+    {
+      "code": "D4",
+      "label": "D4 (中產後段層)",
+      "netWorthRangeMin": 7000000,
+      "netWorthRangeMax": 11000000,
+      "persona": "持有台北蛋白區老舊公寓，或持有繼承之持分地產者。",
+      "allocation": {
+        "realEstate": 75.0,
+        "cash": 10.0,
         "securities": 5.0,
         "insurance": 10.0,
-        "cash": 24.0
+        "offshore": 0.0
       },
-      "debtRatio": 33.8,
-      "description": "基於插值推估模型，此階層開始累積少量保險與存款。相較於 Q1，負債壓力顯著減輕，但仍以房產為資產重心。"
+      "description": "財富重心鎖定於自用住宅，呈現『資產富裕、現金流貧窮』特徵，保險佔其金融配置大宗。"
     },
     {
-      "code": "Q3",
-      "label": "Q3 (中位數組 - 房產僵化層)",
-      "avgNetWorth": 8940000,
-      "grossAssets": 12940000,
+      "code": "D5",
+      "label": "D5 (中產核心 - 臺北基準)",
+      "netWorthRangeMin": 11000000,
+      "netWorthRangeMax": 15000000,
+      "persona": "持有蛋白區中古公寓或新北精華區大樓之家庭。",
+      "allocation": {
+        "realEstate": 80.0,
+        "cash": 8.0,
+        "securities": 2.0,
+        "insurance": 10.0,
+        "offshore": 0.0
+      },
+      "description": "房地產佔比達到峰值。作為典型的房奴階層，資產配置極端失衡，缺乏應對經濟震盪的流動性。"
+    },
+    {
+      "code": "D6",
+      "label": "D6 (中產穩健層)",
+      "netWorthRangeMin": 15000000,
+      "netWorthRangeMax": 25000000,
+      "persona": "擁有一戶臺北市標準三房中古大樓者，雙薪結構穩定。",
+      "allocation": {
+        "realEstate": 75.0,
+        "cash": 10.0,
+        "securities": 5.0,
+        "insurance": 10.0,
+        "offshore": 0.0
+      },
+      "description": "雖身價達千萬，但財富多為不可變現的紙上富貴，保險為其主要金融防禦手段。"
+    },
+    {
+      "code": "D7",
+      "label": "D7 (中產優勢層)",
+      "netWorthRangeMin": 25000000,
+      "netWorthRangeMax": 35000000,
+      "persona": "資深專業人士，擁有一戶精華區公寓或電梯大樓。",
       "allocation": {
         "realEstate": 65.0,
-        "securities": 10.0,
-        "insurance": 13.0,
-        "cash": 12.0
+        "cash": 10.0,
+        "securities": 15.0,
+        "insurance": 10.0,
+        "offshore": 0.0
       },
-      "debtRatio": 30.9,
-      "description": "資產高度鎖定於自用住宅，現金流 ROA 僅 0.89%，呈現「富裕的貧窮感」。這類家庭在退休規劃中，常面臨有房產但無足夠現金支應長照開支的困境。"
+      "description": "房貸負擔接近解除，開始具備金融資產配置能力，受惠於股市增值效應明顯。"
     },
     {
-      "code": "Q4",
-      "label": "Q4 (中產上層)",
-      "avgNetWorth": 19500000,
-      "grossAssets": 24500000,
+      "code": "D8",
+      "label": "D8 (準富裕層)",
+      "netWorthRangeMin": 35000000,
+      "netWorthRangeMax": 45000000,
+      "persona": "擁有一戶精華區無貸房產，或具備強大代際遺產支持者。",
       "allocation": {
-        "realEstate": 45.0,
-        "securities": 22.0,
-        "insurance": 16.5,
-        "cash": 16.5
+        "realEstate": 55.0,
+        "cash": 10.0,
+        "securities": 23.0,
+        "insurance": 12.0,
+        "offshore": 0.0
       },
-      "debtRatio": 20.4,
-      "description": "資產結構由保守轉向平衡，證券配置占比顯著提升。此階層具備較佳的風險抵禦能力與被動收入潛力。"
+      "description": "資產配置趨於平衡，證券佔比顯著上升，財富增值由單一房產驅動轉向雙引擎模式。"
     },
     {
-      "code": "Q5",
-      "label": "Q5 (最高 20% - 資本優勢層)",
-      "avgNetWorth": 51330000,
-      "grossAssets": 53650000,
+      "code": "D9",
+      "label": "D9 (富裕階層 - 資本收割層)",
+      "netWorthRangeMin": 45000000,
+      "netWorthRangeMax": 80000000,
+      "persona": "多房產持有者、專業人士，資產配置開始全球化。",
       "allocation": {
-        "realEstate": 29.0,
-        "securities": 42.6,
-        "insurance": 15.6,
-        "cash": 12.8
+        "realEstate": 40.0,
+        "cash": 10.0,
+        "securities": 30.0,
+        "insurance": 10.0,
+        "offshore": 10.0
       },
-      "debtRatio": 4.3,
-      "description": "擁有高度流動性的金融資產 (71%)，主要透過股市資本利得獲取 15.5% 的被動總報酬 ROA。此組別負債率極低，具備最強的抗風險韌性與照護選擇權。"
+      "description": "配置高度多元化。房地產已非唯一重心，證券與海外資產成為主要的財富擴張路徑。"
+    },
+    {
+      "code": "D10",
+      "label": "D10 (頂層 10% - 資本優勢層)",
+      "netWorthRangeMin": 80000000,
+      "netWorthRangeMax": null,
+      "persona": "上市公司大股東、大地主、跨國配置的高資產人士 (HNWI)。",
+      "allocation": {
+        "realEstate": 30.0,
+        "cash": 10.0,
+        "securities": 38.0,
+        "insurance": 8.0,
+        "offshore": 14.0
+      },
+      "description": "掌握高度流動性金融資本（佔比約 70%）。房地產佔比降至最低，透過全球化資本配置實現階級固化與資產躍升。"
     }
   ]
 }
