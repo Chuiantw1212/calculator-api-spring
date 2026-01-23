@@ -2,10 +2,6 @@
   "id": "opt_taipei_wealth_decile",
   "name": "臺北市家戶財富十分位戰略模型 (2024 都市數據最終版)",
   "currency": "TWD",
-  "strategic_concept": {
-    "core_logic": "台北都會區資產固化效應與非線性負債動力學分析",
-    "description": "臺北市家戶呈現高資產、高負債、高固化特徵。中產階級資產高度集中於房地產，面臨現金流枯竭陷阱；頂層富豪則透過高度多元的證券配置與低負債率實現財富增值。"
-  },
   "list": [
     {
       "code": "D1",
