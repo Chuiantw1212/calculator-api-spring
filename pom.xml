@@ -35,6 +35,28 @@
 	<!-- 當遇到無法透過升級 Parent 解決的間接依賴漏洞時，在此強制指定安全版本 -->
 	<dependencyManagement>
 		<dependencies>
+			<!-- [SECURITY FIX] 導入 Spring Framework BOM，統一管理所有 spring-* 模組版本，以應對掃描器報告 -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-framework-bom</artifactId>
+				<version>6.1.11</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- [SECURITY FIX] 導入 Netty BOM，統一管理所有 netty-* 模組版本，以應對掃描器報告 -->
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-bom</artifactId>
+				<version>4.1.111.Final</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- [SECURITY FIX] 明確管理 commons-lang3 版本，以應對掃描器報告 -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.14.0</version>
+			</dependency>
 			<!-- [SECURITY FIX] 強制將 guava 升級至安全版本，以解決 firebase-admin 等套件帶來的間接依賴漏洞 -->
 			<dependency>
 				<groupId>com.google.guava</groupId>
