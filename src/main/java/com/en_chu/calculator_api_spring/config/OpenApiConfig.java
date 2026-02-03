@@ -20,4 +20,6 @@ public class OpenApiConfig {
                         .license(new License().name("Apache 2.0").url("https://springdoc.org"))
                 );
     }
+
+    // 移除了所有的 GroupedOpenApi Bean，讓 springdoc 回到預設的自動掃描模式。
 }

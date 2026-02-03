@@ -38,19 +38,28 @@
 
 ---
 
-## ⚙️ 自動化維護 (Automated Maintenance)
+## ⚙️ 應用監控 (Application Monitoring)
 
-為了確保資料庫的長期健康與一致性，本專案內建了自動化的維護機制。
+本專案整合了 **Spring Boot Actuator**，提供多個監控端點 (Endpoint) 來觀察應用程式的內部狀態。
 
-### 啟動時孤兒資料清理 (Orphaned Data Cleanup on Startup)
+### 如何查看監控指標
 
-*   **元件**: `StartupDataCleanupService.java`
-*   **觸發時機**: Spring Boot 應用程式完全啟動後。
-*   **作用**: 自動檢查 `user_businesses`, `user_credit_cards`, `user_portfolios`, `user_real_estates` 等關聯表，並刪除那些其 `firebase_uid` 已不存在於主表 `user_profiles` 中的「孤兒資料」。
-*   **實作方式**:
-    *   透過實作 `ApplicationRunner` 介面，讓 Spring Boot 在啟動後自動執行 `run` 方法。
-    *   使用 `@Transactional` 確保所有刪除操作的原子性。
-    *   使用 `@Profile("!test")` 停用此功能於測試環境，避免干擾單元測試的資料準備，確保測試的可預測性。
+1.  **啟動應用程式**。
+2.  **打開 Swagger UI**: 前往 `http://localhost:8888/swagger-ui/index.html`。
+3.  **選擇 "actuator" 群組**: 在頁面右上角的下拉選單中選擇 `actuator`。
+4.  **展開 `metrics-endpoint`**: 找到並展開 `GET /actuator/metrics/{name}`。
+5.  **輸入指標名稱並執行**:
+    *   點擊 "Try it out"。
+    *   在 `name` 欄位輸入你想查詢的指標，例如 `jvm.memory.used`。
+    *   點擊 "Execute"。
+
+### 常用記憶體指標
+
+| 指標名稱 | 說明 |
+| :--- | :--- |
+| **`jvm.memory.used`** | **已使用記憶體**：應用程式當下真正佔用的記憶體量。 |
+| **`jvm.memory.committed`** | **已提交記憶體**：JVM 已向作業系統「預留」的總記憶體空間。 |
+| **`jvm.memory.max`** | **最大可用記憶體**：JVM 可使用的最大記憶體上限 (對應 `-Xmx` 設定)。 |
 
 ---
 

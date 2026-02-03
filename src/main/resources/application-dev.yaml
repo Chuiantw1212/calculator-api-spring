@@ -24,8 +24,8 @@ management:
   endpoints:
     web:
       exposure:
-        # 只開放 health 和 info，避免洩漏過多資訊
-        include: health,info
+        # 開放 health, info, 和 metrics
+        include: health,info,metrics
   endpoint:
     health:
       # 顯示詳細健康資訊 (例如：資料庫連線狀態)
@@ -33,5 +33,5 @@ management:
 
 # SpringDoc (Swagger) 設定
 springdoc:
-  # 將 Actuator 的端點整合進 Swagger UI
+  # 讓 springdoc 自動建立並管理 actuator 群組
   show-actuator: true
