@@ -123,4 +123,9 @@
         FROM user_retirements WHERE firebase_uid = #{firebaseUid}
     </select>
 
+    <delete id="deleteByUid">
+        DELETE FROM user_retirements
+        WHERE firebase_uid = #{firebaseUid}
+    </delete>
+
 </mapper>

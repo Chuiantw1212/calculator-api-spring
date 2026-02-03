@@ -67,6 +67,11 @@
         WHERE firebase_uid = #{firebaseUid}
     </select>
 
+    <delete id="deleteByUid">
+        DELETE FROM user_profiles
+        WHERE firebase_uid = #{firebaseUid}
+    </delete>
+
     <select id="checkUserExists" resultType="boolean">
         SELECT COUNT(1) > 0 FROM user_profiles WHERE firebase_uid = #{firebaseUid}
     </select>

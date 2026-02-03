@@ -11,4 +11,6 @@ public interface UserLaborInsuranceMapper {
 	int updateByUid(UserLaborInsurance record);
 
 	int insert(UserLaborInsurance record);
+
+	int deleteByUid(@Param("firebaseUid") String firebaseUid);
 }

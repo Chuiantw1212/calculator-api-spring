@@ -2,6 +2,7 @@ package com.en_chu.calculator_api_spring.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping; // 新增這行
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,7 +43,7 @@ public class UserController {
 
     @Autowired
     private UserLaborInsuranceService userLaborInsuranceService;
-    
+
     @Autowired
     private UserTaxService userTaxService;
 
@@ -84,5 +85,18 @@ public class UserController {
         String uid = SecurityUtils.getCurrentUserUid();
         userTaxService.updateTax(uid, req);
         return ResponseEntity.ok("更新成功");
-    }	
+    }
+
+    /**
+     * 新增：刪除當前使用者帳號
+     * 對應前端: authFetch('/api/v1/user', { method: 'DELETE' });
+     */
+    @DeleteMapping
+    public ResponseEntity<Void> deleteUser() {
+        String uid = SecurityUtils.getCurrentUserUid();
+        // 呼叫 Service 進行刪除 (需確保 UserService 有實作此方法)
+        userService.deleteUser(uid);
+        // 回傳 204 No Content 代表成功且不回傳內容
+        return ResponseEntity.noContent().build();
+    }
 }

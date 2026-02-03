@@ -25,4 +25,9 @@ public interface UserCareerMapper {
 	 * 透過 UID 查詢 對應 XML id="selectByUid"
 	 */
 	UserCareer selectByUid(@Param("firebaseUid") String firebaseUid);
+
+	/**
+	 * 透過 UID 刪除 對應 XML id="deleteByUid"
+	 */
+	int deleteByUid(@Param("firebaseUid") String firebaseUid);
 }

@@ -82,7 +82,7 @@
         ]]>
 	</delete>
 
-	<delete id="deleteAllByUid">
+	<delete id="deleteByUid">
         <![CDATA[
         DELETE FROM user_portfolios 
         WHERE firebase_uid = #{uid}

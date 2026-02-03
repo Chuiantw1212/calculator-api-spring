@@ -98,4 +98,9 @@
         ]]>
 	</delete>
 
+	<delete id="deleteByUid">
+		DELETE FROM user_real_estates
+		WHERE firebase_uid = #{uid}
+	</delete>
+
 </mapper>

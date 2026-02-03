@@ -76,4 +76,9 @@
         WHERE id = #{id} AND firebase_uid = #{firebaseUid}
     </delete>
 
+    <delete id="deleteByUid">
+        DELETE FROM user_credit_cards
+        WHERE firebase_uid = #{firebaseUid}
+    </delete>
+
 </mapper>

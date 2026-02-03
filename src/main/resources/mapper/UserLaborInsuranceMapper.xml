@@ -74,4 +74,9 @@
         </trim>
     </insert>
 
+    <delete id="deleteByUid">
+        DELETE FROM user_labor_insurances
+        WHERE firebase_uid = #{firebaseUid}
+    </delete>
+
 </mapper>

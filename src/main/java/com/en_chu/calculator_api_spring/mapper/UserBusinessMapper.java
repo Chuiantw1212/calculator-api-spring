@@ -46,4 +46,9 @@ public interface UserBusinessMapper {
 	 */
 	int deleteByIdAndUid(@Param("id") Long id, @Param("uid") String firebaseUid);
 
+	/**
+	 * 刪除該用戶所有事業 XML id="deleteByUid"
+	 */
+	int deleteByUid(@Param("uid") String firebaseUid);
+
 }

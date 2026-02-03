@@ -46,4 +46,9 @@ public interface UserCreditCardMapper {
 	 * @return 影響筆數
 	 */
 	int delete(@Param("id") Long id, @Param("firebaseUid") String firebaseUid);
+
+	/**
+	 * 刪除該用戶所有信用卡
+	 */
+	int deleteByUid(@Param("firebaseUid") String firebaseUid);
 }

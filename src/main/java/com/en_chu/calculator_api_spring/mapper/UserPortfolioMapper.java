@@ -39,8 +39,8 @@ public interface UserPortfolioMapper {
 	int deleteByIdAndUid(@Param("id") Long id, @Param("uid") String firebaseUid);
 
 	/**
-	 * 刪除該用戶所有部位 (重置用) - 這個可以保留，雖然 CRUD 沒用到，但在測試或重置功能會用到
+	 * 刪除該用戶所有部位 (重置用)
 	 */
-	void deleteAllByUid(@Param("uid") String firebaseUid);
+	int deleteByUid(@Param("uid") String firebaseUid);
 
 }

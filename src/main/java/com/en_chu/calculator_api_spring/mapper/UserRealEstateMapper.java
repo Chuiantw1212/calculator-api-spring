@@ -52,4 +52,9 @@ public interface UserRealEstateMapper {
 	 * @return 影響行數
 	 */
 	int deleteByIdAndUid(@Param("id") Long id, @Param("uid") String firebaseUid);
+
+	/**
+	 * 刪除該用戶所有房地產
+	 */
+	int deleteByUid(@Param("uid") String firebaseUid);
 }

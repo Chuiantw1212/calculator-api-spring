@@ -23,4 +23,9 @@ public interface UserTaxMapper {
      */
     UserTax selectByUid(@Param("firebaseUid") String firebaseUid);
 
+    /**
+     * 對應 XML id="deleteByUid"
+     */
+    int deleteByUid(@Param("firebaseUid") String firebaseUid);
+
 }

@@ -59,4 +59,9 @@
 		WHERE firebase_uid = #{firebaseUid}
 	</select>
 
+	<delete id="deleteByUid">
+		DELETE FROM user_taxes
+		WHERE firebase_uid = #{firebaseUid}
+	</delete>
+
 </mapper>

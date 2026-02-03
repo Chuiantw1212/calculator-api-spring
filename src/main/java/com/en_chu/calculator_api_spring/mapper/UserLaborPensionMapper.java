@@ -12,4 +12,6 @@ public interface UserLaborPensionMapper {
 	int updateByUid(UserLaborPension record);
 
 	int insert(UserLaborPension record);
+
+	int deleteByUid(@Param("firebaseUid") String firebaseUid);
 }

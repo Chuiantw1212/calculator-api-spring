@@ -27,6 +27,11 @@ public interface UserProfileMapper {
 	 */
 	int updateByUid(UserProfile record);
 
+	/**
+	 * 根據 Firebase UID 刪除使用者
+	 */
+	int deleteByUid(@Param("firebaseUid") String firebaseUid);
+
 	// ==========================================
 	// 2. 登入同步專用 (給 UserService.syncUser 使用)
 	// ==========================================
