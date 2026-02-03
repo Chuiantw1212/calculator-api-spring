@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.0</version>
+		<version>3.3.2</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.en-chu</groupId>
@@ -30,6 +30,20 @@
 	<properties>
 		<java.version>17</java.version>
 	</properties>
+
+	<!-- 🛡️ 依賴版本強制管理區 (Vulnerability Fixer) -->
+	<!-- 當遇到無法透過升級 Parent 解決的間接依賴漏洞時，在此強制指定安全版本 -->
+	<dependencyManagement>
+		<dependencies>
+			<!-- [SECURITY FIX] 強制將 guava 升級至安全版本，以解決 firebase-admin 等套件帶來的間接依賴漏洞 -->
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>33.2.0-jre</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -63,7 +77,7 @@
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
 			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>3.0.3</version>
+			<version>3.0.4</version>
 		</dependency>
 
 		<dependency>

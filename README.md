@@ -6,8 +6,8 @@
 ## 🛠️ 技術棧 (Tech Stack)
 
 * **Java**: 17
-* **Framework**: Spring Boot 3.3.0
-* **ORM**: MyBatis Spring Boot Starter 3.0.3
+* **Framework**: Spring Boot 3.3.2
+* **ORM**: MyBatis Spring Boot Starter 3.0.4
 * **Database**: PostgreSQL (Neon Serverless)
 * **Cloud Service**: Firebase Admin SDK (Java)
 * **Documentation**: SpringDoc OpenAPI (Swagger UI)
