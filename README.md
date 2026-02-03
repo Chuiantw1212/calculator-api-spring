@@ -38,6 +38,22 @@
 
 ---
 
+## ⚙️ 自動化維護 (Automated Maintenance)
+
+為了確保資料庫的長期健康與一致性，本專案內建了自動化的維護機制。
+
+### 啟動時孤兒資料清理 (Orphaned Data Cleanup on Startup)
+
+*   **元件**: `StartupDataCleanupService.java`
+*   **觸發時機**: Spring Boot 應用程式完全啟動後。
+*   **作用**: 自動檢查 `user_businesses`, `user_credit_cards`, `user_portfolios`, `user_real_estates` 等關聯表，並刪除那些其 `firebase_uid` 已不存在於主表 `user_profiles` 中的「孤兒資料」。
+*   **實作方式**:
+    *   透過實作 `ApplicationRunner` 介面，讓 Spring Boot 在啟動後自動執行 `run` 方法。
+    *   使用 `@Transactional` 確保所有刪除操作的原子性。
+    *   使用 `@Profile("!test")` 停用此功能於測試環境，避免干擾單元測試的資料準備，確保測試的可預測性。
+
+---
+
 ## 🏗️ 專案架構與開發規範 (Architecture & Guidelines)
 
 本專案遵循金融級開發規範，針對資料模型與資料庫存取層採用以下設計模式：
@@ -88,8 +104,8 @@ CREATE TABLE IF NOT EXISTS calculation_records (
 );
 
 -- 2. 用戶個人檔案表 (使用 Firebase UID 作為 PK)
-CREATE TABLE IF NOT EXISTS usr_profiles (
-    user_id VARCHAR(128) PRIMARY KEY,   -- 對應 Firebase uid
+CREATE TABLE IF NOT EXISTS user_profiles (
+    firebase_uid VARCHAR(128) PRIMARY KEY,   -- 對應 Firebase uid
     birth_year INT,
     birth_date DATE,
     gender VARCHAR(10),

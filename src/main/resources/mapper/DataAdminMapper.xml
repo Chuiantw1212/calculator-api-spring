@@ -6,7 +6,7 @@
     <delete id="deleteOrphanedBusinesses">
         DELETE FROM user_businesses b
         WHERE NOT EXISTS (
-            SELECT 1 FROM usr_profiles p WHERE p.user_id = b.user_id
+            SELECT 1 FROM user_profiles p WHERE p.firebase_uid = b.firebase_uid
         )
     </delete>
 
@@ -14,7 +14,7 @@
     <delete id="deleteOrphanedCreditCards">
         DELETE FROM user_credit_cards cc
         WHERE NOT EXISTS (
-            SELECT 1 FROM usr_profiles p WHERE p.user_id = cc.user_id
+            SELECT 1 FROM user_profiles p WHERE p.firebase_uid = cc.firebase_uid
         )
     </delete>
 
@@ -22,7 +22,7 @@
     <delete id="deleteOrphanedPortfolios">
         DELETE FROM user_portfolios pf
         WHERE NOT EXISTS (
-            SELECT 1 FROM usr_profiles p WHERE p.user_id = pf.user_id
+            SELECT 1 FROM user_profiles p WHERE p.firebase_uid = pf.firebase_uid
         )
     </delete>
 
@@ -30,7 +30,7 @@
     <delete id="deleteOrphanedRealEstates">
         DELETE FROM user_real_estates re
         WHERE NOT EXISTS (
-            SELECT 1 FROM usr_profiles p WHERE p.user_id = re.user_id
+            SELECT 1 FROM user_profiles p WHERE p.firebase_uid = re.firebase_uid
         )
     </delete>
 
