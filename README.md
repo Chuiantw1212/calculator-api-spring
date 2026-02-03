@@ -1,121 +1,98 @@
-# Calculator API Spring
+# 財務計算機 API (Financial Calculator API)
 
-這是一個基於 Spring Boot 的財務計算機 API，主要功能為複利計算 (Compound Interest) 與個人理財檔案管理。
-專案採用 **MyBatis** 作為 ORM 框架，連接至 **Neon (PostgreSQL)** 雲端資料庫，並整合 **Firebase Admin SDK** 進行身份驗證與後端擴充服務。
+這是一個基於 Spring Boot 3 的現代化後端 API，旨在為開源財務計算機應用提供安全、穩定、可擴展的服務。專案採用了分層架構、RESTful 設計原則，並整合了 Firebase 進行身份驗證，確保了企業級的安全性與開發效率。
+
+## ✨ 功能亮點 (Features)
+
+*   **多維度資產管理**: 提供對使用者個人資料、職涯、退休、稅務、投資組合、房地產、信用卡、副業等多個模組的完整 CRUD 操作。
+*   **安全的身份驗證**: 整合 Firebase Admin SDK，將使用者身份驗證與管理完全委託給 Google，極大提升安全性。
+*   **分層架構設計**: 嚴格劃分 Controller, Service, Mapper 層，並區分 DTO 與 Entity，使程式碼職責清晰、易於維護。
+*   **整合 API 文件**: 內建 SpringDoc (Swagger UI)，自動生成互動式 API 文件，方便前端開發與測試。
+*   **應用狀態監控**: 整合 Spring Boot Actuator，提供 `/health`, `/info`, `/metrics` 等多個端點，用於即時監控應用健康狀況與記憶體用量。
+*   **統一的錯誤處理**: 透過 `FirebaseAuthenticationEntryPoint` 集中處理權限驗證失敗的例外情況。
 
 ## 🛠️ 技術棧 (Tech Stack)
 
-* **Java**: 17
-* **Framework**: Spring Boot 3.3.2
-* **ORM**: MyBatis Spring Boot Starter 3.0.4
-* **Database**: PostgreSQL (Neon Serverless)
-* **Cloud Service**: Firebase Admin SDK (Java)
-* **Documentation**: SpringDoc OpenAPI (Swagger UI)
-* **Tooling**: Maven, Lombok
-
-## 📦 依賴套件詳解 (Dependencies Explained)
-
-為了讓開發者更清楚 `pom.xml` 中各項依賴的用途，以下逐一解析本專案的核心套件：
-
-| 套件名稱 | 用途說明 |
-| :--- | :--- |
-| **Web 基礎** | |
-| `spring-boot-starter-web` | 建立 RESTful API 的核心，內含 Tomcat 伺服器與 Spring MVC。 |
-| `spring-boot-starter-actuator` | 提供生產環境的監控端點 (如 `/actuator/health`)，用於檢查系統狀態。 |
-| **資料庫與持久層** | |
-| `mybatis-spring-boot-starter` | SQL 映射框架，支援自定義 SQL 查詢，適合處理複雜財務邏輯。 |
-| `postgresql` | PostgreSQL 資料庫驅動程式 (JDBC Driver)。 |
-| **安全性與驗證** | |
-| `spring-boot-starter-security` | 負責 API 的安全防護、權限控管 (Authentication & Authorization)。 |
-| `firebase-admin` | Google Firebase SDK，用於驗證前端傳來的 Token 或管理使用者。 |
-| **開發工具** | |
-| `lombok` | 透過註解 (`@Data`, `@Builder`) 自動產生程式碼，減少 Boilerplate code。 |
-| `springdoc-openapi-starter-webmvc-ui` | 自動掃描 Controller 生成 Swagger/OpenAPI 文件，方便 API 測試。 |
-| `spring-boot-configuration-processor` | 協助 IDE 讀取自定義配置 (`@ConfigurationProperties`) 並提供提示。 |
-| **測試** | |
-| `spring-boot-starter-test` | 包含 JUnit 5, Mockito 等單元測試與整合測試工具。 |
-| `spring-security-test` | 專門用於測試 Spring Security 相關功能的工具。 |
+| 類別 | 技術 | 用途 |
+| :--- | :--- | :--- |
+| **核心框架** | Spring Boot 3.3.2 | 提供快速、穩健的應用程式開發基礎。 |
+| **語言** | Java 17 | 專案使用的 JDK 版本。 |
+| **資料庫** | PostgreSQL (Neon) | 關聯式資料庫，用於儲存所有業務資料。 |
+| **持久層** | MyBatis 3.0.4 | SQL 映射框架，提供對 SQL 的完全控制。 |
+| **身份驗證** | Firebase Admin SDK | 驗證前端傳來的 Firebase ID Token，管理使用者。 |
+| **API 文件** | SpringDoc OpenAPI | 自動生成並展示 Swagger UI。 |
+| **應用監控** | Spring Boot Actuator | 提供生產級的應用監控端點。 |
+| **開發工具** | Lombok, Maven | 簡化程式碼，管理專案依賴。 |
 
 ---
 
-## ⚙️ 應用監控 (Application Monitoring)
+## 🏗️ 專案架構 (Project Architecture)
 
-本專案整合了 **Spring Boot Actuator**，提供多個監控端點 (Endpoint) 來觀察應用程式的內部狀態。
+本專案採用經典的三層架構，並對資料模型進行了嚴格的分層。
 
-### 如何查看監控指標
+### 1. 服務分層
 
-1.  **啟動應用程式**。
-2.  **打開 Swagger UI**: 前往 `http://localhost:8888/swagger-ui/index.html`。
-3.  **選擇 "actuator" 群組**: 在頁面右上角的下拉選單中選擇 `actuator`。
-4.  **展開 `metrics-endpoint`**: 找到並展開 `GET /actuator/metrics/{name}`。
-5.  **輸入指標名稱並執行**:
-    *   點擊 "Try it out"。
-    *   在 `name` 欄位輸入你想查詢的指標，例如 `jvm.memory.used`。
-    *   點擊 "Execute"。
+*   **Controller**: 負責接收 HTTP 請求，驗證使用者身份，呼叫 Service 層處理業務邏輯，並回傳標準的 `ResponseEntity`。
+*   **Service**: 業務邏輯的核心，負責組合多個 Mapper 的操作，處理複雜計算，並執行交易控制 (`@Transactional`)。
+*   **Mapper**: 資料存取層，定義與 MyBatis XML 對應的 Java 介面，負責執行單一的 SQL 操作。
 
-### 常用記憶體指標
+### 2. 資料模型分層 (DTO vs. Entity)
 
-| 指標名稱 | 說明 |
-| :--- | :--- |
-| **`jvm.memory.used`** | **已使用記憶體**：應用程式當下真正佔用的記憶體量。 |
-| **`jvm.memory.committed`** | **已提交記憶體**：JVM 已向作業系統「預留」的總記憶體空間。 |
-| **`jvm.memory.max`** | **最大可用記憶體**：JVM 可使用的最大記憶體上限 (對應 `-Xmx` 設定)。 |
+這是本專案最重要的設計原則之一，旨在確保 API 的穩定性與資料庫的安全性。
+
+| 層級 | 資料夾路徑 | 命名約定 | 職責 |
+| :--- | :--- | :--- | :--- |
+| **DTO (Data Transfer Object)** | `model` | `*Dto`, `*Req`, `*Res` | **面向 API**。用於定義請求 (Request) 和回應 (Response) 的資料結構。可以包含驗證註解 (`@Valid`)。 |
+| **Entity** | `entity` | (無後綴) | **面向資料庫**。嚴格與資料庫的 Table 結構 1:1 對應，由 Mapper 使用。 |
 
 ---
 
-## 🏗️ 專案架構與開發規範 (Architecture & Guidelines)
+## 🛡️ 安全性概覽 (Security Overview)
 
-本專案遵循金融級開發規範，針對資料模型與資料庫存取層採用以下設計模式：
+*   **身份驗證**: 所有需要保護的 API 端點都由 `FirebaseTokenFilter` 攔截，驗證請求 Header 中的 `Authorization: Bearer <ID_TOKEN>`。
+*   **授權**:
+    *   採用「預設拒絕」策略 (`.anyRequest().authenticated()`)，只有明確列入白名單的端點（如 Swagger、Actuator）才能匿名存取。
+    *   在 Service 層與 Mapper 層，所有針對特定資源的操作都會同時驗證資源 ID 和使用者 UID，有效防止水平越權攻擊 (IDOR)。
+*   **防 SQL 注入**: 所有 MyBatis 的 SQL 查詢均使用 `#{...}` 參數化語法，從根本上杜絕 SQL 注入風險。
+*   **CORS**: 採用嚴格的來源白名單策略，只允許指定的網域進行跨域存取。
+*   **秘密管理**: 資料庫帳密、Firebase 金鑰等敏感資訊均透過環境變數或外部檔案加載，**不會**硬編碼在程式碼中。
 
-### 1. 資料模型分層 (Entity vs. Model/DTO)
+---
 
-為了確保安全性與職責分離，我們嚴格區分 **Entity** 與 **DTO**：
+## 📖 API 文件與監控
 
-| 層級 | 資料夾路徑 (`package`) | 結尾命名 | 職責 (Responsibility) | 特徵 |
-| --- | --- | --- | --- | --- |
-| **DTO (傳輸層)** | `src/main/java/.../model` | `*Req`, `*Res`, `*Dto` | **面對前端/API**。負責資料傳輸、輸入驗證 (`@NotBlank`)、格式化輸出 (`@JsonProperty`)。 | 不含 DB 內部欄位、使用 String 接日期以容錯。 |
-| **Entity (持久層)** | `src/main/java/.../entity` | `*` (無後綴) | **面對資料庫**。負責與 Table 結構 1:1 對應。 | 包含審計欄位 (`updated_at`)、精確對應 DB 型別。 |
+### 1. API 文件 (Swagger UI)
 
-### 2. MyBatis 實作模式 (Interface vs. XML)
+專案啟動後，可透過以下網址存取互動式 API 文件：
+*   **URL**: `http://localhost:8888/swagger-ui/index.html`
 
-本專案採用 **XML Configuration** 模式，以支援複雜的 SQL 邏輯 (如 Upsert)：
+在頁面右上角的下拉選單中，可以在 **`application`** (業務 API) 和 **`actuator`** (監控 API) 之間切換。
 
-* **Java Interface (菜單)**:
-* 位置: `src/main/java/.../mapper/*.java`
-* 作用: 定義 Java 方法簽章 (Method Signature)。
-* **注意**: 介面上需標註 `@Mapper`。
+### 2. 應用監控 (Actuator)
 
+你可以透過 Swagger UI 或直接訪問 URL 來查看應用狀態。
 
-* **XML Mapper (食譜)**:
-* 位置: `src/main/resources/mapper/*.xml`
-* 作用: 撰寫實際的 SQL 語句。
-* **關鍵**: XML 的 `namespace` 屬性必須完全匹配 Java Interface 的完整路徑。
-
-
+*   **查看應用健康狀況**: `GET /actuator/health`
+*   **查看記憶體用量**:
+    1.  在 Swagger UI 中選擇 `actuator` 群組。
+    2.  展開 `metrics-endpoint` -> `GET /actuator/metrics/{name}`。
+    3.  在 `name` 欄位輸入 `jvm.memory.used` 並執行。
 
 ---
 
 ## 🚀 快速開始 (Getting Started)
 
-### 1. 資料庫初始化 (Database Setup)
+### 1. 環境準備
+*   Java 17 或更高版本
+*   Maven 3.x
+*   PostgreSQL 資料庫
 
-請在你的 PostgreSQL 資料庫中執行以下 SQL 以建立所需表格：
-
+### 2. 資料庫初始化
+在你的 PostgreSQL 資料庫中執行以下 SQL 以建立所需表格：
 ```sql
--- 1. 複利計算紀錄表
-CREATE TABLE IF NOT EXISTS calculation_records (
-    id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
-    principal DECIMAL(19, 2), -- 本金
-    rate DECIMAL(5, 4),       -- 利率
-    years INT,                -- 年分
-    result DECIMAL(19, 2),    -- 計算結果
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- 2. 用戶個人檔案表 (使用 Firebase UID 作為 PK)
+-- 使用者個人檔案表
 CREATE TABLE IF NOT EXISTS user_profiles (
-    firebase_uid VARCHAR(128) PRIMARY KEY,   -- 對應 Firebase uid
-    birth_year INT,
+    firebase_uid VARCHAR(128) PRIMARY KEY,
     birth_date DATE,
     gender VARCHAR(10),
     current_age INT,
@@ -123,88 +100,32 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     marriage_year INT,
     career_insurance_type VARCHAR(50),
     biography TEXT,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 其他相關表格...
+-- (請根據 entity 定義補全 user_careers, user_taxes, user_portfolios 等表格的 CREATE SCRIPT)
 ```
 
-### 2. 環境變數與外部金鑰設定 (Configuration & Secrets)
+### 3. 專案配置
+#### A. 環境變數 (資料庫連線)
+在 IDE 的啟動配置中設定以下環境變數：
+*   `DB_HOST`: 資料庫主機位址 (e.g., `your-neon-host.com`)
+*   `DB_PORT`: 資料庫端口 (e.g., `5432`)
+*   `DB_NAME`: 資料庫名稱 (e.g., `neondb`)
+*   `DB_USERNAME`: 資料庫使用者名稱
+*   `DB_PASSWORD`: 資料庫密碼
 
-為了確保資安，本專案 **不將敏感資訊明文寫入** 程式碼或設定檔。請務必完成以下兩項設定：
+#### B. Firebase 金鑰
+1.  從 [Firebase Console](https://console.firebase.google.com/) 下載你的服務帳戶私鑰 JSON 檔案。
+2.  將其重新命名為 `serviceAccountKey.json`。
+3.  將檔案放入專案的 `src/main/resources/` 目錄下。
+    > ⚠️ **安全警告**: `serviceAccountKey.json` 檔案已被加入 `.gitignore`，**絕對不要**將此檔案提交到任何版本控制系統。
 
-#### **A. 設定環境變數 (Database)**
-
-請在 IDE (如 Eclipse/IntelliJ) 的 `Run Configurations` -> `Environment` 中設定以下變數：
-
-| 變數名稱 (Variable) | 說明 (Description) | 範例值 (Example) |
-| --- | --- | --- |
-| **DB_URL** | JDBC 連線字串 | `jdbc:postgresql://<HOST>/neondb?sslmode=require` |
-| **DB_USERNAME** | 資料庫帳號 | `neondb_owner` |
-| **DB_PASSWORD** | 資料庫密碼 | `********` |
-
-#### **B. Firebase 金鑰準備 (Firebase Admin SDK)**
-
-本專案需手動配置 Firebase 憑證，請依序執行：
-
-1. 前往 [Firebase Console](https://console.firebase.google.com/)。
-2. 進入 **專案設定 > 服務帳戶 (Service Accounts)**。
-3. 點擊 **「產生新的私密金鑰」** 並下載 JSON 檔案。
-4. 將該檔案重新命名為 **`serviceAccountKey.json`**。
-5. 將檔案放入專案路徑：`src/main/resources/serviceAccountKey.json`。
-
-> ⚠️ **資安警示**：`serviceAccountKey.json` 包含專案最高權限，本專案已將其加入 `.gitignore`。請勿將此金鑰上傳至 GitHub 等公共儲存庫。
-
-### 3. 設定檔結構 (application.yaml)
-
-```yaml
-spring:
-  datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    driver-class-name: org.postgresql.Driver
-
-mybatis:
-  # 告訴 MyBatis XML 檔案放在哪裡
-  mapper-locations: classpath:mapper/*.xml
-  # 設定 Model 的別名包 (選用)
-  type-aliases-package: com.en_chu.calculator_api_spring.model
-  configuration:
-    # 開發時建議開啟，查看 SQL Log
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
+### 4. 啟動應用
+在專案根目錄下執行以下指令：
+```bash
+mvn spring-boot:run
 ```
-
----
-
-## 📖 API 文件 (Swagger)
-
-專案啟動後，可透過 Swagger UI 進行視覺化測試：
-
-* **URL**: `http://localhost:8888/swagger-ui/index.html`
-
----
-
-## 🔧 常見問題與指令 (Troubleshooting)
-
-### 1. 連接埠被佔用 (Port 8888 already in use)
-
-若重新啟動時發現 Port 8888 被佔用，請在 Windows 指令行執行：
-
-```cmd
-netstat -ano | findstr :8888
-taskkill /F /PID <查詢到的PID>
-
-```
-
-### 2. Firebase 初始化失敗
-
-若啟動時噴出 `FileNotFoundException`，請確認 `serviceAccountKey.json` 是否已正確放置於 `src/main/resources/` 目錄下。
-
-### 3. Invalid bound statement (not found)
-
-若呼叫 Mapper 時噴出此錯誤，代表 MyBatis 找不到對應的 XML。請檢查：
-
-1. `mapper-locations` 設定是否正確指向 `classpath:mapper/*.xml`。
-2. XML 中的 `namespace` 是否與 Mapper Interface 的 package 路徑 **完全一致**。
-3. XML 中的 `id` 是否與 Interface 的 **方法名稱一致**。
+應用程式將會啟動在 `http://localhost:8888`。
