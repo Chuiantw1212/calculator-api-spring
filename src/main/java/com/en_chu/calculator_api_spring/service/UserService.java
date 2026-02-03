@@ -10,10 +10,14 @@ import com.en_chu.calculator_api_spring.entity.UserLaborPension;
 import com.en_chu.calculator_api_spring.entity.UserProfile;
 import com.en_chu.calculator_api_spring.entity.UserRetirement;
 import com.en_chu.calculator_api_spring.entity.UserTax;
+import com.en_chu.calculator_api_spring.mapper.UserBusinessMapper;
 import com.en_chu.calculator_api_spring.mapper.UserCareerMapper;
+import com.en_chu.calculator_api_spring.mapper.UserCreditCardMapper;
 import com.en_chu.calculator_api_spring.mapper.UserLaborInsuranceMapper;
 import com.en_chu.calculator_api_spring.mapper.UserLaborPensionMapper;
+import com.en_chu.calculator_api_spring.mapper.UserPortfolioMapper;
 import com.en_chu.calculator_api_spring.mapper.UserProfileMapper;
+import com.en_chu.calculator_api_spring.mapper.UserRealEstateMapper;
 import com.en_chu.calculator_api_spring.mapper.UserRetirementMapper;
 import com.en_chu.calculator_api_spring.mapper.UserTaxMapper;
 import com.en_chu.calculator_api_spring.model.UserCareerDto;
@@ -41,11 +45,12 @@ public class UserService {
     private final UserCareerMapper userCareerMapper;
     private final UserLaborPensionMapper userLaborPensionMapper;
     private final UserLaborInsuranceMapper userLaborInsuranceMapper;
-
-    // ✅ [更換] 改為注入 UserRetirementMapper
     private final UserRetirementMapper userRetirementMapper;
-
     private final UserTaxMapper userTaxMapper;
+    private final UserBusinessMapper userBusinessMapper;
+    private final UserCreditCardMapper userCreditCardMapper;
+    private final UserPortfolioMapper userPortfolioMapper;
+    private final UserRealEstateMapper userRealEstateMapper;
 
     // ==========================================
     // 1. 取得完整資料 (Aggregation / 組裝工廠)
@@ -196,7 +201,20 @@ public class UserService {
         int careerDeleted = userCareerMapper.deleteByUid(uid);
         log.debug("   - Career 資料已刪除: {} 筆", careerDeleted);
 
-        // 6. 最後刪除個人檔案 (Profile)
+        // 6. 刪除多筆記錄的資料
+        int businessDeleted = userBusinessMapper.deleteByUid(uid);
+        log.debug("   - Business 資料已刪除: {} 筆", businessDeleted);
+
+        int creditCardDeleted = userCreditCardMapper.deleteByUid(uid);
+        log.debug("   - Credit Card 資料已刪除: {} 筆", creditCardDeleted);
+
+        int portfolioDeleted = userPortfolioMapper.deleteByUid(uid);
+        log.debug("   - Portfolio 資料已刪除: {} 筆", portfolioDeleted);
+
+        int realEstateDeleted = userRealEstateMapper.deleteByUid(uid);
+        log.debug("   - Real Estate 資料已刪除: {} 筆", realEstateDeleted);
+
+        // 7. 最後刪除個人檔案 (Profile)
         int profileDeleted = userProfileMapper.deleteByUid(uid);
         log.debug("   - Profile 資料已刪除: {} 筆", profileDeleted);
 
