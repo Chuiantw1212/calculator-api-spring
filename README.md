@@ -13,6 +13,29 @@
 * **Documentation**: SpringDoc OpenAPI (Swagger UI)
 * **Tooling**: Maven, Lombok
 
+## 📦 依賴套件詳解 (Dependencies Explained)
+
+為了讓開發者更清楚 `pom.xml` 中各項依賴的用途，以下逐一解析本專案的核心套件：
+
+| 套件名稱 | 用途說明 |
+| :--- | :--- |
+| **Web 基礎** | |
+| `spring-boot-starter-web` | 建立 RESTful API 的核心，內含 Tomcat 伺服器與 Spring MVC。 |
+| `spring-boot-starter-actuator` | 提供生產環境的監控端點 (如 `/actuator/health`)，用於檢查系統狀態。 |
+| **資料庫與持久層** | |
+| `mybatis-spring-boot-starter` | SQL 映射框架，支援自定義 SQL 查詢，適合處理複雜財務邏輯。 |
+| `postgresql` | PostgreSQL 資料庫驅動程式 (JDBC Driver)。 |
+| **安全性與驗證** | |
+| `spring-boot-starter-security` | 負責 API 的安全防護、權限控管 (Authentication & Authorization)。 |
+| `firebase-admin` | Google Firebase SDK，用於驗證前端傳來的 Token 或管理使用者。 |
+| **開發工具** | |
+| `lombok` | 透過註解 (`@Data`, `@Builder`) 自動產生程式碼，減少 Boilerplate code。 |
+| `springdoc-openapi-starter-webmvc-ui` | 自動掃描 Controller 生成 Swagger/OpenAPI 文件，方便 API 測試。 |
+| `spring-boot-configuration-processor` | 協助 IDE 讀取自定義配置 (`@ConfigurationProperties`) 並提供提示。 |
+| **測試** | |
+| `spring-boot-starter-test` | 包含 JUnit 5, Mockito 等單元測試與整合測試工具。 |
+| `spring-security-test` | 專門用於測試 Spring Security 相關功能的工具。 |
+
 ---
 
 ## 🏗️ 專案架構與開發規範 (Architecture & Guidelines)
