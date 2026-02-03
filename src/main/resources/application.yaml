@@ -26,3 +26,20 @@ app:
       - https://enchu-8085a.web.app
       - https://enchu-8085a.firebaseapp.com
       - https://www.en-chu.com
+
+# 監控端點設定
+management:
+  endpoints:
+    web:
+      exposure:
+        # 只開放 health 和 info，避免洩漏過多資訊
+        include: health,info
+  endpoint:
+    health:
+      # 顯示詳細健康資訊 (例如：資料庫連線狀態)
+      show-details: always
+
+# SpringDoc (Swagger) 設定
+springdoc:
+  # 將 Actuator 的端點整合進 Swagger UI
+  show-actuator: true
