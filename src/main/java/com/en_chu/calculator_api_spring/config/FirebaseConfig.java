@@ -20,25 +20,31 @@ public class FirebaseConfig {
     @Bean
     public Firestore firestore() throws IOException {
         if (FirebaseApp.getApps().isEmpty()) {
-            FirebaseOptions options;
+            FirebaseOptions.Builder optionsBuilder = FirebaseOptions.builder();
 
             // K_SERVICE 是 Google Cloud Run 保證會設定的標準環境變數。
-            // 這是檢測 Cloud Run 環境最可靠的方法。
             if (System.getenv("K_SERVICE") != null) {
-                log.info("☁️ Cloud Run 環境已檢測 (K_SERVICE is set)。使用應用程式預設憑證 (ADC)。");
-                options = FirebaseOptions.builder()
-                        .setCredentials(GoogleCredentials.getApplicationDefault())
-                        .build();
+                log.info("☁️ Cloud Run 環境已檢測。使用應用程式預設憑證 (ADC)。");
+
+                // 從環境變數讀取 Project ID
+                String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
+                if (projectId == null) {
+                    throw new IllegalStateException("GOOGLE_CLOUD_PROJECT environment variable is not set in Cloud Run.");
+                }
+                log.info("Project ID '{}' 已設定。", projectId);
+
+                optionsBuilder
+                    .setCredentials(GoogleCredentials.getApplicationDefault())
+                    .setProjectId(projectId);
+
             } else {
                 log.info("🏠 本地環境已檢測。從 Classpath 讀取 'service_account_key.json'。");
-                // 這個邏輯專為本地開發保留
+                // 本地開發邏輯不變
                 InputStream serviceAccount = new ClassPathResource("service_account_key.json").getInputStream();
-                options = FirebaseOptions.builder()
-                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                        .build();
+                optionsBuilder.setCredentials(GoogleCredentials.fromStream(serviceAccount));
             }
 
-            FirebaseApp.initializeApp(options);
+            FirebaseApp.initializeApp(optionsBuilder.build());
         }
 
         return FirestoreClient.getFirestore();
