@@ -26,6 +26,7 @@ app:
       - https://enchu-8085a.web.app
       - https://enchu-8085a.firebaseapp.com
       - https://www.en-chu.com
+      - https://planner-api-spring-592400229145.asia-east1.run.app
 
 # 監控端點設定
 management:

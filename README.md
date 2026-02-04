@@ -26,6 +26,16 @@
 
 ---
 
+## ☁️ 部署 (Deployment)
+
+本專案已透過持續部署 (CI/CD) 發布至 Google Cloud Run。
+
+*   **服務網址 (Production URL)**: [https://planner-api-spring-592400229145.asia-east1.run.app](https://planner-api-spring-592400229145.asia-east1.run.app)
+*   **API 文件 (Swagger UI)**: [https://planner-api-spring-592400229145.asia-east1.run.app/swagger-ui/index.html](https://planner-api-spring-592400229145.asia-east1.run.app/swagger-ui/index.html)
+*   **健康檢查 (Health Check)**: [https://planner-api-spring-592400229145.asia-east1.run.app/actuator/health](https://planner-api-spring-592400229145.asia-east1.run.app/actuator/health)
+
+---
+
 ## 🏗️ 專案架構 (Project Architecture)
 
 本專案採用經典的三層架構，並對資料模型進行了嚴格的分層。
@@ -56,27 +66,6 @@
 *   **防 SQL 注入**: 所有 MyBatis 的 SQL 查詢均使用 `#{...}` 參數化語法，從根本上杜絕 SQL 注入風險。
 *   **CORS**: 採用嚴格的來源白名單策略，只允許指定的網域進行跨域存取。
 *   **秘密管理**: 資料庫帳密、Firebase 金鑰等敏感資訊均透過環境變數或外部檔案加載，**不會**硬編碼在程式碼中。
-
----
-
-## 📖 API 文件與監控
-
-### 1. API 文件 (Swagger UI)
-
-專案啟動後，可透過以下網址存取互動式 API 文件：
-*   **URL**: `http://localhost:8888/swagger-ui/index.html`
-
-在頁面右上角的下拉選單中，可以在 **`application`** (業務 API) 和 **`actuator`** (監控 API) 之間切換。
-
-### 2. 應用監控 (Actuator)
-
-你可以透過 Swagger UI 或直接訪問 URL 來查看應用狀態。
-
-*   **查看應用健康狀況**: `GET /actuator/health`
-*   **查看記憶體用量**:
-    1.  在 Swagger UI 中選擇 `actuator` 群組。
-    2.  展開 `metrics-endpoint` -> `GET /actuator/metrics/{name}`。
-    3.  在 `name` 欄位輸入 `jvm.memory.used` 並執行。
 
 ---
 
