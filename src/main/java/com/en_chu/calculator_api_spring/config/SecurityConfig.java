@@ -30,6 +30,9 @@ public class SecurityConfig {
 				.httpBasic(AbstractHttpConfigurer::disable).formLogin(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers(
+								// Root status
+								"/",
+
 								// Swagger UI
 								"/v3/api-docs/**", 
 								"/swagger-ui/**", 
@@ -39,7 +42,7 @@ public class SecurityConfig {
 								"/api/v1/metadata/**",
 
 								// Admin
-								"/admin/sync/**",
+								"/admin/**",
 								
 								// Actuator
 								"/actuator/**"

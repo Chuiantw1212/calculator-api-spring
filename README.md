@@ -26,13 +26,14 @@
 
 ---
 
-## ☁️ 部署 (Deployment)
+## ☁️ 部署狀態 (Deployment)
 
-本專案已透過持續部署 (CI/CD) 發布至 Google Cloud Run。
+本專案已透過 CI/CD 自動部署至 **Google Cloud Run**。
 
-*   **服務網址 (Production URL)**: [https://planner-api-spring-592400229145.asia-east1.run.app](https://planner-api-spring-592400229145.asia-east1.run.app)
-*   **API 文件 (Swagger UI)**: [https://planner-api-spring-592400229145.asia-east1.run.app/swagger-ui/index.html](https://planner-api-spring-592400229145.asia-east1.run.app/swagger-ui/index.html)
-*   **健康檢查 (Health Check)**: [https://planner-api-spring-592400229145.asia-east1.run.app/actuator/health](https://planner-api-spring-592400229145.asia-east1.run.app/actuator/health)
+*   **服務狀態**: ✅ **線上運行中 (Online)**
+*   **根目錄狀態**: [https://calculator-api-spring-592400229145.asia-east1.run.app/](https://calculator-api-spring-592400229145.asia-east1.run.app/)
+*   **API 文件 (Swagger UI)**: [https://calculator-api-spring-592400229145.asia-east1.run.app/swagger-ui/index.html](https://calculator-api-spring-592400229145.asia-east1.run.app/swagger-ui/index.html)
+*   **健康檢查 (Health Check)**: [https://calculator-api-spring-592400229145.asia-east1.run.app/actuator/health](https://calculator-api-spring-592400229145.asia-east1.run.app/actuator/health)
 
 ---
 
@@ -106,7 +107,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
 *   `DB_USERNAME`: 資料庫使用者名稱
 *   `DB_PASSWORD`: 資料庫密碼
 
-#### B. Firebase 金鑰
+#### B. Firebase 金鑰 (本地開發用)
 1.  從 [Firebase Console](https://console.firebase.google.com/) 下載你的服務帳戶私鑰 JSON 檔案。
 2.  將其重新命名為 `serviceAccountKey.json`。
 3.  將檔案放入專案的 `src/main/resources/` 目錄下。
