@@ -24,22 +24,16 @@ public class FirebaseConfig {
 
             // K_SERVICE 是 Google Cloud Run 保證會設定的標準環境變數。
             if (System.getenv("K_SERVICE") != null) {
-                log.info("☁️ Cloud Run 環境已檢測。使用應用程式預設憑證 (ADC)。");
+                log.info("☁️ Cloud Run 環境已檢測。使用 ADC 並明確設定 Project ID。");
 
-                // 從環境變數讀取 Project ID
-                String projectId = System.getenv("GOOGLE_CLOUD_PROJECT");
-                if (projectId == null) {
-                    throw new IllegalStateException("GOOGLE_CLOUD_PROJECT environment variable is not set in Cloud Run.");
-                }
-                log.info("Project ID '{}' 已設定。", projectId);
-
+                // 這是最穩健的作法：同時提供 ADC 憑證和明確的 Project ID。
                 optionsBuilder
                     .setCredentials(GoogleCredentials.getApplicationDefault())
-                    .setProjectId(projectId);
+                    .setProjectId("enchu-8085a"); // 根據你的資訊，明確設定 Project ID
 
             } else {
                 log.info("🏠 本地環境已檢測。從 Classpath 讀取 'service_account_key.json'。");
-                // 本地開發邏輯不變
+                // 本地開發邏輯不變，金鑰檔案中已包含 Project ID。
                 InputStream serviceAccount = new ClassPathResource("service_account_key.json").getInputStream();
                 optionsBuilder.setCredentials(GoogleCredentials.fromStream(serviceAccount));
             }
