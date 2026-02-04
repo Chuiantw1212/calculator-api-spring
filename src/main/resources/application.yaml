@@ -26,3 +26,21 @@ app:
       - https://enchu-8085a.web.app
       - https://enchu-8085a.firebaseapp.com
       - https://www.en-chu.com
+      - https://planner-api-spring-592400229145.asia-east1.run.app
+
+# 監控端點設定
+management:
+  endpoints:
+    web:
+      exposure:
+        # 開放 health, info, 和 metrics
+        include: health,info,metrics
+  endpoint:
+    health:
+      # 顯示詳細健康資訊 (例如：資料庫連線狀態)
+      show-details: always
+
+# SpringDoc (Swagger) 設定
+springdoc:
+  # 讓 springdoc 自動建立並管理 actuator 群組
+  show-actuator: true

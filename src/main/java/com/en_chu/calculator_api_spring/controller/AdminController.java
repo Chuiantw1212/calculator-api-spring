@@ -12,22 +12,22 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/admin/sync")
-@Tag(name = "Admin Sync", description = "後台資料同步工具")
+@RequestMapping("/admin")
+@Tag(name = "Admin API", description = "後台管理與資料同步工具")
 public class AdminController {
 
 	@Autowired
 	private FirebaseSeedingService seedingService;
 
 	@Operation(summary = "同步一般設定檔 (Metadata)", description = "同步 init-data 資料夾下的設定檔，但不包含生命表。")
-	@PostMapping("/metadata")
+	@PostMapping("/sync/metadata")
 	public ResponseEntity<String> syncMetadata() {
 		seedingService.syncMetadataConfigs();
 		return ResponseEntity.ok("Metadata configs synced successfully.");
 	}
 
 	@Operation(summary = "同步生命表 (Life Table)", description = "專門處理 opt_life_table，將其拆分為獨立文件寫入 Firestore。此操作較耗時。")
-	@PostMapping("/life-table")
+	@PostMapping("/sync/life-table")
 	public ResponseEntity<String> syncLifeTable() {
 		seedingService.syncLifeTable();
 		return ResponseEntity.ok("Life Table data sync started/completed.");

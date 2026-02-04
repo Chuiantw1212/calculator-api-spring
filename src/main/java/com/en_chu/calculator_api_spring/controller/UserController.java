@@ -2,7 +2,7 @@ package com.en_chu.calculator_api_spring.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping; // 新增這行
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,10 +23,13 @@ import com.en_chu.calculator_api_spring.service.UserService;
 import com.en_chu.calculator_api_spring.service.UserTaxService;
 import com.en_chu.calculator_api_spring.util.SecurityUtils;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/user")
+@Tag(name = "User API", description = "使用者核心資料管理")
 public class UserController {
 
     @Autowired
@@ -47,12 +50,14 @@ public class UserController {
     @Autowired
     private UserTaxService userTaxService;
 
+    @Operation(summary = "獲取當前使用者所有資料")
     @GetMapping("/me")
     public ResponseEntity<UserFullDataRes> getMe() {
         String uid = SecurityUtils.getCurrentUserUid();
         return ResponseEntity.ok(userService.getFullUserData(uid));
     }
 
+    @Operation(summary = "更新使用者個人資料")
     @PutMapping("/profile")
     public ResponseEntity<String> updateProfile(@RequestBody @Valid UserProfileDto req) {
         String uid = SecurityUtils.getCurrentUserUid();
@@ -60,6 +65,7 @@ public class UserController {
         return ResponseEntity.ok("更新成功");
     }
 
+    @Operation(summary = "更新使用者職涯資料")
     @PutMapping("/career")
     public ResponseEntity<String> updateCareer(@RequestBody @Valid UserCareerDto req) {
         String uid = SecurityUtils.getCurrentUserUid();
@@ -67,6 +73,7 @@ public class UserController {
         return ResponseEntity.ok("更新成功");
     }
 
+    @Operation(summary = "更新使用者勞退資料")
     @PutMapping("/labor-pension")
     public ResponseEntity<String> updateLaborPension(@RequestBody @Valid UserLaborPensionDto req) {
         String uid = SecurityUtils.getCurrentUserUid();
@@ -74,12 +81,14 @@ public class UserController {
         return ResponseEntity.ok("更新成功");
     }
 
+    @Operation(summary = "更新使用者勞保資料")
     @PutMapping("/labor-insurance")
     public ResponseEntity<UserLaborInsuranceDto> update(@Valid @RequestBody UserLaborInsuranceDto req) {
         String uid = SecurityUtils.getCurrentUserUid();
         return ResponseEntity.ok(userLaborInsuranceService.updateLaborInsurance(uid, req));
     }
 
+    @Operation(summary = "更新使用者稅務資料")
     @PutMapping("/tax")
     public ResponseEntity<String> updateTax(@RequestBody @Valid UserTaxDto req) {
         String uid = SecurityUtils.getCurrentUserUid();
@@ -87,16 +96,11 @@ public class UserController {
         return ResponseEntity.ok("更新成功");
     }
 
-    /**
-     * 新增：刪除當前使用者帳號
-     * 對應前端: authFetch('/api/v1/user', { method: 'DELETE' });
-     */
+    @Operation(summary = "刪除當前使用者帳號")
     @DeleteMapping
     public ResponseEntity<Void> deleteUser() {
         String uid = SecurityUtils.getCurrentUserUid();
-        // 呼叫 Service 進行刪除 (需確保 UserService 有實作此方法)
         userService.deleteUser(uid);
-        // 回傳 204 No Content 代表成功且不回傳內容
         return ResponseEntity.noContent().build();
     }
 }

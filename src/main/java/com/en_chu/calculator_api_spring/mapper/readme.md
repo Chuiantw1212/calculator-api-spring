@@ -73,7 +73,7 @@ int upsertProfile(UserProfile profile);
 | Mapper 名稱 | 對應 Entity | 實作方式 | 用途說明 |
 | --- | --- | --- | --- |
 | **`CalculationMapper`** | `CompoundInterestReq` | Annotation / XML | 負責存取複利計算的歷史紀錄 (`calculation_records`)。 |
-| **`UserProfileMapper`** | `UserProfile` | **XML** | 負責存取使用者個人資料 (`usr_profiles`)。使用 `ON CONFLICT` 語法實作 Upsert 邏輯。 |
+| **`UserProfileMapper`** | `UserProfile` | **XML** | 負責存取使用者個人資料 (`user_profiles`)。使用 `ON CONFLICT` 語法實作 Upsert 邏輯。 |
 | **`DataAdminMapper`** | N/A | **XML** | 負責執行管理任務，例如在啟動時清除孤兒資料。 |
 
 ## 🔧 常見問題排除 (Troubleshooting)

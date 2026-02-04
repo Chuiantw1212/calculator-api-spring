@@ -18,3 +18,20 @@ logging:
     
     # 如果您覺得 Spring Security 其他啟動訊息也很吵，可以直接把整個套件設為 WARN
     org.springframework.security: WARN
+
+# 監控端點設定
+management:
+  endpoints:
+    web:
+      exposure:
+        # 開放 health, info, 和 metrics
+        include: health,info,metrics
+  endpoint:
+    health:
+      # 顯示詳細健康資訊 (例如：資料庫連線狀態)
+      show-details: always
+
+# SpringDoc (Swagger) 設定
+springdoc:
+  # 讓 springdoc 自動建立並管理 actuator 群組
+  show-actuator: true

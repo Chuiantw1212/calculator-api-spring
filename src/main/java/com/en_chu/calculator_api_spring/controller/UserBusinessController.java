@@ -22,17 +22,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/user/businesses") // ✅ 使用複數路徑，符合 RESTful
-@Tag(name = "User Business", description = "副業與創業項目管理 (嚴格驗證模式)")
+@RequestMapping("/api/v1/user/businesses")
+@Tag(name = "User Business API", description = "副業與創業項目管理")
 @RequiredArgsConstructor
 public class UserBusinessController {
 
 	private final UserBusinessService userBusinessService;
 
-	// ==========================================
-	// 1. 取得列表 (GET List)
-	// ==========================================
-	@Operation(summary = "取得所有事業列表 (分頁)", description = "回傳該使用者的創業項目，支援分頁查詢")
+	@Operation(summary = "獲取所有事業列表 (分頁)")
 	@GetMapping
     public ResponseEntity<PageResponse<UserBusinessDto>> getList(
             @RequestParam(defaultValue = "1") int currentPage,
@@ -40,55 +37,34 @@ public class UserBusinessController {
     ) {
         String uid = SecurityUtils.getCurrentUserUid();
         
-        // 防呆
         if (currentPage < 1) currentPage = 1;
         if (pageSize < 1) pageSize = 10;
         if (pageSize > 100) {
-            pageSize = 100; // 強制最大只能查 100 筆，避免伺服器負擔過重
+            pageSize = 100;
         }
 
         return ResponseEntity.ok(userBusinessService.getList(uid, currentPage, pageSize));
     }
 
-	// ==========================================
-	// 2. 新增 (POST) - 嚴格模式
-	// ==========================================
-	@Operation(summary = "新增事業項目", description = "⚠️ 必須傳入完整資料 (Name, StartDate, IncomeMode...)，後端不提供預設值")
+	@Operation(summary = "新增事業項目")
 	@PostMapping
-	public ResponseEntity<UserBusinessDto> create(
-			// ✅ 這裡不加 required=false，預設就是必填
-			// ✅ 加上 @Valid，會觸發 DTO 裡的 @NotNull, @DecimalMin 驗證
-			@RequestBody @Valid UserBusinessDto req) {
+	public ResponseEntity<UserBusinessDto> create(@RequestBody @Valid UserBusinessDto req) {
 		String uid = SecurityUtils.getCurrentUserUid();
-
-		// 不需要檢查 req == null，因為 Spring 在進入這行之前就會先攔截並回傳 400
 		return ResponseEntity.ok(userBusinessService.create(uid, req));
 	}
 
-	// ==========================================
-	// 3. 更新 (PUT) - 嚴格模式
-	// ==========================================
-	@Operation(summary = "更新事業資訊")
+	@Operation(summary = "更新事業項目")
 	@PutMapping("/{id}")
-	public ResponseEntity<UserBusinessDto> update(@PathVariable Long id, @RequestBody @Valid UserBusinessDto req // ✅
-																													// 更新也同樣嚴格檢查
-	) {
-
+	public ResponseEntity<UserBusinessDto> update(@PathVariable Long id, @RequestBody @Valid UserBusinessDto req) {
 		String uid = SecurityUtils.getCurrentUserUid();
 		return ResponseEntity.ok(userBusinessService.update(uid, id, req));
 	}
 
-	// ==========================================
-	// 4. 刪除 (DELETE)
-	// ==========================================
-	@Operation(summary = "刪除事業")
+	@Operation(summary = "刪除事業項目")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		String uid = SecurityUtils.getCurrentUserUid();
-
 		userBusinessService.delete(uid, id);
-
-		// 刪除成功，回傳 204 No Content
 		return ResponseEntity.noContent().build();
 	}
 }
