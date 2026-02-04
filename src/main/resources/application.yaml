@@ -1,6 +1,9 @@
 server:
   # 雲端環境通常會注入 PORT 環境變數，若無則預設 8080
   port: ${PORT:8080}
+  # 告知 Spring Boot 它運行在反向代理 (如 Google Cloud Run) 後面
+  # 這會讓 Spring Boot 正確處理 X-Forwarded-* 標頭
+  forward-headers-strategy: framework
 
 spring:
   application:
