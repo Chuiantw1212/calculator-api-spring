@@ -22,16 +22,16 @@ public class FirebaseConfig {
         if (FirebaseApp.getApps().isEmpty()) {
             FirebaseOptions options;
 
-            // 檢查是否在 Google Cloud 環境 (例如 Cloud Run)
-            // GOOGLE_CLOUD_PROJECT 環境變數是 Cloud Run 自動注入的
-            if (System.getenv("GOOGLE_CLOUD_PROJECT") != null) {
-                log.info("☁️ 在 Google Cloud 環境中，使用應用程式預設憑證 (ADC) 初始化 Firebase...");
+            // K_SERVICE 是 Google Cloud Run 保證會設定的標準環境變數。
+            // 這是檢測 Cloud Run 環境最可靠的方法。
+            if (System.getenv("K_SERVICE") != null) {
+                log.info("☁️ Cloud Run 環境已檢測 (K_SERVICE is set)。使用應用程式預設憑證 (ADC)。");
                 options = FirebaseOptions.builder()
                         .setCredentials(GoogleCredentials.getApplicationDefault())
                         .build();
             } else {
-                log.info("🏠 在本地環境中，讀取 service_account_key.json 初始化 Firebase...");
-                // 讀取你的 Firebase 金鑰檔案
+                log.info("🏠 本地環境已檢測。從 Classpath 讀取 'service_account_key.json'。");
+                // 這個邏輯專為本地開發保留
                 InputStream serviceAccount = new ClassPathResource("service_account_key.json").getInputStream();
                 options = FirebaseOptions.builder()
                         .setCredentials(GoogleCredentials.fromStream(serviceAccount))
