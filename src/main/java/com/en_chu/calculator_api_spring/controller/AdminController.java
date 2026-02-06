@@ -5,7 +5,6 @@ import com.en_chu.calculator_api_spring.service.StartupDataCleanupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin")
 @Tag(name = "Admin API", description = "後台管理與資料維護工具")
 @RequiredArgsConstructor
-@Lazy // 延遲初始化，直到第一個對 /admin 的請求進來時才建立此 Controller
 public class AdminController {
 
     private final FirebaseSeedingService seedingService;
