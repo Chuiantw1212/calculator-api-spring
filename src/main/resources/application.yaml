@@ -18,6 +18,18 @@ spring:
     hikari:
       # 應用程式啟動時，如果無法從連線池中至少取得一個連線，就快速失敗
       initialization-fail-timeout: 0
+      # 連線測試查詢，在將連線交給應用程式前，確保其有效
+      connection-test-query: "SELECT 1"
+      # 從池中獲取連線的最大等待時間 (30秒)
+      connection-timeout: 30000
+      # 最小閒置連線數 (Cloud Run 縮容到 0 時，這個設定會失效，但在運行時有用)
+      minimum-idle: 5
+      # --- 核心保活設定 ---
+      # 一個連線的最大存活時間 (設定為 29 分鐘，比常見的 30 分鐘防火牆超時更短)
+      max-lifetime: 1740000 
+      # 保活心跳時間 (設定為 4 分鐘，確保比 Neon DB 的 5 分鐘休眠更短)
+      # HikariCP 會在一個連線閒置超過此時間後，發送一次 connection-test-query 來「喚醒」它
+      keepalive-time: 240000
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
