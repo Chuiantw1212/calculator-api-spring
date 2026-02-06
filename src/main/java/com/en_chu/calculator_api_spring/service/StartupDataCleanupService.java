@@ -2,17 +2,13 @@ package com.en_chu.calculator_api_spring.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.en_chu.calculator_api_spring.mapper.DataAdminMapper;
 
-@Component
-@Profile("!test") // 確保此任務不在測試環境中執行
-public class StartupDataCleanupService implements ApplicationRunner {
+@Service
+public class StartupDataCleanupService {
 
     private static final Logger logger = LoggerFactory.getLogger(StartupDataCleanupService.class);
 
@@ -22,10 +18,9 @@ public class StartupDataCleanupService implements ApplicationRunner {
         this.dataAdminMapper = dataAdminMapper;
     }
 
-    @Override
-    @Transactional // 將所有刪除操作包在一個交易中，確保資料一致性
-    public void run(ApplicationArguments args) throws Exception {
-        logger.info("===== [Startup Task] Starting orphaned data cleanup... =====");
+    @Transactional
+    public void cleanupOrphanedData() {
+        logger.info("===== [Admin Task] Starting orphaned data cleanup... =====");
 
         int businessesDeleted = dataAdminMapper.deleteOrphanedBusinesses();
         if (businessesDeleted > 0) {
@@ -47,6 +42,6 @@ public class StartupDataCleanupService implements ApplicationRunner {
             logger.info("[Cleanup] Deleted {} orphaned records from 'user_real_estates'.", realEstatesDeleted);
         }
 
-        logger.info("===== [Startup Task] Orphaned data cleanup finished. =====");
+        logger.info("===== [Admin Task] Orphaned data cleanup finished. =====");
     }
 }
