@@ -6,16 +6,19 @@ spring:
     name: calculator-api-spring
   
   datasource:
-    url: jdbc:postgresql://${DB_HOST:ep-holy-mud-a1v9v56m-pooler.ap-southeast-1.aws.neon.tech}:${DB_PORT:5432}/${DB_NAME:neondb}?sslmode=require
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://${DB_HOST:?DB_HOST environment variable is not set}:${DB_PORT:?DB_PORT environment variable is not set}/${DB_NAME:?DB_NAME environment variable is not set}?sslmode=require
+    username: ${DB_USERNAME:?DB_USERNAME environment variable is not set}
+    password: ${DB_PASSWORD:?DB_PASSWORD environment variable is not set}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      max-lifetime: 1740000 
+      connection-timeout: 30000
+      idle-timeout: 600000
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.en_chu.calculator_api_spring.model
 
-# ✅ 正式環境：嚴格的 CORS 白名單
 app:
   cors:
     allowed-origins:
@@ -24,7 +27,6 @@ app:
       - https://www.en-chu.com
       - https://planner-api-spring-592400229145.asia-east1.run.app
 
-# 監控端點設定
 management:
   endpoints:
     web:
@@ -34,6 +36,5 @@ management:
     health:
       show-details: always
 
-# SpringDoc (Swagger) 設定
 springdoc:
   show-actuator: true
