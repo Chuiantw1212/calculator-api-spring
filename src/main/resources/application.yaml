@@ -14,6 +14,10 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
+    # HikariCP 連線池設定
+    hikari:
+      # 應用程式啟動時，如果無法從連線池中至少取得一個連線，就快速失敗
+      initialization-fail-timeout: 0
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
@@ -39,6 +43,9 @@ management:
     health:
       # 顯示詳細健康資訊 (例如：資料庫連線狀態)
       show-details: always
+      # 將資料庫的健康狀況也納入整體健康狀態
+      probes:
+        enabled: true
 
 # SpringDoc (Swagger) 設定
 springdoc:
