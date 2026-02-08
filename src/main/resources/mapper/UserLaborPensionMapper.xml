@@ -52,6 +52,10 @@
 		WHERE firebase_uid = #{firebaseUid}
 	</select>
 
+	<select id="existsByUid" resultType="boolean">
+        SELECT EXISTS (SELECT 1 FROM user_labor_pensions WHERE firebase_uid = #{uid})
+    </select>
+
 	<update id="updateByUid">
         UPDATE user_labor_pensions
         <set>

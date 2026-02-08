@@ -67,6 +67,10 @@
         WHERE firebase_uid = #{firebaseUid}
     </select>
 
+    <select id="existsByUid" resultType="boolean">
+        SELECT EXISTS (SELECT 1 FROM user_profiles WHERE firebase_uid = #{uid})
+    </select>
+
     <delete id="deleteByUid">
         DELETE FROM user_profiles
         WHERE firebase_uid = #{firebaseUid}

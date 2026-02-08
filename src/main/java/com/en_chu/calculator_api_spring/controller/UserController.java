@@ -50,7 +50,7 @@ public class UserController {
 
     @Operation(summary = "更新使用者職涯資料")
     @PutMapping("/career")
-    public ResponseEntity<String> updateCareer(@RequestBody @Valid UserCareerDto req) {
+    public ResponseEntity<String> updateCareer(@RequestBody @Valid UserCareerUpdateReq req) {
         String uid = SecurityUtils.getCurrentUserUid();
         userCareerService.updateCareer(uid, req);
         return ResponseEntity.ok("更新成功");
@@ -58,7 +58,7 @@ public class UserController {
 
     @Operation(summary = "更新使用者勞退資料")
     @PutMapping("/labor-pension")
-    public ResponseEntity<String> updateLaborPension(@RequestBody @Valid UserLaborPensionDto req) {
+    public ResponseEntity<String> updateLaborPension(@RequestBody @Valid UserLaborPensionUpdateReq req) {
         String uid = SecurityUtils.getCurrentUserUid();
         userLaborPensionService.updateLaborPension(uid, req);
         return ResponseEntity.ok("更新成功");
@@ -75,7 +75,7 @@ public class UserController {
 
     @Operation(summary = "更新使用者稅務資料")
     @PutMapping("/tax")
-    public ResponseEntity<String> updateTax(@RequestBody @Valid UserTaxDto req) {
+    public ResponseEntity<String> updateTax(@RequestBody @Valid UserTaxUpdateReq req) {
         String uid = SecurityUtils.getCurrentUserUid();
         userTaxService.updateTax(uid, req);
         return ResponseEntity.ok("更新成功");
