@@ -1,14 +1,16 @@
 package com.en_chu.calculator_api_spring;
 
-import org.mybatis.spring.annotation.MapperScan; // 記得 import
+import com.en_chu.calculator_api_spring.config.AppProperties;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-import com.en_chu.calculator_api_spring.config.CorsConfig;
-
+/**
+ * Main entry point for the Spring Boot application.
+ */
 @SpringBootApplication
-@EnableConfigurationProperties(CorsConfig.class) // 👈 強制啟用屬性讀取
+@EnableConfigurationProperties(AppProperties.class)
 @MapperScan("com.en_chu.calculator_api_spring.mapper")
 public class CalculatorApiSpringApplication {
 
