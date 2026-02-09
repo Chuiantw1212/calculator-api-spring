@@ -1,7 +1,6 @@
 package com.en_chu.calculator_api_spring.model;
 
 import lombok.Data;
-
 import java.math.BigDecimal;
 
 /**
@@ -10,7 +9,9 @@ import java.math.BigDecimal;
 @Data
 public class UserTaxUpdateReq {
 
-    private BigDecimal taxBracketRate;
-    private Integer taxDeductionAmount;
+    /**
+     * 預估其他所得 (Other Income) 包含：股利、利息、租金、兼職等需併入綜所稅的金額
+     */
+    private BigDecimal estimatedOtherIncome;
 
 }

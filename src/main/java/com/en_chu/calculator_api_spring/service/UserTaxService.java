@@ -28,8 +28,8 @@ public class UserTaxService {
             entity.setFirebaseUid(uid);
         }
 
-        entity.setTaxBracketRate(req.getTaxBracketRate());
-        entity.setTaxDeductionAmount(req.getTaxDeductionAmount());
+        // --- 安全地更新欄位 ---
+        entity.setEstimatedOtherIncome(req.getEstimatedOtherIncome());
 
         if (exists) {
             userTaxMapper.updateByUid(entity);
