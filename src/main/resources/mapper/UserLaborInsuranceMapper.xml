@@ -4,18 +4,15 @@
 <mapper namespace="com.en_chu.calculator_api_spring.mapper.UserLaborInsuranceMapper">
 
     <resultMap id="BaseResultMap" type="com.en_chu.calculator_api_spring.entity.UserLaborInsurance">
-        <id column="id" property="id" jdbcType="BIGINT"/>
-        <result column="firebase_uid" property="firebaseUid" jdbcType="VARCHAR"/>
-        
-        <result column="expected_claim_age" property="expectedClaimAge" jdbcType="INTEGER"/>
-        <result column="average_monthly_salary" property="averageMonthlySalary" jdbcType="NUMERIC"/>
-        <result column="insurance_seniority" property="insuranceSeniority" jdbcType="INTEGER"/>
-        <result column="predicted_remaining_life" property="predictedRemainingLife" jdbcType="NUMERIC"/>
-
-        <result column="predicted_monthly_annuity" property="predictedMonthlyAnnuity" jdbcType="NUMERIC"/>
-        
-        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
-        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+        <id column="id" property="id" />
+        <result column="firebase_uid" property="firebaseUid" />
+        <result column="expected_claim_age" property="expectedClaimAge" />
+        <result column="average_monthly_salary" property="averageMonthlySalary" />
+        <result column="insurance_seniority" property="insuranceSeniority" />
+        <result column="predicted_remaining_life" property="predictedRemainingLife" />
+        <result column="predicted_monthly_annuity" property="predictedMonthlyAnnuity" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -28,55 +25,46 @@
     <select id="selectByUid" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List" />
         FROM user_labor_insurances
-        WHERE firebase_uid = #{firebaseUid}
+        WHERE firebase_uid = #{uid}
+    </select>
+
+    <select id="existsByUid" resultType="boolean">
+        SELECT EXISTS (SELECT 1 FROM user_labor_insurances WHERE firebase_uid = #{uid})
     </select>
 
     <update id="updateByUid">
         UPDATE user_labor_insurances
-        <set>
-            <if test="expectedClaimAge != null">expected_claim_age = #{expectedClaimAge},</if>
-            <if test="averageMonthlySalary != null">average_monthly_salary = #{averageMonthlySalary},</if>
-            <if test="insuranceSeniority != null">insurance_seniority = #{insuranceSeniority},</if>
-            <if test="predictedRemainingLife != null">predicted_remaining_life = #{predictedRemainingLife},</if>
-            
-            <if test="predictedMonthlyAnnuity != null">predicted_monthly_annuity = #{predictedMonthlyAnnuity},</if>
-            
+        SET
+            expected_claim_age = #{expectedClaimAge},
+            average_monthly_salary = #{averageMonthlySalary},
+            insurance_seniority = #{insuranceSeniority},
+            predicted_remaining_life = #{predictedRemainingLife},
+            predicted_monthly_annuity = #{predictedMonthlyAnnuity},
             updated_at = CURRENT_TIMESTAMP
-        </set>
         WHERE firebase_uid = #{firebaseUid}
     </update>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO user_labor_insurances
-        <trim prefix="(" suffix=")" suffixOverrides=",">
+        INSERT INTO user_labor_insurances (
             firebase_uid,
-            <if test="expectedClaimAge != null">expected_claim_age,</if>
-            <if test="averageMonthlySalary != null">average_monthly_salary,</if>
-            <if test="insuranceSeniority != null">insurance_seniority,</if>
-            <if test="predictedRemainingLife != null">predicted_remaining_life,</if>
-            
-            <if test="predictedMonthlyAnnuity != null">predicted_monthly_annuity,</if>
-            
-            created_at,
-            updated_at
-        </trim>
-        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            expected_claim_age,
+            average_monthly_salary,
+            insurance_seniority,
+            predicted_remaining_life,
+            predicted_monthly_annuity
+        ) VALUES (
             #{firebaseUid},
-            <if test="expectedClaimAge != null">#{expectedClaimAge},</if>
-            <if test="averageMonthlySalary != null">#{averageMonthlySalary},</if>
-            <if test="insuranceSeniority != null">#{insuranceSeniority},</if>
-            <if test="predictedRemainingLife != null">#{predictedRemainingLife},</if>
-            
-            <if test="predictedMonthlyAnnuity != null">#{predictedMonthlyAnnuity},</if>
-            
-            CURRENT_TIMESTAMP,
-            CURRENT_TIMESTAMP
-        </trim>
+            #{expectedClaimAge},
+            #{averageMonthlySalary},
+            #{insuranceSeniority},
+            #{predictedRemainingLife},
+            #{predictedMonthlyAnnuity}
+        )
     </insert>
 
     <delete id="deleteByUid">
         DELETE FROM user_labor_insurances
-        WHERE firebase_uid = #{firebaseUid}
+        WHERE firebase_uid = #{uid}
     </delete>
 
 </mapper>

@@ -1,106 +1,85 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper
-	namespace="com.en_chu.calculator_api_spring.mapper.UserRealEstateMapper">
+<mapper namespace="com.en_chu.calculator_api_spring.mapper.UserRealEstateMapper">
 
-	<resultMap id="BaseResultMap"
-		type="com.en_chu.calculator_api_spring.entity.UserRealEstate">
-		<id property="id" column="id" />
-		<result property="firebaseUid" column="firebase_uid" />
-		<result property="createdAt" column="created_at" />
-		<result property="updatedAt" column="updated_at" />
+    <resultMap id="BaseResultMap" type="com.en_chu.calculator_api_spring.entity.UserRealEstate">
+        <id column="id" property="id" />
+        <result column="firebase_uid" property="firebaseUid" />
+        <result column="name" property="name" />
+        <result column="age" property="age" />
+        <result column="size" property="size" />
+        <result column="price_per_ping" property="pricePerPing" />
+        <result column="total_price" property="totalPrice" />
+        <result column="assessed_value" property="assessedValue" />
+        <result column="holding_tax_rate" property="holdingTaxRate" />
+        <result column="actual_holding_cost" property="actualHoldingCost" />
+        <result column="loan_amount" property="loanAmount" />
+        <result column="interest_rate" property="interestRate" />
+        <result column="usage_type" property="usageType" />
+        <result column="monthly_rent" property="monthlyRent" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
 
-		<result property="name" column="name" />
-		<result property="age" column="age" />
-		<result property="size" column="size" />
-		<result property="pricePerPing" column="price_per_ping" />
-		<result property="totalPrice" column="total_price" />
-		<result property="assessedValue" column="assessed_value" />
+    <sql id="Base_Column_List">
+        id, firebase_uid, name, age, size, price_per_ping, total_price,
+        assessed_value, holding_tax_rate, actual_holding_cost, loan_amount,
+        interest_rate, usage_type, monthly_rent, created_at, updated_at
+    </sql>
 
-		<result property="actualHoldingCost"
-			column="actual_holding_cost" />
+    <select id="selectByUid" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM user_real_estates
+        WHERE firebase_uid = #{uid}
+        ORDER BY created_at DESC
+    </select>
 
-		<result property="holdingTaxRate" column="holding_tax_rate" />
-		<result property="loanAmount" column="loan_amount" />
-		<result property="interestRate" column="interest_rate" />
-		<result property="usageType" column="usage_type" />
-		<result property="monthlyRent" column="monthly_rent" />
-	</resultMap>
+    <select id="selectByIdAndUid" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM user_real_estates
+        WHERE id = #{id} AND firebase_uid = #{uid}
+    </select>
 
-	<sql id="Base_Column_List">
-		id, firebase_uid, created_at, updated_at,
-		name, age, size, price_per_ping, total_price,
-		assessed_value, holding_tax_rate,
-		actual_holding_cost, loan_amount, interest_rate,
-		usage_type, monthly_rent
-	</sql>
-
-	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        <![CDATA[
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO user_real_estates (
             firebase_uid, name, age, size, price_per_ping, total_price,
-            assessed_value, holding_tax_rate, actual_holding_cost,
-            loan_amount, interest_rate, usage_type, monthly_rent
+            assessed_value, holding_tax_rate, actual_holding_cost, loan_amount,
+            interest_rate, usage_type, monthly_rent
         ) VALUES (
             #{firebaseUid}, #{name}, #{age}, #{size}, #{pricePerPing}, #{totalPrice},
-            #{assessedValue}, #{holdingTaxRate}, #{actualHoldingCost},
-            #{loanAmount}, #{interestRate}, #{usageType}, #{monthlyRent}
+            #{assessedValue}, #{holdingTaxRate}, #{actualHoldingCost}, #{loanAmount},
+            #{interestRate}, #{usageType}, #{monthlyRent}
         )
-        ]]>
-	</insert>
+    </insert>
 
-	<select id="selectByUid" resultMap="BaseResultMap">
-		SELECT
-		<include refid="Base_Column_List" />
-		FROM user_real_estates
-		WHERE firebase_uid = #{uid}
-		ORDER BY created_at DESC
-	</select>
+    <update id="update">
+        UPDATE user_real_estates
+        SET
+            name = #{name},
+            age = #{age},
+            size = #{size},
+            price_per_ping = #{pricePerPing},
+            total_price = #{totalPrice},
+            assessed_value = #{assessedValue},
+            holding_tax_rate = #{holdingTaxRate},
+            actual_holding_cost = #{actualHoldingCost},
+            loan_amount = #{loanAmount},
+            interest_rate = #{interestRate},
+            usage_type = #{usageType},
+            monthly_rent = #{monthlyRent},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id} AND firebase_uid = #{firebaseUid}
+    </update>
 
-	<select id="selectByIdAndUid" resultMap="BaseResultMap">
-		SELECT
-		<include refid="Base_Column_List" />
-		FROM user_real_estates
-		WHERE id = #{id}
-		AND firebase_uid = #{uid}
-	</select>
-
-	<update id="update">
-        <![CDATA[ UPDATE user_real_estates ]]>
-		<set>
-			<if test="name != null">name = #{name},</if>
-			<if test="age != null">age = #{age},</if>
-			<if test="size != null">size = #{size},</if>
-			<if test="pricePerPing != null">price_per_ping = #{pricePerPing},</if>
-			<if test="totalPrice != null">total_price = #{totalPrice},</if>
-			<if test="assessedValue != null">assessed_value = #{assessedValue},</if>
-			<if test="holdingTaxRate != null">holding_tax_rate = #{holdingTaxRate},</if>
-
-			<if test="actualHoldingCost != null">actual_holding_cost = #{actualHoldingCost},</if>
-
-			<if test="loanAmount != null">loan_amount = #{loanAmount},</if>
-			<if test="interestRate != null">interest_rate = #{interestRate},</if>
-			<if test="usageType != null">usage_type = #{usageType},</if>
-			<if test="monthlyRent != null">monthly_rent = #{monthlyRent},</if>
-		</set>
-        <![CDATA[
-        WHERE id = #{id} 
-          AND firebase_uid = #{firebaseUid}
-        ]]>
-	</update>
-
-	<delete id="deleteByIdAndUid">
-        <![CDATA[
+    <delete id="deleteByIdAndUid">
         DELETE FROM user_real_estates
-        WHERE id = #{id} 
-          AND firebase_uid = #{uid}
-        ]]>
-	</delete>
+        WHERE id = #{id} AND firebase_uid = #{uid}
+    </delete>
 
-	<delete id="deleteByUid">
-		DELETE FROM user_real_estates
-		WHERE firebase_uid = #{uid}
-	</delete>
+    <delete id="deleteByUid">
+        DELETE FROM user_real_estates
+        WHERE firebase_uid = #{uid}
+    </delete>
 
 </mapper>
