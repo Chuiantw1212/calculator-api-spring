@@ -24,7 +24,7 @@
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM user_portfolios
-		WHERE firebase_uid = #{uid}
+		WHERE firebase_uid = #{firebaseUid}
 		ORDER BY market_value DESC
 	</select>
 
@@ -33,7 +33,7 @@
 		<include refid="Base_Column_List" />
 		FROM user_portfolios
 		WHERE id = #{id}
-		AND firebase_uid = #{uid}
+		AND firebase_uid = #{firebaseUid}
 	</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
@@ -60,12 +60,12 @@
 
 	<delete id="deleteByIdAndUid">
         DELETE FROM user_portfolios
-        WHERE id = #{id} AND firebase_uid = #{uid}
+        WHERE id = #{id} AND firebase_uid = #{firebaseUid}
 	</delete>
 
 	<delete id="deleteByUid">
         DELETE FROM user_portfolios
-        WHERE firebase_uid = #{uid}
+        WHERE firebase_uid = #{firebaseUid}
 	</delete>
 
 </mapper>

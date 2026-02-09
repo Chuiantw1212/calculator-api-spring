@@ -7,19 +7,19 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface UserProfileMapper {
 
-    UserProfile selectByUid(@Param("uid") String uid);
+    UserProfile selectByUid(@Param("firebaseUid") String firebaseUid);
 
     int insert(UserProfile entity);
 
     int updateByUid(UserProfile entity);
 
-    boolean existsByUid(@Param("uid") String uid);
+    boolean existsByUid(@Param("firebaseUid") String firebaseUid);
 
-    int deleteByUid(@Param("uid") String uid);
+    int deleteByUid(@Param("firebaseUid") String firebaseUid);
 
-    boolean checkUserExists(@Param("uid") String uid);
+    boolean checkUserExists(@Param("firebaseUid") String firebaseUid);
 
-    void insertInitUser(@Param("uid") String uid);
+    void insertInitUser(@Param("firebaseUid") String firebaseUid);
 
-    void updateLastLogin(@Param("uid") String uid);
+    void updateLastLogin(@Param("firebaseUid") String firebaseUid);
 }

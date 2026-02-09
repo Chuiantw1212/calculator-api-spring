@@ -14,15 +14,15 @@ public interface UserBusinessMapper {
 
     int update(UserBusiness entity);
 
-    List<UserBusiness> selectByUid(@Param("uid") String uid);
+    List<UserBusiness> selectByUid(@Param("firebaseUid") String firebaseUid);
 
-    Optional<UserBusiness> selectByIdAndUid(@Param("id") Long id, @Param("uid") String uid);
+    Optional<UserBusiness> selectByIdAndUid(@Param("id") Long id, @Param("firebaseUid") String firebaseUid);
 
-    List<UserBusiness> selectPage(@Param("uid") String uid, @Param("limit") int limit, @Param("offset") int offset);
+    List<UserBusiness> selectPage(@Param("firebaseUid") String firebaseUid, @Param("limit") int limit, @Param("offset") int offset);
 
-    long countByUid(@Param("uid") String uid);
+    long countByUid(@Param("firebaseUid") String firebaseUid);
 
-    int deleteByIdAndUid(@Param("id") Long id, @Param("uid") String uid);
+    int deleteByIdAndUid(@Param("id") Long id, @Param("firebaseUid") String firebaseUid);
 
-    int deleteByUid(@Param("uid") String uid);
+    int deleteByUid(@Param("firebaseUid") String firebaseUid);
 }

@@ -14,11 +14,11 @@ public interface UserRealEstateMapper {
 
     int update(UserRealEstate entity);
 
-    List<UserRealEstate> selectByUid(@Param("uid") String uid);
+    List<UserRealEstate> selectByUid(@Param("firebaseUid") String firebaseUid);
 
-    Optional<UserRealEstate> selectByIdAndUid(@Param("id") Long id, @Param("uid") String uid);
+    Optional<UserRealEstate> selectByIdAndUid(@Param("id") Long id, @Param("firebaseUid") String firebaseUid);
 
-    int deleteByIdAndUid(@Param("id") Long id, @Param("uid") String uid);
+    int deleteByIdAndUid(@Param("id") Long id, @Param("firebaseUid") String firebaseUid);
 
-    int deleteByUid(@Param("uid") String uid);
+    int deleteByUid(@Param("firebaseUid") String firebaseUid);
 }

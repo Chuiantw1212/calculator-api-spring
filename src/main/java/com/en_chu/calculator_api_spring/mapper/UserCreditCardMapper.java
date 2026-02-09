@@ -14,11 +14,11 @@ public interface UserCreditCardMapper {
 
     int update(UserCreditCard entity);
 
-    List<UserCreditCard> selectByUid(@Param("uid") String uid);
+    List<UserCreditCard> selectByUid(@Param("firebaseUid") String firebaseUid);
 
-    Optional<UserCreditCard> selectByIdAndUid(@Param("id") Long id, @Param("uid") String uid);
+    Optional<UserCreditCard> selectByIdAndUid(@Param("id") Long id, @Param("firebaseUid") String firebaseUid);
 
-    int deleteByIdAndUid(@Param("id") Long id, @Param("uid") String uid);
+    int deleteByIdAndUid(@Param("id") Long id, @Param("firebaseUid") String firebaseUid);
 
-    int deleteByUid(@Param("uid") String uid);
+    int deleteByUid(@Param("firebaseUid") String firebaseUid);
 }

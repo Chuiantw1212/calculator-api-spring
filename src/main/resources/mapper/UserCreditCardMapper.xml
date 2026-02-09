@@ -23,14 +23,14 @@
     <select id="selectByUid" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List" />
         FROM user_credit_cards
-        WHERE firebase_uid = #{uid}
+        WHERE firebase_uid = #{firebaseUid}
         ORDER BY created_at DESC
     </select>
 
     <select id="selectByIdAndUid" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List" />
         FROM user_credit_cards
-        WHERE id = #{id} AND firebase_uid = #{uid}
+        WHERE id = #{id} AND firebase_uid = #{firebaseUid}
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
@@ -57,12 +57,12 @@
 
     <delete id="deleteByIdAndUid">
         DELETE FROM user_credit_cards
-        WHERE id = #{id} AND firebase_uid = #{uid}
+        WHERE id = #{id} AND firebase_uid = #{firebaseUid}
     </delete>
 
     <delete id="deleteByUid">
         DELETE FROM user_credit_cards
-        WHERE firebase_uid = #{uid}
+        WHERE firebase_uid = #{firebaseUid}
     </delete>
 
 </mapper>

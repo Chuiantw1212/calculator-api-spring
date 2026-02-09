@@ -46,7 +46,7 @@
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM user_businesses
-		WHERE firebase_uid = #{uid}
+		WHERE firebase_uid = #{firebaseUid}
 		ORDER BY created_at DESC
 	</select>
 
@@ -55,14 +55,14 @@
 		<include refid="Base_Column_List" />
 		FROM user_businesses
 		WHERE id = #{id}
-		AND firebase_uid = #{uid}
+		AND firebase_uid = #{firebaseUid}
 	</select>
 
 	<select id="selectPage" resultMap="BaseResultMap">
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM user_businesses
-		WHERE firebase_uid = #{uid}
+		WHERE firebase_uid = #{firebaseUid}
 		ORDER BY created_at DESC
 		LIMIT #{limit} OFFSET #{offset}
 	</select>
@@ -70,7 +70,7 @@
 	<select id="countByUid" resultType="long">
 		SELECT COUNT(*)
 		FROM user_businesses
-		WHERE firebase_uid = #{uid}
+		WHERE firebase_uid = #{firebaseUid}
 	</select>
 
 	<update id="update">
@@ -97,12 +97,12 @@
 
 	<delete id="deleteByIdAndUid">
         DELETE FROM user_businesses
-        WHERE id = #{id} AND firebase_uid = #{uid}
+        WHERE id = #{id} AND firebase_uid = #{firebaseUid}
 	</delete>
 
 	<delete id="deleteByUid">
 		DELETE FROM user_businesses
-		WHERE firebase_uid = #{uid}
+		WHERE firebase_uid = #{firebaseUid}
 	</delete>
 
 </mapper>

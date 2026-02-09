@@ -13,9 +13,9 @@ public interface UserRetirementMapper {
     
     int updateSelectiveByUid(UserRetirement record);
 
-    UserRetirement selectByUid(@Param("uid") String uid);
+    UserRetirement selectByUid(@Param("firebaseUid") String firebaseUid);
 
-    int deleteByUid(@Param("uid") String uid);
+    int deleteByUid(@Param("firebaseUid") String firebaseUid);
 
-    boolean existsByUid(@Param("uid") String uid);
+    boolean existsByUid(@Param("firebaseUid") String firebaseUid);
 }

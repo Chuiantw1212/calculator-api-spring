@@ -7,13 +7,13 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface UserTaxMapper {
 
-    UserTax selectByUid(@Param("uid") String uid);
+    UserTax selectByUid(@Param("firebaseUid") String firebaseUid);
 
     int insert(UserTax entity);
 
     int updateByUid(UserTax entity);
 
-    boolean existsByUid(@Param("uid") String uid);
+    boolean existsByUid(@Param("firebaseUid") String firebaseUid);
 
-    int deleteByUid(@Param("uid") String uid);
+    int deleteByUid(@Param("firebaseUid") String firebaseUid);
 }

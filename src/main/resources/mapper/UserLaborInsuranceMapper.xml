@@ -25,11 +25,11 @@
     <select id="selectByUid" resultMap="BaseResultMap">
         SELECT <include refid="Base_Column_List" />
         FROM user_labor_insurances
-        WHERE firebase_uid = #{uid}
+        WHERE firebase_uid = #{firebaseUid}
     </select>
 
     <select id="existsByUid" resultType="boolean">
-        SELECT EXISTS (SELECT 1 FROM user_labor_insurances WHERE firebase_uid = #{uid})
+        SELECT EXISTS (SELECT 1 FROM user_labor_insurances WHERE firebase_uid = #{firebaseUid})
     </select>
 
     <update id="updateByUid">
@@ -64,7 +64,7 @@
 
     <delete id="deleteByUid">
         DELETE FROM user_labor_insurances
-        WHERE firebase_uid = #{uid}
+        WHERE firebase_uid = #{firebaseUid}
     </delete>
 
 </mapper>
