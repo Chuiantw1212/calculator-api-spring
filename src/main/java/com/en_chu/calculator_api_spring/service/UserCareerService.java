@@ -28,14 +28,21 @@ public class UserCareerService {
             entity.setFirebaseUid(uid);
         }
 
-        entity.setIndustry(req.getIndustry());
-        entity.setCompanyName(req.getCompanyName());
-        entity.setJobTitle(req.getJobTitle());
-        entity.setIsWorking(req.getIsWorking());
-        entity.setMonthlySalary(req.getMonthlySalary());
-        entity.setAnnualBonusMonths(req.getAnnualBonusMonths());
-        entity.setAvgWorkingHoursPerDay(req.getAvgWorkingHoursPerDay());
-        entity.setRetirementAge(req.getRetirementAge());
+        // --- 安全地更新欄位 ---
+        entity.setBaseSalary(req.getBaseSalary());
+        entity.setOtherAllowance(req.getOtherAllowance());
+        entity.setLaborInsurance(req.getLaborInsurance());
+        entity.setHealthInsurance(req.getHealthInsurance());
+        entity.setOtherDeduction(req.getOtherDeduction());
+        entity.setPensionPersonalRate(req.getPensionPersonalRate());
+        entity.setStockDeduction(req.getStockDeduction());
+        entity.setStockCompanyMatch(req.getStockCompanyMatch());
+        entity.setAnnualBonus(req.getAnnualBonus());
+        entity.setDependents(req.getDependents());
+
+        // --- 重新計算衍生欄位 (如果需要) ---
+        // 這裡可以加入計算 monthlyNetIncome, annualTotalIncome 等欄位的邏輯
+        // 為了保持簡單，我們先假設這些計算在前端完成，或在另一個服務中處理
 
         if (exists) {
             userCareerMapper.updateByUid(entity);
