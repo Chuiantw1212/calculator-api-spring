@@ -19,7 +19,8 @@ public interface UserProfileMapper {
 
     boolean checkUserExists(@Param("firebaseUid") String firebaseUid);
 
-    void insertInitUser(@Param("firebaseUid") String firebaseUid);
+    // ✅ 修正：接收一個 UserProfile 物件，以便 MyBatis 可以回填 ID
+    void insertInitUser(UserProfile profile);
 
     void updateLastLogin(@Param("firebaseUid") String firebaseUid);
 }

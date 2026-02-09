@@ -22,119 +22,90 @@ public class UserService {
     private final UserLaborInsuranceMapper userLaborInsuranceMapper;
     private final UserRetirementMapper userRetirementMapper;
     private final UserTaxMapper userTaxMapper;
+    // Mappers for 1:N relationships are kept for the deleteUser method
     private final UserBusinessMapper userBusinessMapper;
     private final UserCreditCardMapper userCreditCardMapper;
     private final UserPortfolioMapper userPortfolioMapper;
     private final UserRealEstateMapper userRealEstateMapper;
 
+    /**
+     * Assembles the core, 1-to-1 data for the current user.
+     * 1-to-N list data (like portfolios, businesses) should be fetched via their own dedicated API endpoints.
+     * @param uid The Firebase UID of the user.
+     * @return A UserFullDataRes object containing only the 1-to-1 related data.
+     */
     public UserFullDataRes getFullUserData(String uid) {
-        log.info("🔍 [UserService] 開始組裝使用者資料: UID={}", uid);
-
+        log.info("🔍 [UserService] Assembling core user data for UID: {}", uid);
         UserFullDataRes response = new UserFullDataRes();
 
-        // --- Step 1. 取得基本資料 (Profile) ---
+        // --- Step 1. Get Profile (1:1) ---
         UserProfile profileEntity = userProfileMapper.selectByUid(uid);
-
         if (profileEntity != null) {
             UserProfileDto profileDto = new UserProfileDto();
             BeanUtils.copyProperties(profileEntity, profileDto);
-
             response.setProfile(profileDto);
             response.setId(profileEntity.getId());
-            log.info("✅ [UserService] Profile 讀取成功: ID={}", profileEntity.getId());
-        } else {
-            log.warn("⚠️ [UserService] 查無 Profile 資料 (可能是新用戶或同步延遲)");
         }
 
-        // --- Step 2. 取得職涯資料 (Career) ---
+        // --- Step 2. Get Career (1:1) ---
         UserCareer careerEntity = userCareerMapper.selectByUid(uid);
-
         if (careerEntity != null) {
             UserCareerDto careerDto = new UserCareerDto();
             BeanUtils.copyProperties(careerEntity, careerDto);
-
             response.setCareer(careerDto);
-            log.info("✅ [UserService] Career 讀取成功 (月實領: {})", careerDto.getMonthlyNetIncome());
-        } else {
-            log.info("ℹ️ [UserService] 該用戶尚未設定 Career 資料");
         }
 
-        // --- Step 3. 取得勞工退休金資料 (Labor Pension) ---
+        // --- Step 3. Get Labor Pension (1:1) ---
         UserLaborPension pensionEntity = userLaborPensionMapper.selectByUid(uid);
-
         if (pensionEntity != null) {
             UserLaborPensionDto pensionDto = new UserLaborPensionDto();
             BeanUtils.copyProperties(pensionEntity, pensionDto);
-
             response.setLaborPension(pensionDto);
-            log.info("✅ [UserService] Labor Pension 讀取成功 (預退年齡: {})", pensionDto.getExpectedRetirementAge());
-        } else {
-            log.info("ℹ️ [UserService] 該用戶尚未設定 Labor Pension 資料");
         }
 
-        // --- Step 4. 取得勞工保險資料 (Labor Insurance) ---
+        // --- Step 4. Get Labor Insurance (1:1) ---
         UserLaborInsurance insuranceEntity = userLaborInsuranceMapper.selectByUid(uid);
-
         if (insuranceEntity != null) {
             UserLaborInsuranceDto insuranceDto = new UserLaborInsuranceDto();
             BeanUtils.copyProperties(insuranceEntity, insuranceDto);
-
             response.setLaborInsurance(insuranceDto);
-            log.info("✅ [UserService] Labor Insurance 讀取成功 (平均薪資: {})", insuranceDto.getAverageMonthlySalary());
-        } else {
-            log.info("ℹ️ [UserService] 該用戶尚未設定 Labor Insurance 資料");
         }
-
-        // --- Step 5. 取得退休生活型態資料 (Retirement Lifestyle) ---
+        
+        // --- Step 5. Get Retirement (1:1) ---
         UserRetirement retirementEntity = userRetirementMapper.selectByUid(uid);
-
         if (retirementEntity != null) {
             UserRetirementDto retirementDto = new UserRetirementDto();
             BeanUtils.copyProperties(retirementEntity, retirementDto);
-
             response.setRetirement(retirementDto);
-
-            log.info("✅ [UserService] Retirement Lifestyle 讀取成功 (模式: {})", retirementDto.getHousingMode());
-        } else {
-            log.info("ℹ️ [UserService] 該用戶尚未設定 Retirement Lifestyle 資料");
         }
 
-        // --- Step 6. 取得稅務資料 (Tax) ---
+        // --- Step 6. Get Tax (1:1) ---
         UserTax taxEntity = userTaxMapper.selectByUid(uid);
-
         if (taxEntity != null) {
             UserTaxDto taxDto = new UserTaxDto();
             BeanUtils.copyProperties(taxEntity, taxDto);
-
             response.setTax(taxDto);
-            log.info("✅ [UserService] Tax Data 讀取成功");
         }
 
+        log.info("✅ [UserService] Core user data assembled successfully for UID: {}", uid);
         return response;
     }
 
     @Transactional
     public void syncUser(String uid) {
         if (!userProfileMapper.checkUserExists(uid)) {
-            log.info("✨ [Sync] 偵測到新用戶，建立初始化檔案: UID={}", uid);
-            userProfileMapper.insertInitUser(uid);
+            log.info("✨ [Sync] New user detected. Creating initial profile for UID: {}", uid);
+            UserProfile newProfile = new UserProfile();
+            newProfile.setFirebaseUid(uid);
+            userProfileMapper.insertInitUser(newProfile);
         } else {
             userProfileMapper.updateLastLogin(uid);
         }
     }
 
-    /**
-     * 完整刪除一個使用者及其所有相關資料。
-     * 這是一個在應用程式層面執行的連鎖刪除操作。
-     *
-     * @param uid 要刪除的使用者的 Firebase UID。
-     */
-    @Transactional // 核心！確保所有刪除操作要麼全部成功，要麼全部失敗回滾。
+    @Transactional
     public void deleteUser(String uid) {
-        log.warn("🗑️ [DELETE] 開始刪除使用者所有資料: UID={}", uid);
-
-        // --- Part 1: 刪除本地資料庫中的所有子表紀錄 ---
-        // 必須在刪除主表 (user_profiles) 之前執行，以避免違反外鍵約束。
+        log.warn("🗑️ [DELETE] Starting deletion of all data for user: UID={}", uid);
         userTaxMapper.deleteByUid(uid);
         userRetirementMapper.deleteByUid(uid);
         userLaborInsuranceMapper.deleteByUid(uid);
@@ -144,27 +115,21 @@ public class UserService {
         userCreditCardMapper.deleteByUid(uid);
         userPortfolioMapper.deleteByUid(uid);
         userRealEstateMapper.deleteByUid(uid);
-        log.info("  - 所有子表紀錄已刪除: UID={}", uid);
+        log.info("  - All child table records have been deleted for UID: {}", uid);
 
-        // --- Part 2: 最後刪除主表 (user_profiles) 的紀錄 ---
         int profileDeleted = userProfileMapper.deleteByUid(uid);
         if (profileDeleted > 0) {
-            log.info("  - 主表 user_profiles 紀錄已刪除: UID={}", uid);
+            log.info("  - Main table user_profiles record has been deleted for UID: {}", uid);
         } else {
-            log.warn("  - 嘗試刪除但查無此用戶 Profile: UID={}", uid);
+            log.warn("  - Attempted to delete but no profile found for UID: {}", uid);
         }
 
-        // --- Part 3: 刪除 Firebase Authentication 中的帳號 ---
-        // 這是一個外部 API 呼叫，同樣被包含在交易中。
         try {
             FirebaseAuth.getInstance().deleteUser(uid);
-            log.info("🔥 [DELETE] Firebase Auth 帳號已成功刪除: UID={}", uid);
+            log.info("🔥 [DELETE] Firebase Auth account has been successfully deleted for UID: {}", uid);
         } catch (FirebaseAuthException e) {
-            log.error("❌ [DELETE] Firebase Auth 帳號刪除失敗: UID={}, Error={}", uid, e.getMessage());
-            // 拋出 RuntimeException 來觸發整個交易的回滾。
-            // 這能確保如果 Firebase 刪除失敗，我們在本地資料庫所做的所有刪除操作都會被復原，
-            // 避免了「Firebase 還有帳號，但本地資料庫已空」的資料不一致狀態。
-            throw new RuntimeException("Firebase 帳號刪除失敗，資料庫操作已回滾。", e);
+            log.error("❌ [DELETE] Failed to delete Firebase Auth account for UID: {}, Error: {}", uid, e.getMessage());
+            throw new RuntimeException("Failed to delete Firebase account. Database operations have been rolled back.", e);
         }
     }
 }
