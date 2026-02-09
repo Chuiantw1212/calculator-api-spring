@@ -1,26 +1,18 @@
-package com.en_chu.calculator_api_spring.entity;
+package com.en_chu.calculator_api_spring.model;
 
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-
 import java.math.BigDecimal;
 
 /**
- * Represents the user's retirement lifecycle settings.
- * Aligned with the frontend UserRetirement interface.
+ * DTO for creating or fully updating user retirement settings.
  */
 @Data
-@SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class UserRetirement extends UserBaseEntity {
+public class UserRetirementUpdateReq {
 
-    // --- Phase 1: Go-Go ---
+    @NotNull(message = "Household type cannot be null")
     private String householdType;
+
     private String housingMode;
     private BigDecimal housingCost;
     private String healthTierCode;
@@ -28,14 +20,12 @@ public class UserRetirement extends UserBaseEntity {
     private String activeLivingCode;
     private BigDecimal activeLivingCost;
 
-    // --- Phase 2: Slow-Go ---
     private Integer slowGoStartAge;
     private String defenseTierCode;
     private BigDecimal monthlyMedicalCost;
     private String criticalIllnessCode;
     private BigDecimal criticalIllnessReserve;
 
-    // --- Phase 3: No-Go ---
     private Integer nogoStartAge;
     private String ltcCareMode;
     private BigDecimal ltcMonthlyCost;

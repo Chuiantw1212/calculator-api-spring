@@ -70,6 +70,31 @@
             firebase_uid = #{firebaseUid}
     </update>
 
+    <update id="updateSelectiveByUid">
+        UPDATE user_retirements
+        <set>
+            <if test="householdType != null">household_type = #{householdType},</if>
+            <if test="housingMode != null">housing_mode = #{housingMode},</if>
+            <if test="housingCost != null">housing_cost = #{housingCost},</if>
+            <if test="healthTierCode != null">health_tier_code = #{healthTierCode},</if>
+            <if test="healthCost != null">health_cost = #{healthCost},</if>
+            <if test="activeLivingCode != null">active_living_code = #{activeLivingCode},</if>
+            <if test="activeLivingCost != null">active_living_cost = #{activeLivingCost},</if>
+            <if test="slowGoStartAge != null">slow_go_start_age = #{slowGoStartAge},</if>
+            <if test="defenseTierCode != null">defense_tier_code = #{defenseTierCode},</if>
+            <if test="monthlyMedicalCost != null">monthly_medical_cost = #{monthlyMedicalCost},</if>
+            <if test="criticalIllnessCode != null">critical_illness_code = #{criticalIllnessCode},</if>
+            <if test="criticalIllnessReserve != null">critical_illness_reserve = #{criticalIllnessReserve},</if>
+            <if test="nogoStartAge != null">nogo_start_age = #{nogoStartAge},</if>
+            <if test="ltcCareMode != null">ltc_care_mode = #{ltcCareMode},</if>
+            <if test="ltcMonthlyCost != null">ltc_monthly_cost = #{ltcMonthlyCost},</if>
+            <if test="ltcMonthlySupplies != null">ltc_monthly_supplies = #{ltcMonthlySupplies},</if>
+            <if test="ltcSubsidy != null">ltc_subsidy = #{ltcSubsidy},</if>
+            updated_at = CURRENT_TIMESTAMP
+        </set>
+        WHERE firebase_uid = #{firebaseUid}
+    </update>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO user_retirements (
             firebase_uid, household_type, housing_mode, housing_cost,
