@@ -1,37 +1,15 @@
+# Development Environment Configuration
 server:
   port: 8888
 
-# ✅ 開發環境：寬鬆的 CORS 設定
 app:
   cors:
     allowed-origins:
-      - http://localhost:5173  # Vue/Vite 前端預設 Port
-      - http://localhost:8888  # Postman 或本地測試
+      - http://localhost:5173
+      - http://localhost:8888
 
-# ✅ 開發環境：清爽的 Log 輸出
 logging:
   pattern:
     console: "%clr(%d{HH:mm:ss}){faint} %clr(%-5level){green} - %msg%n"
   level:
-    # 讓那一長串 Filter Chain 閉嘴 (從 INFO 改為 WARN)
-    org.springframework.security.web.DefaultSecurityFilterChain: WARN
-    
-    # 如果您覺得 Spring Security 其他啟動訊息也很吵，可以直接把整個套件設為 WARN
     org.springframework.security: WARN
-
-# 監控端點設定
-management:
-  endpoints:
-    web:
-      exposure:
-        # 開放 health, info, 和 metrics
-        include: health,info,metrics
-  endpoint:
-    health:
-      # 顯示詳細健康資訊 (例如：資料庫連線狀態)
-      show-details: always
-
-# SpringDoc (Swagger) 設定
-springdoc:
-  # 讓 springdoc 自動建立並管理 actuator 群組
-  show-actuator: true

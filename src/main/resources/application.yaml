@@ -1,7 +1,11 @@
+# Main/Production Configuration
 server:
   port: ${PORT:8080}
 
 spring:
+  profiles:
+    include: local
+
   application:
     name: calculator-api-spring
   
@@ -10,22 +14,19 @@ spring:
     username: ${DB_USERNAME:?DB_USERNAME environment variable is not set}
     password: ${DB_PASSWORD:?DB_PASSWORD environment variable is not set}
     driver-class-name: org.postgresql.Driver
-    hikari:
-      max-lifetime: 1740000 
-      connection-timeout: 30000
-      idle-timeout: 600000
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.en_chu.calculator_api_spring.model
 
+# Production CORS settings
 app:
   cors:
     allowed-origins:
       - https://enchu-8085a.web.app
       - https://enchu-8085a.firebaseapp.com
       - https://www.en-chu.com
-      - https://planner-api-spring-592400229145.asia-east1.run.app
+      - https://calculator-api-spring-592400229145.asia-east1.run.app
 
 management:
   endpoints:
