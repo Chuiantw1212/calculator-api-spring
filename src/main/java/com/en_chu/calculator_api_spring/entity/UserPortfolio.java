@@ -12,12 +12,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true) // 2. 比較時包含父類別
+@EqualsAndHashCode(callSuper = true)
 public class UserPortfolio extends UserBaseEntity {
 	private String countryCode;
 	private String currency;
-
-	private BigDecimal exchangeRate; // 匯率
-	private BigDecimal marketValue; // 庫存市值
-	private BigDecimal realizedPnl; // 已實現損益
+	private BigDecimal exchangeRate;
+	private BigDecimal marketValue;
+	private BigDecimal realizedPnl;
 }

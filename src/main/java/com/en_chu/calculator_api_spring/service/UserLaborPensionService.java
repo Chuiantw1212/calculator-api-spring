@@ -43,11 +43,17 @@ public class UserLaborPensionService {
             entity.setFirebaseUid(uid);
         }
 
-        entity.setPersonalContributionRate(req.getPersonalContributionRate());
-        entity.setEmployerContributionRate(req.getEmployerContributionRate());
-        entity.setTotalContributionYears(req.getTotalContributionYears());
-        entity.setAvgAnnualReturnRate(req.getAvgAnnualReturnRate());
-        entity.setCurrentBalance(req.getCurrentBalance());
+        // --- 安全地更新欄位 ---
+        entity.setExpectedRetirementAge(req.getExpectedRetirementAge());
+        entity.setRetirementRoi(req.getRetirementRoi());
+        entity.setEmployerContribution(req.getEmployerContribution());
+        entity.setEmployerEarnings(req.getEmployerEarnings());
+        entity.setPersonalContribution(req.getPersonalContribution());
+        entity.setPersonalEarnings(req.getPersonalEarnings());
+        entity.setCurrentWorkSeniority(req.getCurrentWorkSeniority());
+
+        // 衍生欄位 (如 predictedLumpSum) 應由後端計算，而不是由前端傳入
+        // 這裡可以加入計算衍生欄位的邏輯
 
         if (exists) {
             userLaborPensionMapper.updateByUid(entity);

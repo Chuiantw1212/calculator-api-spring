@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper
-	namespace="com.en_chu.calculator_api_spring.mapper.UserPortfolioMapper">
+<mapper namespace="com.en_chu.calculator_api_spring.mapper.UserPortfolioMapper">
 
-	<resultMap id="BaseResultMap"
-		type="com.en_chu.calculator_api_spring.entity.UserPortfolio">
+	<resultMap id="BaseResultMap" type="com.en_chu.calculator_api_spring.entity.UserPortfolio">
 		<id property="id" column="id" />
 		<result property="firebaseUid" column="firebase_uid" />
 		<result property="createdAt" column="created_at" />
@@ -40,7 +38,6 @@
 	</select>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        <![CDATA[
         INSERT INTO user_portfolios (
             firebase_uid, 
             country_code, 
@@ -56,37 +53,29 @@
             #{marketValue},
             #{realizedPnl}
         )
-        ]]>
 	</insert>
 
 	<update id="update">
-        <![CDATA[ UPDATE user_portfolios ]]>
+		UPDATE user_portfolios
 		<set>
 			<if test="countryCode != null">country_code = #{countryCode},</if>
 			<if test="currency != null">currency = #{currency},</if>
 			<if test="exchangeRate != null">exchange_rate = #{exchangeRate},</if>
 			<if test="marketValue != null">market_value = #{marketValue},</if>
 			<if test="realizedPnl != null">realized_pnl = #{realizedPnl},</if>
+			updated_at = CURRENT_TIMESTAMP
 		</set>
-        <![CDATA[
-        WHERE id = #{id} 
-          AND firebase_uid = #{firebaseUid}
-        ]]>
+        WHERE id = #{id} AND firebase_uid = #{firebaseUid}
 	</update>
 
 	<delete id="deleteByIdAndUid">
-        <![CDATA[
-        DELETE FROM user_portfolios 
-        WHERE id = #{id} 
-          AND firebase_uid = #{uid}
-        ]]>
+        DELETE FROM user_portfolios
+        WHERE id = #{id} AND firebase_uid = #{uid}
 	</delete>
 
 	<delete id="deleteByUid">
-        <![CDATA[
-        DELETE FROM user_portfolios 
+        DELETE FROM user_portfolios
         WHERE firebase_uid = #{uid}
-        ]]>
 	</delete>
 
 </mapper>
