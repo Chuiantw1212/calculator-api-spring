@@ -1,24 +1,25 @@
 package com.en_chu.calculator_api_spring.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
-
 import com.en_chu.calculator_api_spring.entity.UserProfile;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserProfileMapper {
 
-	UserProfile selectByUid(String uid);
+    UserProfile selectByUid(@Param("uid") String uid);
 
-	int insert(UserProfile entity);
+    int insert(UserProfile entity);
 
-	int updateByUid(UserProfile entity);
+    int updateByUid(UserProfile entity);
 
-	boolean existsByUid(String uid);
+    boolean existsByUid(@Param("uid") String uid);
 
-	int deleteByUid(String uid);
+    int deleteByUid(@Param("uid") String uid);
 
-	// The following methods seem to be used in UserService but might not be in the XML
-	boolean checkUserExists(String uid);
-	void insertInitUser(String uid);
-	void updateLastLogin(String uid);
+    boolean checkUserExists(@Param("uid") String uid);
+
+    void insertInitUser(@Param("uid") String uid);
+
+    void updateLastLogin(@Param("uid") String uid);
 }

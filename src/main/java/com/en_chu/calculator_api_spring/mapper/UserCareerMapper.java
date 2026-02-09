@@ -1,19 +1,19 @@
 package com.en_chu.calculator_api_spring.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
-
 import com.en_chu.calculator_api_spring.entity.UserCareer;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserCareerMapper {
 
-	UserCareer selectByUid(String uid);
+    UserCareer selectByUid(@Param("uid") String uid);
 
-	int insert(UserCareer entity);
+    int insert(UserCareer entity);
 
-	int updateByUid(UserCareer entity);
+    int updateByUid(UserCareer entity);
 
-	boolean existsByUid(String uid);
+    boolean existsByUid(@Param("uid") String uid);
 
-	int deleteByUid(String uid);
+    int deleteByUid(@Param("uid") String uid);
 }
