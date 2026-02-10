@@ -5,83 +5,91 @@ import com.en_chu.calculator_api_spring.mapper.UserProfileMapper;
 import com.en_chu.calculator_api_spring.model.UserProfileDto;
 import com.en_chu.calculator_api_spring.model.UserProfileUpdateReq;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Period;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserProfileService {
 
     private final UserProfileMapper userProfileMapper;
 
-    @Transactional
-    public void createProfile(String uid, UserProfileDto req) {
-        // 在新增前，先檢查資料是否存在，避免重複建立
-        if (userProfileMapper.existsByUid(uid)) {
-            throw new RuntimeException("資料已存在，請使用更新功能");
+    /**
+     * Gets a user's profile. If not found, creates a minimal one, saves it, and returns it.
+     * @param uid The Firebase UID of the user.
+     * @return The user's profile DTO.
+     */
+    public UserProfileDto getProfile(String uid) {
+        UserProfile entity = userProfileMapper.selectByUid(uid);
+        if (entity == null) {
+            log.warn("No profile found for UID: {}. Creating a minimal default profile.", uid);
+            return createDefaultProfile(uid);
         }
-
-        UserProfile entity = new UserProfile();
-        BeanUtils.copyProperties(req, entity);
-        entity.setFirebaseUid(uid);
-
-        userProfileMapper.insert(entity);
+        return convertToDto(entity);
     }
 
     /**
-     * 安全地更新或建立 (Upsert) 使用者個人資料。
-     * 這個方法遵循了兩個重要的最佳實踐：
-     * 1. 效能優化：先用高效的 `exists` 查詢判斷是否存在，避免不必要的 `SELECT *`。
-     * 2. 安全性：使用特定的 `UserProfileUpdateReq` DTO，只允許更新指定的欄位，防範巨量請求攻擊。
-     *
-     * @param uid 使用者的 Firebase UID
-     * @param req 只包含允許更新欄位的請求 DTO
+     * Updates a user's profile. If not found, creates a new one (Upsert logic).
+     * @param uid The Firebase UID of the user.
+     * @param req The request DTO containing the fields to update.
      */
     @Transactional
     public void updateProfile(String uid, UserProfileUpdateReq req) {
-        // 效能優化：先用一個輕量的查詢判斷紀錄是否存在
-        boolean exists = userProfileMapper.existsByUid(uid);
-        UserProfile entity;
+        UserProfile entity = userProfileMapper.selectByUid(uid);
+        boolean isNew = entity == null;
 
-        if (exists) {
-            // 只有在確定紀錄存在時，才執行 SELECT 來獲取完整的 Entity 物件
-            entity = userProfileMapper.selectByUid(uid);
-        } else {
-            // 如果不存在，則建立一個新的實體，準備後續的插入操作
+        if (isNew) {
+            log.info("No existing profile found for update, creating a new one for UID: {}", uid);
             entity = new UserProfile();
             entity.setFirebaseUid(uid);
         }
 
-        // 安全性：手動、明確地將請求 DTO 中的欄位值，設定到 Entity 上
-        // 這可以防止惡意使用者透過 API 更新他們不應該有權限修改的欄位 (例如 id, firebaseUid, createdAt)
+        // Safely map fields from the request DTO
         entity.setBirthDate(req.getBirthDate());
         entity.setGender(req.getGender());
         entity.setMarriageYear(req.getMarriageYear());
         entity.setBiography(req.getBiography());
 
-        // 業務邏輯：如果生日有變更，自動重新計算並更新年齡
+        // Business Logic: Recalculate age if birth date is provided
         if (req.getBirthDate() != null) {
             entity.setCurrentAge(Period.between(req.getBirthDate(), java.time.LocalDate.now()).getYears());
+        } else if (isNew) {
+            // Ensure age is null for a new profile without a birthdate
+            entity.setCurrentAge(null);
         }
 
-        // 根據是否存在，來決定是執行更新還是插入
-        if (exists) {
-            userProfileMapper.updateByUid(entity);
-        } else {
+        if (isNew) {
             userProfileMapper.insert(entity);
+        } else {
+            userProfileMapper.updateByUid(entity);
         }
     }
 
-    public UserProfileDto getProfile(String uid) {
-        UserProfile entity = userProfileMapper.selectByUid(uid);
-        if (entity == null) {
-            return null;
-        }
-        UserProfileDto res = new UserProfileDto();
-        BeanUtils.copyProperties(entity, res);
-        return res;
+    /**
+     * Creates a minimal default profile for a new user, containing only the UID.
+     * This ensures the record exists in the database.
+     * @param uid The Firebase UID of the new user.
+     * @return The DTO of the newly created minimal profile.
+     */
+    @Transactional
+    private UserProfileDto createDefaultProfile(String uid) {
+        UserProfile newProfile = new UserProfile();
+        newProfile.setFirebaseUid(uid);
+        // All other fields will be null by default, which is the desired "empty" state.
+        
+        userProfileMapper.insert(newProfile);
+        log.info("✅ Minimal default profile created for UID: {}", uid);
+        return convertToDto(newProfile);
+    }
+
+    private UserProfileDto convertToDto(UserProfile entity) {
+        UserProfileDto dto = new UserProfileDto();
+        BeanUtils.copyProperties(entity, dto);
+        return dto;
     }
 }
