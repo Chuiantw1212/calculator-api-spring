@@ -34,6 +34,7 @@ public class UserRetirementService {
         if (exists) {
             entity = userRetirementMapper.selectByUid(uid);
         } else {
+            log.info("No existing retirement for update, creating new one for UID: {}", uid);
             entity = new UserRetirement();
             entity.setFirebaseUid(uid);
         }
@@ -42,8 +43,10 @@ public class UserRetirementService {
 
         if (exists) {
             userRetirementMapper.updateByUid(entity);
+            log.info("✅ [Retirement] Updated for user: {}", uid);
         } else {
             userRetirementMapper.insert(entity);
+            log.info("✅ [Retirement] Created for user: {}", uid);
         }
     }
 
@@ -61,7 +64,6 @@ public class UserRetirementService {
             entity.setHouseholdType("single"); // Provide a default for the NOT NULL column
         }
 
-        // Perform a safe, field-by-field partial update
         if (req.getHouseholdType() != null) entity.setHouseholdType(req.getHouseholdType());
         if (req.getHousingMode() != null) entity.setHousingMode(req.getHousingMode());
         if (req.getHousingCost() != null) entity.setHousingCost(req.getHousingCost());
@@ -82,10 +84,11 @@ public class UserRetirementService {
 
         if (exists) {
             userRetirementMapper.updateByUid(entity);
+            log.info("✅ [Retirement] Patched for user: {}", uid);
         } else {
             userRetirementMapper.insert(entity);
+            log.info("✅ [Retirement] Created via PATCH for user: {}", uid);
         }
-        log.info("Patched retirement settings for UID: {}", uid);
     }
 
     @Transactional

@@ -34,7 +34,7 @@ public class UserLaborPensionService {
         if (exists) {
             entity = userLaborPensionMapper.selectByUid(uid);
         } else {
-            log.info("No existing labor pension found for update, creating a new one for UID: {}", uid);
+            log.info("No existing labor pension for update, creating new one for UID: {}", uid);
             entity = new UserLaborPension();
             entity.setFirebaseUid(uid);
         }
@@ -43,8 +43,10 @@ public class UserLaborPensionService {
 
         if (exists) {
             userLaborPensionMapper.updateByUid(entity);
+            log.info("✅ [LaborPension] Updated for user: {}", uid);
         } else {
             userLaborPensionMapper.insert(entity);
+            log.info("✅ [LaborPension] Created for user: {}", uid);
         }
     }
 

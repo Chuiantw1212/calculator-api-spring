@@ -34,18 +34,19 @@ public class UserLaborInsuranceService {
         if (exists) {
             entity = mapper.selectByUid(uid);
         } else {
-            log.info("No existing labor insurance found for update, creating a new one for UID: {}", uid);
+            log.info("No existing labor insurance for update, creating new one for UID: {}", uid);
             entity = new UserLaborInsurance();
             entity.setFirebaseUid(uid);
         }
 
-        // Use BeanUtils to copy all properties from the complete DTO
         BeanUtils.copyProperties(req, entity);
 
         if (exists) {
             mapper.updateByUid(entity);
+            log.info("✅ [LaborInsurance] Updated for user: {}", uid);
         } else {
             mapper.insert(entity);
+            log.info("✅ [LaborInsurance] Created for user: {}", uid);
         }
     }
 
@@ -53,7 +54,6 @@ public class UserLaborInsuranceService {
     private UserLaborInsuranceDto createDefaultLaborInsurance(String uid) {
         UserLaborInsurance newInsurance = new UserLaborInsurance();
         newInsurance.setFirebaseUid(uid);
-
         mapper.insert(newInsurance);
         log.info("✅ Minimal default labor insurance record created for UID: {}", uid);
         return convertToDto(newInsurance);

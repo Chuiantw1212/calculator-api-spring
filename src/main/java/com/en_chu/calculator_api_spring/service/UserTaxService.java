@@ -34,7 +34,7 @@ public class UserTaxService {
         if (exists) {
             entity = userTaxMapper.selectByUid(uid);
         } else {
-            log.info("No existing tax record found for update, creating a new one for UID: {}", uid);
+            log.info("No existing tax record for update, creating new one for UID: {}", uid);
             entity = new UserTax();
             entity.setFirebaseUid(uid);
         }
@@ -43,8 +43,10 @@ public class UserTaxService {
 
         if (exists) {
             userTaxMapper.updateByUid(entity);
+            log.info("✅ [Tax] Updated for user: {}", uid);
         } else {
             userTaxMapper.insert(entity);
+            log.info("✅ [Tax] Created for user: {}", uid);
         }
     }
 

@@ -37,29 +37,29 @@ public class UserProfileService {
         if (exists) {
             entity = userProfileMapper.selectByUid(uid);
         } else {
-            log.info("No existing profile found for update, creating a new one for UID: {}", uid);
+            log.info("No existing profile for update, creating new one for UID: {}", uid);
             entity = new UserProfile();
             entity.setFirebaseUid(uid);
         }
 
-        // Safely map fields from the request DTO
         entity.setBirthDate(req.getBirthDate());
         entity.setGender(req.getGender());
         entity.setMarriageYear(req.getMarriageYear());
         entity.setBiography(req.getBiography());
-        entity.setCareerInsuranceType(req.getCareerInsuranceType()); // ✅ 補全更新邏輯
+        entity.setCareerInsuranceType(req.getCareerInsuranceType());
 
-        // Business Logic: Recalculate age if birth date is provided
         if (req.getBirthDate() != null) {
-            entity.setCurrentAge(Period.between(req.getBirthDate(), java.time.LocalDate.now()).getYears());
+            entity.setCurrentAge(Period.between(req.getBirthDate(), LocalDate.now()).getYears());
         } else if (!exists) {
             entity.setCurrentAge(null);
         }
 
         if (exists) {
             userProfileMapper.updateByUid(entity);
+            log.info("✅ [Profile] Updated for user: {}", uid);
         } else {
             userProfileMapper.insert(entity);
+            log.info("✅ [Profile] Created for user: {}", uid);
         }
     }
 

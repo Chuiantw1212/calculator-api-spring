@@ -34,7 +34,7 @@ public class UserCareerService {
         if (exists) {
             entity = userCareerMapper.selectByUid(uid);
         } else {
-            log.info("No existing career found for update, creating a new one for UID: {}", uid);
+            log.info("No existing career for update, creating new one for UID: {}", uid);
             entity = new UserCareer();
             entity.setFirebaseUid(uid);
         }
@@ -43,8 +43,10 @@ public class UserCareerService {
 
         if (exists) {
             userCareerMapper.updateByUid(entity);
+            log.info("✅ [Career] Updated for user: {}", uid);
         } else {
             userCareerMapper.insert(entity);
+            log.info("✅ [Career] Created for user: {}", uid);
         }
     }
 
