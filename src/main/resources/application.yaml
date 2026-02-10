@@ -3,18 +3,13 @@ server:
   port: ${PORT:8080}
 
 spring:
+  # Always try to include the 'local' profile.
   profiles:
     include: local
 
   application:
     name: calculator-api-spring
   
-  # Flyway 配置
-  flyway:
-    # 啟用 Flyway，並讓它在應用程式啟動時自動執行遷移
-    enabled: true
-    baseline-on-migrate: true # 如果資料庫中已存在 flyway 紀錄表但沒有任何版本，以此為基準開始
-
   datasource:
     url: ${DB_URL:?DB_URL environment variable is not set}
     username: ${DB_USERNAME:?DB_USERNAME environment variable is not set}
