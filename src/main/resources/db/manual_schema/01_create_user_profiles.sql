@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     gender VARCHAR(10),
     current_age INT,
     life_expectancy INT,
-    marriage_year INT,
+    marriage_year INT, -- ✅ Reverted to INT as requested
     career_insurance_type VARCHAR(50),
     biography TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
