@@ -10,7 +10,7 @@
         <result column="gender" property="gender" />
         <result column="current_age" property="currentAge" />
         <result column="life_expectancy" property="lifeExpectancy" />
-        <result column="marriage_year" property="marriageYear" />
+        <result column="marriage_year" property="marriageYear" jdbcType="INTEGER" />
         <result column="career_insurance_type" property="careerInsuranceType" />
         <result column="biography" property="biography" />
         <result column="created_at" property="createdAt" />

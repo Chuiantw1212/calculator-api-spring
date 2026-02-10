@@ -1,13 +1,12 @@
 package com.en_chu.calculator_api_spring.service;
 
-import com.en_chu.calculator_api_spring.entity.*;
+import com.en_chu.calculator_api_spring.entity.UserProfile;
 import com.en_chu.calculator_api_spring.mapper.*;
 import com.en_chu.calculator_api_spring.model.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,75 +15,43 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserProfileMapper userProfileMapper;
-    private final UserCareerMapper userCareerMapper;
-    private final UserLaborPensionMapper userLaborPensionMapper;
-    private final UserLaborInsuranceMapper userLaborInsuranceMapper;
-    private final UserRetirementMapper userRetirementMapper;
-    private final UserTaxMapper userTaxMapper;
-    // Mappers for 1:N relationships are kept for the deleteUser method
+    // Services for 1:1 relationships
+    private final UserProfileService userProfileService;
+    private final UserCareerService userCareerService;
+    private final UserLaborPensionService userLaborPensionService;
+    private final UserLaborInsuranceService userLaborInsuranceService;
+    private final UserRetirementService userRetirementService;
+    private final UserTaxService userTaxService;
+
+    // Mappers for 1:N relationships (only used for deleteUser)
     private final UserBusinessMapper userBusinessMapper;
     private final UserCreditCardMapper userCreditCardMapper;
     private final UserPortfolioMapper userPortfolioMapper;
     private final UserRealEstateMapper userRealEstateMapper;
+    
+    // Mappers for 1:1 relationships (only used for deleteUser)
+    private final UserCareerMapper userCareerMapper;
+    private final UserLaborPensionMapper userLaborPensionMapper;
+    private final UserLaborInsuranceMapper userLaborInsuranceMapper;
+    private final UserRetirementMapper userRetirementMapper;
+    private final UserTaxMapper userTaxMapper; // ✅ 恢復缺失的依賴
 
-    /**
-     * Assembles the core, 1-to-1 data for the current user.
-     * 1-to-N list data (like portfolios, businesses) should be fetched via their own dedicated API endpoints.
-     * @param uid The Firebase UID of the user.
-     * @return A UserFullDataRes object containing only the 1-to-1 related data.
-     */
+    // Mapper for user sync
+    private final UserProfileMapper userProfileMapper;
+
     public UserFullDataRes getFullUserData(String uid) {
         log.info("🔍 [UserService] Assembling core user data for UID: {}", uid);
         UserFullDataRes response = new UserFullDataRes();
 
-        // --- Step 1. Get Profile (1:1) ---
-        UserProfile profileEntity = userProfileMapper.selectByUid(uid);
-        if (profileEntity != null) {
-            UserProfileDto profileDto = new UserProfileDto();
-            BeanUtils.copyProperties(profileEntity, profileDto);
-            response.setProfile(profileDto);
-            response.setId(profileEntity.getId());
-        }
-
-        // --- Step 2. Get Career (1:1) ---
-        UserCareer careerEntity = userCareerMapper.selectByUid(uid);
-        if (careerEntity != null) {
-            UserCareerDto careerDto = new UserCareerDto();
-            BeanUtils.copyProperties(careerEntity, careerDto);
-            response.setCareer(careerDto);
-        }
-
-        // --- Step 3. Get Labor Pension (1:1) ---
-        UserLaborPension pensionEntity = userLaborPensionMapper.selectByUid(uid);
-        if (pensionEntity != null) {
-            UserLaborPensionDto pensionDto = new UserLaborPensionDto();
-            BeanUtils.copyProperties(pensionEntity, pensionDto);
-            response.setLaborPension(pensionDto);
-        }
-
-        // --- Step 4. Get Labor Insurance (1:1) ---
-        UserLaborInsurance insuranceEntity = userLaborInsuranceMapper.selectByUid(uid);
-        if (insuranceEntity != null) {
-            UserLaborInsuranceDto insuranceDto = new UserLaborInsuranceDto();
-            BeanUtils.copyProperties(insuranceEntity, insuranceDto);
-            response.setLaborInsurance(insuranceDto);
-        }
+        response.setProfile(userProfileService.getProfile(uid));
+        response.setCareer(userCareerService.getCareer(uid));
+        response.setLaborPension(userLaborPensionService.getLaborPension(uid));
+        response.setLaborInsurance(userLaborInsuranceService.getLaborInsurance(uid));
+        response.setRetirement(userRetirementService.getRetirement(uid));
+        response.setTax(userTaxService.getTax(uid));
         
-        // --- Step 5. Get Retirement (1:1) ---
-        UserRetirement retirementEntity = userRetirementMapper.selectByUid(uid);
-        if (retirementEntity != null) {
-            UserRetirementDto retirementDto = new UserRetirementDto();
-            BeanUtils.copyProperties(retirementEntity, retirementDto);
-            response.setRetirement(retirementDto);
-        }
-
-        // --- Step 6. Get Tax (1:1) ---
-        UserTax taxEntity = userTaxMapper.selectByUid(uid);
-        if (taxEntity != null) {
-            UserTaxDto taxDto = new UserTaxDto();
-            BeanUtils.copyProperties(taxEntity, taxDto);
-            response.setTax(taxDto);
+        if (response.getProfile() != null) {
+            response.setId(response.getProfile().getId());
         }
 
         log.info("✅ [UserService] Core user data assembled successfully for UID: {}", uid);

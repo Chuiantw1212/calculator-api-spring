@@ -20,45 +20,48 @@ public class UserLaborPensionService {
     public UserLaborPensionDto getLaborPension(String uid) {
         UserLaborPension entity = userLaborPensionMapper.selectByUid(uid);
         if (entity == null) {
-            log.info("ℹ️ [LaborPension] 查無資料: UID={}", uid);
-            return null;
+            log.warn("No labor pension record found for UID: {}. Creating a minimal default record.", uid);
+            return createDefaultLaborPension(uid);
         }
-        UserLaborPensionDto res = new UserLaborPensionDto();
-        BeanUtils.copyProperties(entity, res);
-        return res;
+        return convertToDto(entity);
     }
 
     @Transactional
     public void updateLaborPension(String uid, UserLaborPensionUpdateReq req) {
-        log.info("🔄 [LaborPension] 準備更新資料: UID={}", uid);
-
         boolean exists = userLaborPensionMapper.existsByUid(uid);
         UserLaborPension entity;
 
         if (exists) {
             entity = userLaborPensionMapper.selectByUid(uid);
         } else {
-            log.info("✨ [LaborPension] 新用戶，建立新紀錄: UID={}", uid);
+            log.info("No existing labor pension for update, creating new one for UID: {}", uid);
             entity = new UserLaborPension();
             entity.setFirebaseUid(uid);
         }
 
-        // --- 安全地更新欄位 ---
-        entity.setExpectedRetirementAge(req.getExpectedRetirementAge());
-        entity.setRetirementRoi(req.getRetirementRoi());
-        entity.setEmployerContribution(req.getEmployerContribution());
-        entity.setEmployerEarnings(req.getEmployerEarnings());
-        entity.setPersonalContribution(req.getPersonalContribution());
-        entity.setPersonalEarnings(req.getPersonalEarnings());
-        entity.setCurrentWorkSeniority(req.getCurrentWorkSeniority());
-
-        // 衍生欄位 (如 predictedLumpSum) 應由後端計算，而不是由前端傳入
-        // 這裡可以加入計算衍生欄位的邏輯
+        BeanUtils.copyProperties(req, entity);
 
         if (exists) {
             userLaborPensionMapper.updateByUid(entity);
+            log.info("✅ [LaborPension] Updated for user: {}", uid);
         } else {
             userLaborPensionMapper.insert(entity);
+            log.info("✅ [LaborPension] Created for user: {}", uid);
         }
+    }
+
+    @Transactional
+    private UserLaborPensionDto createDefaultLaborPension(String uid) {
+        UserLaborPension newPension = new UserLaborPension();
+        newPension.setFirebaseUid(uid);
+        userLaborPensionMapper.insert(newPension);
+        log.info("✅ Minimal default labor pension record created for UID: {}", uid);
+        return convertToDto(newPension);
+    }
+
+    private UserLaborPensionDto convertToDto(UserLaborPension entity) {
+        UserLaborPensionDto dto = new UserLaborPensionDto();
+        BeanUtils.copyProperties(entity, dto);
+        return dto;
     }
 }
