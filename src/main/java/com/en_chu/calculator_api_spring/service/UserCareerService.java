@@ -1,46 +1,53 @@
 package com.en_chu.calculator_api_spring.service;
 
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.en_chu.calculator_api_spring.entity.UserCareer;
+import com.en_chu.calculator_api_spring.mapper.UserCareerMapper;
+import com.en_chu.calculator_api_spring.model.UserCareerUpdateReq;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.en_chu.calculator_api_spring.entity.UserCareer;
-import com.en_chu.calculator_api_spring.mapper.UserCareerMapper;
-import com.en_chu.calculator_api_spring.model.UserCareerDto;
-
-import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserCareerService {
 
-	@Autowired
-	private UserCareerMapper userCareerMapper;
+    private final UserCareerMapper userCareerMapper;
 
-	/**
-	 * 更新或建立職涯收入資料 (Upsert) 修改：增加 String uid 參數
-	 */
-	@Transactional
-	public void updateCareer(String uid, UserCareerDto req) {
-		// 1. 直接使用傳入的 UID
-		// String uid = SecurityUtils.getCurrentUserUid(); // ❌ 舊做法
+    @Transactional
+    public void updateCareer(String uid, UserCareerUpdateReq req) {
+        boolean exists = userCareerMapper.existsByUid(uid);
+        UserCareer entity;
 
-		// 2. 轉換 DTO -> Entity
-		UserCareer entity = new UserCareer();
-		BeanUtils.copyProperties(req, entity);
+        if (exists) {
+            entity = userCareerMapper.selectByUid(uid);
+        } else {
+            log.info("No existing career found for UID {}, creating new record.", uid);
+            entity = new UserCareer();
+            entity.setFirebaseUid(uid);
+        }
 
-		// 3. 設定 UID (這是最重要的 Key)
-		entity.setFirebaseUid(uid);
+        // --- 安全地更新欄位 ---
+        entity.setBaseSalary(req.getBaseSalary());
+        entity.setOtherAllowance(req.getOtherAllowance());
+        entity.setLaborInsurance(req.getLaborInsurance());
+        entity.setHealthInsurance(req.getHealthInsurance());
+        entity.setOtherDeduction(req.getOtherDeduction());
+        entity.setPensionPersonalRate(req.getPensionPersonalRate());
+        entity.setStockDeduction(req.getStockDeduction());
+        entity.setStockCompanyMatch(req.getStockCompanyMatch());
+        entity.setAnnualBonus(req.getAnnualBonus());
+        entity.setDependents(req.getDependents());
 
-		// 4. 嘗試更新 (Update by UID)
-		// Mapper 會根據 firebase_uid 去找資料
-		int rowsAffected = userCareerMapper.updateByUid(entity);
+        // --- 重新計算衍生欄位 (如果需要) ---
+        // 這裡可以加入計算 monthlyNetIncome, annualTotalIncome 等欄位的邏輯
+        // 為了保持簡單，我們先假設這些計算在前端完成，或在另一個服務中處理
 
-		// 5. 如果更新筆數為 0，代表該用戶還沒建立過 Career 資料 -> 執行新增
-		if (rowsAffected == 0) {
-			log.info("No existing career found for UID {}, creating new record.", uid);
-			userCareerMapper.insert(entity);
-		}
-	}
+        if (exists) {
+            userCareerMapper.updateByUid(entity);
+        } else {
+            userCareerMapper.insert(entity);
+        }
+    }
 }

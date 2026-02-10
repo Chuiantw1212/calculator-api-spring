@@ -1,45 +1,46 @@
 package com.en_chu.calculator_api_spring.entity;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
+import java.math.BigDecimal;
+
+/**
+ * Represents a user's credit card.
+ * Inherits id, firebaseUid, createdAt, and updatedAt from UserBaseEntity.
+ */
 @Data
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class UserCreditCard extends UserBaseEntity {
-    private String firebaseUid;
 
     /**
-     * 卡片名稱 (e.g. 玉山 U Bear)
+     * The name of the card (e.g., "Chase Sapphire Preferred").
      */
     private String name;
 
     /**
-     * 扣款帳戶 (e.g. 台新 Richart)
-     * 對應 JSON: deductionAccount
+     * The bank account from which the card is paid.
      */
     private String deductionAccount;
 
     /**
-     * 用途分類代碼 (e.g. online, daily)
-     * 對應 JSON: usageType
+     * A code for categorizing card usage (e.g., "online", "daily", "travel").
      */
     private String usageType;
 
     /**
-     * 卡片存放位置 (e.g. wallet, home, digital)
-     * 對應 JSON: storageLocation
+     * The physical or digital location of the card (e.g., "wallet", "digital", "drawer").
      */
     private String storageLocation;
 
     /**
-     * 平均月開支 (每月試算支出)
-     * 對應 JSON: averageMonthlyExpense
+     * The average monthly expense charged to this card.
      */
     private BigDecimal averageMonthlyExpense;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

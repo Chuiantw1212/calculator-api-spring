@@ -1,75 +1,87 @@
 package com.en_chu.calculator_api_spring.service;
 
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.en_chu.calculator_api_spring.entity.UserProfile;
 import com.en_chu.calculator_api_spring.mapper.UserProfileMapper;
 import com.en_chu.calculator_api_spring.model.UserProfileDto;
+import com.en_chu.calculator_api_spring.model.UserProfileUpdateReq;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Period;
 
 @Service
+@RequiredArgsConstructor
 public class UserProfileService {
 
-	@Autowired
-	private UserProfileMapper userProfileMapper;
+    private final UserProfileMapper userProfileMapper;
 
-	/**
-	 * 新增個人資料 修改：增加 String uid 參數
-	 */
-	@Transactional
-	public void createProfile(String uid, UserProfileDto req) {
-		// 1. 檢查是否已存在 (使用傳入的 UID 查)
-		if (userProfileMapper.selectByUid(uid) != null) {
-			throw new RuntimeException("資料已存在，請使用更新功能");
-		}
+    @Transactional
+    public void createProfile(String uid, UserProfileDto req) {
+        // 在新增前，先檢查資料是否存在，避免重複建立
+        if (userProfileMapper.existsByUid(uid)) {
+            throw new RuntimeException("資料已存在，請使用更新功能");
+        }
 
-		UserProfile entity = new UserProfile();
-		BeanUtils.copyProperties(req, entity);
+        UserProfile entity = new UserProfile();
+        BeanUtils.copyProperties(req, entity);
+        entity.setFirebaseUid(uid);
 
-		// 關鍵：設定傳入的 UID
-		entity.setFirebaseUid(uid);
+        userProfileMapper.insert(entity);
+    }
 
-		// 2. 呼叫 Insert
-		userProfileMapper.insert(entity);
-	}
+    /**
+     * 安全地更新或建立 (Upsert) 使用者個人資料。
+     * 這個方法遵循了兩個重要的最佳實踐：
+     * 1. 效能優化：先用高效的 `exists` 查詢判斷是否存在，避免不必要的 `SELECT *`。
+     * 2. 安全性：使用特定的 `UserProfileUpdateReq` DTO，只允許更新指定的欄位，防範巨量請求攻擊。
+     *
+     * @param uid 使用者的 Firebase UID
+     * @param req 只包含允許更新欄位的請求 DTO
+     */
+    @Transactional
+    public void updateProfile(String uid, UserProfileUpdateReq req) {
+        // 效能優化：先用一個輕量的查詢判斷紀錄是否存在
+        boolean exists = userProfileMapper.existsByUid(uid);
+        UserProfile entity;
 
-	/**
-	 * 更新個人資料 修改：增加 String uid 參數
-	 */
-	@Transactional
-	public void updateProfile(String uid, UserProfileDto req) {
-		UserProfile entity = new UserProfile();
-		BeanUtils.copyProperties(req, entity);
+        if (exists) {
+            // 只有在確定紀錄存在時，才執行 SELECT 來獲取完整的 Entity 物件
+            entity = userProfileMapper.selectByUid(uid);
+        } else {
+            // 如果不存在，則建立一個新的實體，準備後續的插入操作
+            entity = new UserProfile();
+            entity.setFirebaseUid(uid);
+        }
 
-		// 【關鍵修改】
-		// 使用 Controller -> UserService 傳遞下來的 uid
-		entity.setFirebaseUid(uid);
+        // 安全性：手動、明確地將請求 DTO 中的欄位值，設定到 Entity 上
+        // 這可以防止惡意使用者透過 API 更新他們不應該有權限修改的欄位 (例如 id, firebaseUid, createdAt)
+        entity.setBirthDate(req.getBirthDate());
+        entity.setGender(req.getGender());
+        entity.setMarriageYear(req.getMarriageYear());
+        entity.setBiography(req.getBiography());
 
-		// 3. 呼叫 Update (Mapper XML 必須寫 WHERE firebase_uid = #{firebaseUid})
-		int rowsAffected = userProfileMapper.updateByUid(entity);
+        // 業務邏輯：如果生日有變更，自動重新計算並更新年齡
+        if (req.getBirthDate() != null) {
+            entity.setCurrentAge(Period.between(req.getBirthDate(), java.time.LocalDate.now()).getYears());
+        }
 
-		if (rowsAffected == 0) {
-			// 通常代表該用戶還沒有建立 Profile
-			throw new RuntimeException("更新失敗：找不到您的個人檔案，請先執行新增 (Create)");
-		}
-	}
+        // 根據是否存在，來決定是執行更新還是插入
+        if (exists) {
+            userProfileMapper.updateByUid(entity);
+        } else {
+            userProfileMapper.insert(entity);
+        }
+    }
 
-	/**
-	 * 查詢個人資料 修改：增加 String uid 參數
-	 */
-	public UserProfileDto getProfile(String uid) {
-		// 直接用傳入的 UID 查
-		UserProfile entity = userProfileMapper.selectByUid(uid);
-
-		if (entity == null) {
-			return null;
-		}
-
-		UserProfileDto res = new UserProfileDto();
-		BeanUtils.copyProperties(entity, res);
-
-		return res;
-	}
+    public UserProfileDto getProfile(String uid) {
+        UserProfile entity = userProfileMapper.selectByUid(uid);
+        if (entity == null) {
+            return null;
+        }
+        UserProfileDto res = new UserProfileDto();
+        BeanUtils.copyProperties(entity, res);
+        return res;
+    }
 }

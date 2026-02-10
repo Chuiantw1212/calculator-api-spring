@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -12,25 +14,58 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * Handles database access related exceptions.
+     * @param ex The DataAccessException thrown by Spring.
+     * @return 503 Service Unavailable
+     */
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorResponse> handleDataAccessException(DataAccessException ex) {
-        log.error("❌ 資料庫存取異常: {}", ex.getMessage());
+        // 🔴【DEBUG MODE】🔴
+        // To find the root cause, we are now logging the full stack trace.
+        // This will tell us exactly which Service and Mapper are causing the issue.
+        log.error("❌ Database access exception, detailed stack trace: ", ex);
         
-        // 建立一個更具描述性的錯誤訊息
-        String errorMessage = "資料庫服務暫時無法使用，請稍後再試。";
-        
-        // 回傳 503 Service Unavailable 狀態碼和結構化的 JSON
+        String errorMessage = "The database service is temporarily unavailable. Please check the logs.";
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.SERVICE_UNAVAILABLE.value(), errorMessage);
         
         return new ResponseEntity<>(errorResponse, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
+    /**
+     * Handles validation exceptions triggered by the @Valid annotation.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        log.warn("⚠️ DTO validation failed: {}", ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+
+        String errorMessage = "The request data format is incorrect or missing required fields.";
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errorMessage);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handles exceptions for missing or unreadable request bodies.
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleMessageNotReadableException(HttpMessageNotReadableException ex) {
+        log.warn("🚫 Could not read request body: {}", ex.getMessage());
+
+        String errorMessage = "Request body is missing or JSON format is invalid.";
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errorMessage);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handles all other uncaught exceptions as a last resort.
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
-        log.error("🔥 發生未預期的錯誤: {}", ex.getMessage(), ex);
+        log.error("🔥 An unexpected internal server error occurred: ", ex);
         
-        String errorMessage = "伺服器內部發生未預期的錯誤。";
-        
+        String errorMessage = "An unexpected internal server error occurred.";
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorMessage);
         
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

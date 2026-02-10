@@ -1,46 +1,24 @@
 package com.en_chu.calculator_api_spring.mapper;
 
-import java.util.List;
-import java.util.Optional; // 記得加這個 import
-
+import com.en_chu.calculator_api_spring.entity.UserPortfolio;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.en_chu.calculator_api_spring.entity.UserPortfolio;
+import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface UserPortfolioMapper {
 
-	/**
-	 * 新增單筆部位
-	 * 
-	 * @return 影響行數
-	 */
-	int insert(UserPortfolio entity);
+    int insert(UserPortfolio entity);
 
-	/**
-	 * 查詢該用戶所有的投資部位 (舊名: selectListByUid -> 改名: selectByUid)
-	 */
-	List<UserPortfolio> selectByUid(@Param("uid") String firebaseUid);
+    int update(UserPortfolio entity);
 
-	/**
-	 * 🆕 新增：查詢單筆部位 (包含權限檢查) Service 的 getById 和 update 後回傳需要用到
-	 */
-	Optional<UserPortfolio> selectByIdAndUid(@Param("id") Long id, @Param("uid") String firebaseUid);
+    List<UserPortfolio> selectByUid(@Param("firebaseUid") String firebaseUid);
 
-	/**
-	 * 更新單筆部位 (舊名: updateById -> 改名: update)
-	 */
-	int update(UserPortfolio entity);
+    Optional<UserPortfolio> selectByIdAndUid(@Param("id") Long id, @Param("firebaseUid") String firebaseUid);
 
-	/**
-	 * 刪除單筆部位 (舊名: deleteById -> 改名: deleteByIdAndUid，語意更精確)
-	 */
-	int deleteByIdAndUid(@Param("id") Long id, @Param("uid") String firebaseUid);
+    int deleteByIdAndUid(@Param("id") Long id, @Param("firebaseUid") String firebaseUid);
 
-	/**
-	 * 刪除該用戶所有部位 (重置用)
-	 */
-	int deleteByUid(@Param("uid") String firebaseUid);
-
+    int deleteByUid(@Param("firebaseUid") String firebaseUid);
 }

@@ -1,38 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper
-	namespace="com.en_chu.calculator_api_spring.mapper.UserLaborPensionMapper">
+<mapper namespace="com.en_chu.calculator_api_spring.mapper.UserLaborPensionMapper">
 
-	<resultMap id="BaseResultMap"
-		type="com.en_chu.calculator_api_spring.entity.UserLaborPension">
-		<id column="id" property="id" jdbcType="BIGINT" />
-		<result column="firebase_uid" property="firebaseUid"
-			jdbcType="VARCHAR" />
-		<result column="expected_retirement_age"
-			property="expectedRetirementAge" jdbcType="INTEGER" />
-		<result column="remaining_life_at_retirement"
-			property="remainingLifeAtRetirement" jdbcType="NUMERIC" />
-		<result column="retirement_roi" property="retirementRoi"
-			jdbcType="NUMERIC" />
-		<result column="employer_contribution"
-			property="employerContribution" jdbcType="NUMERIC" />
-		<result column="employer_earnings" property="employerEarnings"
-			jdbcType="NUMERIC" />
-		<result column="personal_contribution"
-			property="personalContribution" jdbcType="NUMERIC" />
-		<result column="personal_earnings" property="personalEarnings"
-			jdbcType="NUMERIC" />
-		<result column="current_work_seniority"
-			property="currentWorkSeniority" jdbcType="NUMERIC" />
-		<result column="predicted_lump_sum" property="predictedLumpSum"
-			jdbcType="NUMERIC" />
-		<result column="predicted_net_lump_sum"
-			property="predictedNetLumpSum" jdbcType="NUMERIC" />
-		<result column="created_at" property="createdAt"
-			jdbcType="TIMESTAMP" />
-		<result column="updated_at" property="updatedAt"
-			jdbcType="TIMESTAMP" />
+	<resultMap id="BaseResultMap" type="com.en_chu.calculator_api_spring.entity.UserLaborPension">
+		<id column="id" property="id" />
+		<result column="firebase_uid" property="firebaseUid" />
+		<result column="expected_retirement_age" property="expectedRetirementAge" />
+		<result column="remaining_life_at_retirement" property="remainingLifeAtRetirement" />
+		<result column="retirement_roi" property="retirementRoi" />
+		<result column="employer_contribution" property="employerContribution" />
+		<result column="employer_earnings" property="employerEarnings" />
+		<result column="personal_contribution" property="personalContribution" />
+		<result column="personal_earnings" property="personalEarnings" />
+		<result column="current_work_seniority" property="currentWorkSeniority" />
+		<result column="predicted_lump_sum" property="predictedLumpSum" />
+		<result column="predicted_net_lump_sum" property="predictedNetLumpSum" />
+		<result column="created_at" property="createdAt" />
+		<result column="updated_at" property="updatedAt" />
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -52,62 +37,53 @@
 		WHERE firebase_uid = #{firebaseUid}
 	</select>
 
+	<select id="existsByUid" resultType="boolean">
+        SELECT EXISTS (SELECT 1 FROM user_labor_pensions WHERE firebase_uid = #{firebaseUid})
+    </select>
+
 	<update id="updateByUid">
         UPDATE user_labor_pensions
-        <set>
-            <if test="expectedRetirementAge != null">expected_retirement_age = #{expectedRetirementAge},</if>
-            <if test="remainingLifeAtRetirement != null">remaining_life_at_retirement = #{remainingLifeAtRetirement},</if>
-            <if test="retirementRoi != null">retirement_roi = #{retirementRoi},</if>
-            <if test="employerContribution != null">employer_contribution = #{employerContribution},</if>
-            <if test="employerEarnings != null">employer_earnings = #{employerEarnings},</if>
-            <if test="personalContribution != null">personal_contribution = #{personalContribution},</if>
-            <if test="personalEarnings != null">personal_earnings = #{personalEarnings},</if>
-            <if test="currentWorkSeniority != null">current_work_seniority = #{currentWorkSeniority},</if>
-            
-            <if test="predictedLumpSum != null">predicted_lump_sum = #{predictedLumpSum},</if>
-            <if test="predictedNetLumpSum != null">predicted_net_lump_sum = #{predictedNetLumpSum},</if>
-            
+        SET
+            expected_retirement_age = #{expectedRetirementAge},
+            remaining_life_at_retirement = #{remainingLifeAtRetirement},
+            retirement_roi = #{retirementRoi},
+            employer_contribution = #{employerContribution},
+            employer_earnings = #{employerEarnings},
+            personal_contribution = #{personalContribution},
+            personal_earnings = #{personalEarnings},
+            current_work_seniority = #{currentWorkSeniority},
+            predicted_lump_sum = #{predictedLumpSum},
+            predicted_net_lump_sum = #{predictedNetLumpSum},
             updated_at = CURRENT_TIMESTAMP
-        </set>
         WHERE firebase_uid = #{firebaseUid}
     </update>
 
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO user_labor_pensions
-        <trim prefix="(" suffix=")" suffixOverrides=",">
+        INSERT INTO user_labor_pensions (
             firebase_uid,
-            <if test="expectedRetirementAge != null">expected_retirement_age,</if>
-            <if test="remainingLifeAtRetirement != null">remaining_life_at_retirement,</if>
-            <if test="retirementRoi != null">retirement_roi,</if>
-            <if test="employerContribution != null">employer_contribution,</if>
-            <if test="employerEarnings != null">employer_earnings,</if>
-            <if test="personalContribution != null">personal_contribution,</if>
-            <if test="personalEarnings != null">personal_earnings,</if>
-            <if test="currentWorkSeniority != null">current_work_seniority,</if>
-            
-            <if test="predictedLumpSum != null">predicted_lump_sum,</if>
-            <if test="predictedNetLumpSum != null">predicted_net_lump_sum,</if>
-            
-            created_at,
-            updated_at
-        </trim>
-        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            expected_retirement_age,
+            remaining_life_at_retirement,
+            retirement_roi,
+            employer_contribution,
+            employer_earnings,
+            personal_contribution,
+            personal_earnings,
+            current_work_seniority,
+            predicted_lump_sum,
+            predicted_net_lump_sum
+        ) VALUES (
             #{firebaseUid},
-            <if test="expectedRetirementAge != null">#{expectedRetirementAge},</if>
-            <if test="remainingLifeAtRetirement != null">#{remainingLifeAtRetirement},</if>
-            <if test="retirementRoi != null">#{retirementRoi},</if>
-            <if test="employerContribution != null">#{employerContribution},</if>
-            <if test="employerEarnings != null">#{employerEarnings},</if>
-            <if test="personalContribution != null">#{personalContribution},</if>
-            <if test="personalEarnings != null">#{personalEarnings},</if>
-            <if test="currentWorkSeniority != null">#{currentWorkSeniority},</if>
-            
-            <if test="predictedLumpSum != null">#{predictedLumpSum},</if>
-            <if test="predictedNetLumpSum != null">#{predictedNetLumpSum},</if>
-            
-            CURRENT_TIMESTAMP,
-            CURRENT_TIMESTAMP
-        </trim>
+            #{expectedRetirementAge},
+            #{remainingLifeAtRetirement},
+            #{retirementRoi},
+            #{employerContribution},
+            #{employerEarnings},
+            #{personalContribution},
+            #{personalEarnings},
+            #{currentWorkSeniority},
+            #{predictedLumpSum},
+            #{predictedNetLumpSum}
+        )
     </insert>
 
 	<delete id="deleteByUid">

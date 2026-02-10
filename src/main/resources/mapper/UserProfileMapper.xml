@@ -4,19 +4,17 @@
 <mapper namespace="com.en_chu.calculator_api_spring.mapper.UserProfileMapper">
 
     <resultMap id="BaseResultMap" type="com.en_chu.calculator_api_spring.entity.UserProfile">
-        <id column="id" property="id" jdbcType="BIGINT"/>
-        <result column="firebase_uid" property="firebaseUid" jdbcType="VARCHAR"/>
-        
-        <result column="birth_date" property="birthDate" jdbcType="DATE"/>
-        <result column="gender" property="gender" jdbcType="VARCHAR"/>
-        <result column="current_age" property="currentAge" jdbcType="INTEGER"/>
-        <result column="life_expectancy" property="lifeExpectancy" jdbcType="INTEGER"/>
-        <result column="marriage_year" property="marriageYear" jdbcType="INTEGER"/>
-        <result column="career_insurance_type" property="careerInsuranceType" jdbcType="VARCHAR"/>
-        <result column="biography" property="biography" jdbcType="VARCHAR"/>
-        
-        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
-        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+        <id column="id" property="id" />
+        <result column="firebase_uid" property="firebaseUid" />
+        <result column="birth_date" property="birthDate" />
+        <result column="gender" property="gender" />
+        <result column="current_age" property="currentAge" />
+        <result column="life_expectancy" property="lifeExpectancy" />
+        <result column="marriage_year" property="marriageYear" />
+        <result column="career_insurance_type" property="careerInsuranceType" />
+        <result column="biography" property="biography" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -26,8 +24,7 @@
     </sql>
 
     <update id="updateByUid">
-    <![CDATA[
-        UPDATE user_profiles 
+        UPDATE user_profiles
         SET 
             birth_date = #{birthDate},
             gender = #{gender},
@@ -39,25 +36,20 @@
             updated_at = CURRENT_TIMESTAMP
         WHERE 
             firebase_uid = #{firebaseUid}
-    ]]>
     </update>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-    <![CDATA[
         INSERT INTO user_profiles (
             firebase_uid, 
             birth_date, gender, current_age, 
             life_expectancy, marriage_year, 
-            career_insurance_type, biography,
-            created_at, updated_at
+            career_insurance_type, biography
         ) VALUES (
             #{firebaseUid},
             #{birthDate}, #{gender}, #{currentAge}, 
             #{lifeExpectancy}, #{marriageYear}, 
-            #{careerInsuranceType}, #{biography},
-            CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+            #{careerInsuranceType}, #{biography}
         )
-    ]]>
     </insert>
 
     <select id="selectByUid" resultMap="BaseResultMap">
@@ -65,6 +57,10 @@
         <include refid="Base_Column_List" />
         FROM user_profiles 
         WHERE firebase_uid = #{firebaseUid}
+    </select>
+
+    <select id="existsByUid" resultType="boolean">
+        SELECT EXISTS (SELECT 1 FROM user_profiles WHERE firebase_uid = #{firebaseUid})
     </select>
 
     <delete id="deleteByUid">
@@ -83,11 +79,7 @@
     </update>
 
     <insert id="insertInitUser" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO user_profiles (
-            firebase_uid, created_at, updated_at
-        ) VALUES (
-            #{firebaseUid}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
-        )
+        INSERT INTO user_profiles (firebase_uid) VALUES (#{firebaseUid})
     </insert>
 
 </mapper>

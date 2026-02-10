@@ -1,8 +1,8 @@
 package com.en_chu.calculator_api_spring.mapper;
 
+import com.en_chu.calculator_api_spring.entity.UserRetirement;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import com.en_chu.calculator_api_spring.entity.UserRetirement;
 
 @Mapper
 public interface UserRetirementMapper {
@@ -16,4 +16,6 @@ public interface UserRetirementMapper {
     UserRetirement selectByUid(@Param("firebaseUid") String firebaseUid);
 
     int deleteByUid(@Param("firebaseUid") String firebaseUid);
+
+    boolean existsByUid(@Param("firebaseUid") String firebaseUid);
 }

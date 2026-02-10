@@ -1,31 +1,14 @@
 package com.en_chu.calculator_api_spring.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.en_chu.calculator_api_spring.model.UserCareerDto;
-import com.en_chu.calculator_api_spring.model.UserFullDataRes;
-import com.en_chu.calculator_api_spring.model.UserLaborInsuranceDto;
-import com.en_chu.calculator_api_spring.model.UserLaborPensionDto;
-import com.en_chu.calculator_api_spring.model.UserProfileDto;
-import com.en_chu.calculator_api_spring.model.UserTaxDto;
-import com.en_chu.calculator_api_spring.service.UserCareerService;
-import com.en_chu.calculator_api_spring.service.UserLaborInsuranceService;
-import com.en_chu.calculator_api_spring.service.UserLaborPensionService;
-import com.en_chu.calculator_api_spring.service.UserProfileService;
-import com.en_chu.calculator_api_spring.service.UserService;
-import com.en_chu.calculator_api_spring.service.UserTaxService;
+import com.en_chu.calculator_api_spring.model.*;
+import com.en_chu.calculator_api_spring.service.*;
 import com.en_chu.calculator_api_spring.util.SecurityUtils;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -57,9 +40,9 @@ public class UserController {
         return ResponseEntity.ok(userService.getFullUserData(uid));
     }
 
-    @Operation(summary = "更新使用者個人資料")
+    @Operation(summary = "更新使用者個人資料", description = "只接受 birthDate, gender, marriageYear, biography 等允許使用者修改的欄位。")
     @PutMapping("/profile")
-    public ResponseEntity<String> updateProfile(@RequestBody @Valid UserProfileDto req) {
+    public ResponseEntity<String> updateProfile(@RequestBody @Valid UserProfileUpdateReq req) {
         String uid = SecurityUtils.getCurrentUserUid();
         userProfileService.updateProfile(uid, req);
         return ResponseEntity.ok("更新成功");
@@ -67,7 +50,7 @@ public class UserController {
 
     @Operation(summary = "更新使用者職涯資料")
     @PutMapping("/career")
-    public ResponseEntity<String> updateCareer(@RequestBody @Valid UserCareerDto req) {
+    public ResponseEntity<String> updateCareer(@RequestBody @Valid UserCareerUpdateReq req) {
         String uid = SecurityUtils.getCurrentUserUid();
         userCareerService.updateCareer(uid, req);
         return ResponseEntity.ok("更新成功");
@@ -75,7 +58,7 @@ public class UserController {
 
     @Operation(summary = "更新使用者勞退資料")
     @PutMapping("/labor-pension")
-    public ResponseEntity<String> updateLaborPension(@RequestBody @Valid UserLaborPensionDto req) {
+    public ResponseEntity<String> updateLaborPension(@RequestBody @Valid UserLaborPensionUpdateReq req) {
         String uid = SecurityUtils.getCurrentUserUid();
         userLaborPensionService.updateLaborPension(uid, req);
         return ResponseEntity.ok("更新成功");
@@ -88,9 +71,11 @@ public class UserController {
         return ResponseEntity.ok(userLaborInsuranceService.updateLaborInsurance(uid, req));
     }
 
+
+
     @Operation(summary = "更新使用者稅務資料")
     @PutMapping("/tax")
-    public ResponseEntity<String> updateTax(@RequestBody @Valid UserTaxDto req) {
+    public ResponseEntity<String> updateTax(@RequestBody @Valid UserTaxUpdateReq req) {
         String uid = SecurityUtils.getCurrentUserUid();
         userTaxService.updateTax(uid, req);
         return ResponseEntity.ok("更新成功");
