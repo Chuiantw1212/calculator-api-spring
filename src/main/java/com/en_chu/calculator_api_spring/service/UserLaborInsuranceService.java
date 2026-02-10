@@ -39,6 +39,7 @@ public class UserLaborInsuranceService {
             entity.setFirebaseUid(uid);
         }
 
+        // Use BeanUtils to copy all properties from the complete DTO
         BeanUtils.copyProperties(req, entity);
 
         if (exists) {
@@ -52,6 +53,7 @@ public class UserLaborInsuranceService {
     private UserLaborInsuranceDto createDefaultLaborInsurance(String uid) {
         UserLaborInsurance newInsurance = new UserLaborInsurance();
         newInsurance.setFirebaseUid(uid);
+
         mapper.insert(newInsurance);
         log.info("✅ Minimal default labor insurance record created for UID: {}", uid);
         return convertToDto(newInsurance);
