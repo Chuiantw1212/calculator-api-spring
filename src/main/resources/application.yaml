@@ -1,6 +1,9 @@
 # Main/Production Configuration
 server:
   port: ${PORT:8080}
+  # ✅ 核心修正：告訴 Spring Boot 要信任反向代理 (Cloud Run) 轉發的標頭
+  # 這會讓 Spring Boot 知道，即使它自己運行在 HTTP 上，外部請求也是透過 HTTPS 進來的
+  forward-headers-strategy: NATIVE
 
 spring:
   # Always try to include the 'local' profile.
@@ -10,9 +13,8 @@ spring:
   application:
     name: calculator-api-spring
   
-  # ✅ Reverted to the correct, original datasource URL format
   datasource:
-    url: ${DB_URL:?DB_URL environment variable is not set}
+    url: jdbc:postgresql://${DB_HOST:?DB_HOST environment variable is not set}:${DB_PORT:?DB_PORT environment variable is not set}/${DB_NAME:?DB_NAME environment variable is not set}?sslmode=require
     username: ${DB_USERNAME:?DB_USERNAME environment variable is not set}
     password: ${DB_PASSWORD:?DB_PASSWORD environment variable is not set}
     driver-class-name: org.postgresql.Driver
@@ -39,10 +41,6 @@ management:
     health:
       show-details: always
 
-# Configuration to fix Swagger UI in a reverse-proxy environment like Cloud Run
+# We no longer need the servers property, as forward-headers-strategy solves the root cause
 springdoc:
   show-actuator: true
-  swagger-ui:
-    servers:
-      - url: https://calculator-api-spring-20260210-592400229145.asia-east1.run.app
-        description: Production Server
