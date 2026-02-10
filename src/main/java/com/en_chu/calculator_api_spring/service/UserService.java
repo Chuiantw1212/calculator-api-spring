@@ -29,18 +29,20 @@ public class UserService {
     private final UserPortfolioMapper userPortfolioMapper;
     private final UserRealEstateMapper userRealEstateMapper;
     
+    // Mappers for 1:1 relationships (only used for deleteUser)
+    private final UserCareerMapper userCareerMapper;
+    private final UserLaborPensionMapper userLaborPensionMapper;
+    private final UserLaborInsuranceMapper userLaborInsuranceMapper;
+    private final UserRetirementMapper userRetirementMapper;
+    private final UserTaxMapper userTaxMapper; // ✅ 恢復缺失的依賴
+
     // Mapper for user sync
     private final UserProfileMapper userProfileMapper;
 
-    /**
-     * Assembles the core, 1-to-1 data for the current user.
-     * If any of the core data records do not exist, they will be created with default values.
-     */
     public UserFullDataRes getFullUserData(String uid) {
         log.info("🔍 [UserService] Assembling core user data for UID: {}", uid);
         UserFullDataRes response = new UserFullDataRes();
 
-        // Each get...() method now contains the "get or create default" logic.
         response.setProfile(userProfileService.getProfile(uid));
         response.setCareer(userCareerService.getCareer(uid));
         response.setLaborPension(userLaborPensionService.getLaborPension(uid));
@@ -48,7 +50,6 @@ public class UserService {
         response.setRetirement(userRetirementService.getRetirement(uid));
         response.setTax(userTaxService.getTax(uid));
         
-        // Set the top-level ID from the profile
         if (response.getProfile() != null) {
             response.setId(response.getProfile().getId());
         }

@@ -6,32 +6,22 @@ import com.en_chu.calculator_api_spring.util.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
 @Tag(name = "User API", description = "使用者核心資料管理")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private UserProfileService userProfileService;
-
-    @Autowired
-    private UserCareerService userCareerService;
-
-    @Autowired
-    private UserLaborPensionService userLaborPensionService;
-
-    @Autowired
-    private UserLaborInsuranceService userLaborInsuranceService;
-
-    @Autowired
-    private UserTaxService userTaxService;
+    private final UserService userService;
+    private final UserProfileService userProfileService;
+    private final UserCareerService userCareerService;
+    private final UserLaborPensionService userLaborPensionService;
+    private final UserLaborInsuranceService userLaborInsuranceService;
+    private final UserTaxService userTaxService;
 
     @Operation(summary = "獲取當前使用者所有資料")
     @GetMapping("/me")
@@ -40,7 +30,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getFullUserData(uid));
     }
 
-    @Operation(summary = "更新使用者個人資料", description = "只接受 birthDate, gender, marriageYear, biography 等允許使用者修改的欄位。")
+    @Operation(summary = "更新使用者個人資料")
     @PutMapping("/profile")
     public ResponseEntity<String> updateProfile(@RequestBody @Valid UserProfileUpdateReq req) {
         String uid = SecurityUtils.getCurrentUserUid();
@@ -66,12 +56,11 @@ public class UserController {
 
     @Operation(summary = "更新使用者勞保資料")
     @PutMapping("/labor-insurance")
-    public ResponseEntity<UserLaborInsuranceDto> update(@Valid @RequestBody UserLaborInsuranceDto req) {
+    public ResponseEntity<String> updateLaborInsurance(@RequestBody @Valid UserLaborInsuranceUpdateReq req) {
         String uid = SecurityUtils.getCurrentUserUid();
-        return ResponseEntity.ok(userLaborInsuranceService.updateLaborInsurance(uid, req));
+        userLaborInsuranceService.updateLaborInsurance(uid, req);
+        return ResponseEntity.ok("更新成功");
     }
-
-
 
     @Operation(summary = "更新使用者稅務資料")
     @PutMapping("/tax")

@@ -42,13 +42,16 @@ public class UserProfileService {
             entity.setFirebaseUid(uid);
         }
 
+        // Safely map fields from the request DTO
         entity.setBirthDate(req.getBirthDate());
         entity.setGender(req.getGender());
         entity.setMarriageYear(req.getMarriageYear());
         entity.setBiography(req.getBiography());
+        entity.setCareerInsuranceType(req.getCareerInsuranceType()); // ✅ 補全更新邏輯
 
+        // Business Logic: Recalculate age if birth date is provided
         if (req.getBirthDate() != null) {
-            entity.setCurrentAge(Period.between(req.getBirthDate(), LocalDate.now()).getYears());
+            entity.setCurrentAge(Period.between(req.getBirthDate(), java.time.LocalDate.now()).getYears());
         } else if (!exists) {
             entity.setCurrentAge(null);
         }
