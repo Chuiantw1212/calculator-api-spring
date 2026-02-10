@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.Period;
 
 @Slf4j
@@ -19,11 +20,6 @@ public class UserProfileService {
 
     private final UserProfileMapper userProfileMapper;
 
-    /**
-     * Gets a user's profile. If not found, creates a minimal one, saves it, and returns it.
-     * @param uid The Firebase UID of the user.
-     * @return The user's profile DTO.
-     */
     public UserProfileDto getProfile(String uid) {
         UserProfile entity = userProfileMapper.selectByUid(uid);
         if (entity == null) {
@@ -33,55 +29,41 @@ public class UserProfileService {
         return convertToDto(entity);
     }
 
-    /**
-     * Updates a user's profile. If not found, creates a new one (Upsert logic).
-     * @param uid The Firebase UID of the user.
-     * @param req The request DTO containing the fields to update.
-     */
     @Transactional
     public void updateProfile(String uid, UserProfileUpdateReq req) {
-        UserProfile entity = userProfileMapper.selectByUid(uid);
-        boolean isNew = entity == null;
+        boolean exists = userProfileMapper.existsByUid(uid);
+        UserProfile entity;
 
-        if (isNew) {
+        if (exists) {
+            entity = userProfileMapper.selectByUid(uid);
+        } else {
             log.info("No existing profile found for update, creating a new one for UID: {}", uid);
             entity = new UserProfile();
             entity.setFirebaseUid(uid);
         }
 
-        // Safely map fields from the request DTO
         entity.setBirthDate(req.getBirthDate());
         entity.setGender(req.getGender());
         entity.setMarriageYear(req.getMarriageYear());
         entity.setBiography(req.getBiography());
 
-        // Business Logic: Recalculate age if birth date is provided
         if (req.getBirthDate() != null) {
-            entity.setCurrentAge(Period.between(req.getBirthDate(), java.time.LocalDate.now()).getYears());
-        } else if (isNew) {
-            // Ensure age is null for a new profile without a birthdate
+            entity.setCurrentAge(Period.between(req.getBirthDate(), LocalDate.now()).getYears());
+        } else if (!exists) {
             entity.setCurrentAge(null);
         }
 
-        if (isNew) {
-            userProfileMapper.insert(entity);
-        } else {
+        if (exists) {
             userProfileMapper.updateByUid(entity);
+        } else {
+            userProfileMapper.insert(entity);
         }
     }
 
-    /**
-     * Creates a minimal default profile for a new user, containing only the UID.
-     * This ensures the record exists in the database.
-     * @param uid The Firebase UID of the new user.
-     * @return The DTO of the newly created minimal profile.
-     */
     @Transactional
     private UserProfileDto createDefaultProfile(String uid) {
         UserProfile newProfile = new UserProfile();
         newProfile.setFirebaseUid(uid);
-        // All other fields will be null by default, which is the desired "empty" state.
-        
         userProfileMapper.insert(newProfile);
         log.info("✅ Minimal default profile created for UID: {}", uid);
         return convertToDto(newProfile);

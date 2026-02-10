@@ -20,71 +20,88 @@ public class UserRetirementService {
     public UserRetirementDto getRetirement(String uid) {
         UserRetirement entity = userRetirementMapper.selectByUid(uid);
         if (entity == null) {
-            return null;
+            log.warn("No retirement record found for UID: {}. Creating a default record.", uid);
+            return createDefaultRetirement(uid);
         }
-        UserRetirementDto dto = new UserRetirementDto();
-        BeanUtils.copyProperties(entity, dto);
-        return dto;
+        return convertToDto(entity);
     }
 
     @Transactional
     public void updateRetirement(String uid, UserRetirementUpdateReq req) {
-        UserRetirement entity = userRetirementMapper.selectByUid(uid);
-        boolean isNew = entity == null;
+        boolean exists = userRetirementMapper.existsByUid(uid);
+        UserRetirement entity;
 
-        if (isNew) {
+        if (exists) {
+            entity = userRetirementMapper.selectByUid(uid);
+        } else {
             entity = new UserRetirement();
             entity.setFirebaseUid(uid);
         }
 
         BeanUtils.copyProperties(req, entity);
 
-        if (isNew) {
-            userRetirementMapper.insert(entity);
-        } else {
+        if (exists) {
             userRetirementMapper.updateByUid(entity);
+        } else {
+            userRetirementMapper.insert(entity);
         }
     }
 
     @Transactional
     public void patchRetirement(String uid, UserRetirementDto req) {
-        UserRetirement entity = userRetirementMapper.selectByUid(uid);
-        boolean isNew = entity == null;
+        boolean exists = userRetirementMapper.existsByUid(uid);
+        UserRetirement entity;
 
-        if (isNew) {
-            log.info("No existing retirement record found for PATCH, creating a new one for UID: {}", uid);
+        if (exists) {
+            entity = userRetirementMapper.selectByUid(uid);
+        } else {
+            log.info("No existing retirement record for PATCH, creating a new one for UID: {}", uid);
             entity = new UserRetirement();
             entity.setFirebaseUid(uid);
             entity.setHouseholdType("single"); // Provide a default for the NOT NULL column
         }
 
-        // Use a temporary DTO to safely copy properties for PATCH
-        UserRetirement tempDtoEntity = new UserRetirement();
-        BeanUtils.copyProperties(req, tempDtoEntity);
+        // Perform a safe, field-by-field partial update
+        if (req.getHouseholdType() != null) entity.setHouseholdType(req.getHouseholdType());
+        if (req.getHousingMode() != null) entity.setHousingMode(req.getHousingMode());
+        if (req.getHousingCost() != null) entity.setHousingCost(req.getHousingCost());
+        if (req.getHealthTierCode() != null) entity.setHealthTierCode(req.getHealthTierCode());
+        if (req.getHealthCost() != null) entity.setHealthCost(req.getHealthCost());
+        if (req.getActiveLivingCode() != null) entity.setActiveLivingCode(req.getActiveLivingCode());
+        if (req.getActiveLivingCost() != null) entity.setActiveLivingCost(req.getActiveLivingCost());
+        if (req.getSlowGoStartAge() != null) entity.setSlowGoStartAge(req.getSlowGoStartAge());
+        if (req.getDefenseTierCode() != null) entity.setDefenseTierCode(req.getDefenseTierCode());
+        if (req.getMonthlyMedicalCost() != null) entity.setMonthlyMedicalCost(req.getMonthlyMedicalCost());
+        if (req.getCriticalIllnessCode() != null) entity.setCriticalIllnessCode(req.getCriticalIllnessCode());
+        if (req.getCriticalIllnessReserve() != null) entity.setCriticalIllnessReserve(req.getCriticalIllnessReserve());
+        if (req.getNogoStartAge() != null) entity.setNogoStartAge(req.getNogoStartAge());
+        if (req.getLtcCareMode() != null) entity.setLtcCareMode(req.getLtcCareMode());
+        if (req.getLtcMonthlyCost() != null) entity.setLtcMonthlyCost(req.getLtcMonthlyCost());
+        if (req.getLtcMonthlySupplies() != null) entity.setLtcMonthlySupplies(req.getLtcMonthlySupplies());
+        if (req.getLtcSubsidy() != null) entity.setLtcSubsidy(req.getLtcSubsidy());
 
-        if (tempDtoEntity.getHouseholdType() != null) entity.setHouseholdType(tempDtoEntity.getHouseholdType());
-        if (tempDtoEntity.getHousingMode() != null) entity.setHousingMode(tempDtoEntity.getHousingMode());
-        if (tempDtoEntity.getHousingCost() != null) entity.setHousingCost(tempDtoEntity.getHousingCost());
-        if (tempDtoEntity.getHealthTierCode() != null) entity.setHealthTierCode(tempDtoEntity.getHealthTierCode());
-        if (tempDtoEntity.getHealthCost() != null) entity.setHealthCost(tempDtoEntity.getHealthCost());
-        if (tempDtoEntity.getActiveLivingCode() != null) entity.setActiveLivingCode(tempDtoEntity.getActiveLivingCode());
-        if (tempDtoEntity.getActiveLivingCost() != null) entity.setActiveLivingCost(tempDtoEntity.getActiveLivingCost());
-        if (tempDtoEntity.getSlowGoStartAge() != null) entity.setSlowGoStartAge(tempDtoEntity.getSlowGoStartAge());
-        if (tempDtoEntity.getDefenseTierCode() != null) entity.setDefenseTierCode(tempDtoEntity.getDefenseTierCode());
-        if (tempDtoEntity.getMonthlyMedicalCost() != null) entity.setMonthlyMedicalCost(tempDtoEntity.getMonthlyMedicalCost());
-        if (tempDtoEntity.getCriticalIllnessCode() != null) entity.setCriticalIllnessCode(tempDtoEntity.getCriticalIllnessCode());
-        if (tempDtoEntity.getCriticalIllnessReserve() != null) entity.setCriticalIllnessReserve(tempDtoEntity.getCriticalIllnessReserve());
-        if (tempDtoEntity.getNogoStartAge() != null) entity.setNogoStartAge(tempDtoEntity.getNogoStartAge());
-        if (tempDtoEntity.getLtcCareMode() != null) entity.setLtcCareMode(tempDtoEntity.getLtcCareMode());
-        if (tempDtoEntity.getLtcMonthlyCost() != null) entity.setLtcMonthlyCost(tempDtoEntity.getLtcMonthlyCost());
-        if (tempDtoEntity.getLtcMonthlySupplies() != null) entity.setLtcMonthlySupplies(tempDtoEntity.getLtcMonthlySupplies());
-        if (tempDtoEntity.getLtcSubsidy() != null) entity.setLtcSubsidy(tempDtoEntity.getLtcSubsidy());
-
-        if (isNew) {
-            userRetirementMapper.insert(entity);
-        } else {
+        if (exists) {
             userRetirementMapper.updateByUid(entity);
+        } else {
+            userRetirementMapper.insert(entity);
         }
         log.info("Patched retirement settings for UID: {}", uid);
+    }
+
+    @Transactional
+    private UserRetirementDto createDefaultRetirement(String uid) {
+        UserRetirement newRetirement = new UserRetirement();
+        newRetirement.setFirebaseUid(uid);
+        newRetirement.setHouseholdType("single"); 
+        
+        userRetirementMapper.insert(newRetirement);
+        log.info("✅ Default retirement record created for UID: {}", uid);
+        return convertToDto(newRetirement);
+    }
+
+    private UserRetirementDto convertToDto(UserRetirement entity) {
+        UserRetirementDto dto = new UserRetirementDto();
+        BeanUtils.copyProperties(entity, dto);
+        return dto;
     }
 }
