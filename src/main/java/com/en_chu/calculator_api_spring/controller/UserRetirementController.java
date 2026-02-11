@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/user/retirement")
 @Tag(name = "User Retirement API", description = "使用者退休生活參數設定")
-@RequiredArgsConstructor
+@RequiredArgsConstructor // ✅ 使用 Lombok 實現建構函式注入
 public class UserRetirementController {
 
-	private final UserRetirementService userRetirementService;
+	private final UserRetirementService userRetirementService; // ✅ 改為 private final
 
 	@Operation(summary = "獲取退休設定")
 	@GetMapping

@@ -1,33 +1,29 @@
 package com.en_chu.calculator_api_spring.service;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.WriteBatch;
-
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.stereotype.Service;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor // ✅ 使用 Lombok 實現建構函式注入
 public class FirebaseSeedingService {
 
-	@Autowired
-	private Firestore firestore;
-
-	@Autowired
-	private ObjectMapper objectMapper;
+    private final Firestore firestore; // ✅ 改為 private final
+    private final ObjectMapper objectMapper; // ✅ 改為 private final
 
 	/**
 	 * 1. 同步一般設定檔 (Metadata) 邏輯：先刪除 metadata 集合中所有舊文件，再重新寫入 JSON 內容。 特別注意：生命表
