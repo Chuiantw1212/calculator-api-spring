@@ -4,28 +4,35 @@
 
 ## 技術架構
 
-本專案採用經典的 RESTful API 分層架構，確保了職責分離和高可維護性。
+本專案採用經典的 RESTful API 分層架構，並由 Spring Boot 進行全自動化的組裝和管理。
 
 ```
-+----------------+      +-----------------------+      +-----------------+      +----------------+
-|   前端應用     | ---> |  Google Cloud Run     | ---> |   Spring Boot   | ---> |   PostgreSQL   |
-| (Vue/React)    |      | (反向代理, HTTPS)     |      |  (本應用程式)   |      |  (Neon DB)     |
-+----------------+      +-----------------------+      +-----------------+      +----------------+
++----------------+      +-----------------------+      +--------------------------------+      +----------------+
+|   前端應用     | ---> |  Google Cloud Run     | ---> |          Spring Boot           | ---> |   PostgreSQL   |
+| (Vue/React)    |      | (反向代理, HTTPS)     |      |         (應用程式生產線)       |      |  (Neon DB)     |
++----------------+      +-----------------------+      +--------------------------------+      +----------------+
                                                          |
-                                                         |--- 1. Security Filter Chain (CORS, Firebase Auth)
-                                                         |--- 2. Controller (接收請求, 驗證輸入)
-                                                         |--- 3. Service (處理業務邏輯)
-                                                         |--- 4. Mapper (透過 MyBatis 存取資料庫)
+                                                         |--- 1. Spring Security (安全過濾鏈: CORS, Firebase Auth)
+                                                         |--- 2. Spring MVC (Web 引擎: Controller, @RequestMapping)
+                                                         |--- 3. Service Layer (業務邏輯)
+                                                         |--- 4. MyBatis (資料存取)
 ```
 
 ## 核心技術棧
 
-- **框架**: Spring Boot 3.3.2
-- **語言**: Java 17
-- **資料庫**: PostgreSQL
-- **資料存取**: MyBatis 3
-- **認證**: Firebase Authentication
-- **API 文件**: SpringDoc (Swagger UI)
+- **應用程式框架 (Application Framework)**:
+  - **Spring Boot 3.3.2**: 作為整個應用程式的「生產線」，負責自動配置、依賴管理和內嵌伺服器，極大地簡化了開發和部署。
+
+- **核心模組 (Core Modules)**:
+  - **Spring MVC**: 作為處理 Web 請求的「核心引擎」，提供了 `@RestController`, `@RequestMapping` 等功能。
+  - **Spring Security**: 作為應用程式的「安全框架」，負責處理認證、授權和 CORS。
+  - **MyBatis 3**: 作為「資料存取框架」，負責將 Java 物件與 SQL 語句進行映射。
+
+- **基礎設施 (Infrastructure)**:
+  - **語言**: Java 17
+  - **資料庫**: PostgreSQL
+  - **認證服務**: Firebase Authentication
+  - **API 文件**: SpringDoc (Swagger UI)
 
 ---
 
@@ -33,7 +40,7 @@
 
 -   `com.en_chu.calculator_api_spring`
     -   `config`: 存放所有 Spring 的 Java 設定檔，負責組裝應用程式的「骨架」。(詳見: `config/README.md`)
-    -   `controller`: API 的入口層，負責接收 HTTP 請求、驗證輸入參數，並呼叫對應的 Service。
+    -   `controller`: API 的入口層 (屬於 Spring MVC)，負責接收 HTTP 請求、驗證輸入，並呼叫 Service。
     -   `dto` / `model`: 資料傳輸物件 (Data Transfer Objects)，用於定義 API 的請求和回應的 JSON 結構。
     -   `entity`: 資料庫實體物件，與資料庫中的資料表結構一一對應。
     -   `exception`: 全域例外處理器，負責捕獲運行時錯誤，並回傳統一格式的錯誤訊息。
@@ -51,7 +58,7 @@
 -   本專案採用 **Token-Based Authentication**。
 -   前端透過 Firebase SDK 登入後，會獲取一個 **Firebase ID Token**。
 -   在呼叫後端 API 時，前端必須將此 Token 放在 HTTP 的 `Authorization` 標頭中，並使用 `Bearer ` 前綴。
--   後端的 `FirebaseTokenFilter` 會攔截每一個請求，並使用 Firebase Admin SDK 驗證此 Token 的有效性。只有在驗證成功後，請求才會被放行到後續的 Controller。
+-   後端的 `FirebaseTokenFilter` (屬於 Spring Security) 會攔截每一個請求，並使用 Firebase Admin SDK 驗證此 Token 的有效性。只有在驗證成功後，請求才會被放行到後續的 Controller。
 
 ### 2. 授權與資料所有權 (Authorization & Data Ownership)
 
