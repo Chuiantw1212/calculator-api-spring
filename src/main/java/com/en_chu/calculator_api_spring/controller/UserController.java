@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/user")
 @Tag(name = "User API", description = "使用者核心資料管理")
-@RequiredArgsConstructor
+@RequiredArgsConstructor // ✅ 使用 Lombok 實現建構函式注入
 public class UserController {
 
+    // ✅ 將所有依賴都改為 private final
     private final UserService userService;
     private final UserProfileService userProfileService;
     private final UserCareerService userCareerService;

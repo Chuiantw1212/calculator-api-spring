@@ -14,9 +14,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
-@RequiredArgsConstructor
+@RequiredArgsConstructor // ✅ 使用 Lombok 實現建構函式注入
 public class SecurityConfig {
 
+    // ✅ 將所有依賴都改為 private final
     private final FirebaseTokenFilter firebaseTokenFilter;
     private final FirebaseAuthenticationEntryPoint firebaseAuthenticationEntryPoint;
     private final CorsConfigurationSource corsConfigurationSource;
@@ -28,10 +29,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
-                // ✅ 核心修正：優先放行所有的 OPTIONS 預檢請求
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-
-                // Public Endpoints
                 .requestMatchers(
                     "/",
                     "/v3/api-docs/**",
@@ -40,17 +38,11 @@ public class SecurityConfig {
                     "/actuator/**"
                 ).permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/metadata/**").permitAll()
-
-                // Admin Endpoints (DEV ONLY)
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-
-                // User-specific Endpoints
                 .requestMatchers(
                     "/api/v1/auth/sync",
                     "/api/v1/user/**"
                 ).authenticated()
-
-                // Default Rule: Deny all other requests
                 .anyRequest().denyAll()
             )
             .addFilterBefore(firebaseTokenFilter, UsernamePasswordAuthenticationFilter.class)
