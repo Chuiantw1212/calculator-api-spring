@@ -36,6 +36,18 @@
 
 ---
 
+## API 文件 (Swagger)
+
+本專案使用 SpringDoc 自動生成互動式的 API 文件。
+
+-   **本地開發環境**:
+    -   啟動應用程式後，請訪問: [http://localhost:8888/swagger-ui.html](http://localhost:8888/swagger-ui.html)
+
+-   **生產環境**:
+    -   部署到 Cloud Run 後，請訪問: [https://calculator-api-spring-20260210-592400229145.asia-east1.run.app/swagger-ui.html](https://calculator-api-spring-20260210-592400229145.asia-east1.run.app/swagger-ui.html)
+
+---
+
 ## 套件結構說明
 
 -   `com.en_chu.calculator_api_spring`
