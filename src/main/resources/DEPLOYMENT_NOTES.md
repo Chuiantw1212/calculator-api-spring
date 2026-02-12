@@ -4,7 +4,7 @@
 
 ## 問題：Swagger UI 在生產環境中無法發出請求
 
-在本地開發時，Swagger UI (`/swagger-ui.html`) 可以正常工作。但是，一旦部署到 Cloud Run，並透過 `https://...` 的公開 URL 訪問時，點擊 "Try it out" 會失敗，並在瀏覽器的開發者工具中看到一個關於 CORS 或「混合內容 (Mixed Content)」的錯誤。
+在本地開發時，Swagger UI (`/swagger-ui.html`) 可以正常工作。但是，一旦部署到 Cloud Run，並透過 `https://calculator-api-spring-20260210-592400229145.asia-east1.run.app` 這樣的公開 URL 訪問時，點擊 "Try it out" 會失敗，並在瀏覽器的開發者工具中看到一個關於 CORS 或「混合內容 (Mixed Content)」的錯誤。
 
 ### 根本原因：反向代理環境下的「協議 (Protocol)」識別錯誤
 
